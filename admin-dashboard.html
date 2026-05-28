@@ -237,25 +237,25 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
   </div>
 
   <div class="sidebar-nav">
-  <span class="nl">Umumiy</span>
-  <div class="ni active" onclick="showPage('home',this)"><span class="ic">🏠</span>Bosh sahifa</div>
-  <div class="ni" onclick="showPage('finance',this)"><span class="ic">💰</span>Moliya<span class="nb nb-g">+2.1M</span></div>
-  <div class="ni" onclick="showPage('stats',this)"><span class="ic">📊</span>Statistika</div>
+  <span class="nl" id="nl-gen">Umumiy</span>
+  <div class="ni active" onclick="showPage('home',this)" id="n-home"><span class="ic">🏠</span>Bosh sahifa</div>
+  <div class="ni" onclick="showPage('finance',this)" id="n-finance"><span class="ic">💰</span>Moliya<span class="nb nb-g">+2.1M</span></div>
+  <div class="ni" onclick="showPage('stats',this)" id="n-stats"><span class="ic">📊</span>Statistika</div>
 
-  <span class="nl">Xodimlar</span>
-  <div class="ni" onclick="showPage('teachers',this)"><span class="ic">👨‍🏫</span>O'qituvchilar<span class="nb nb-b" style="background:var(--blue-d);color:var(--blue-l)">6</span></div>
-  <div class="ni" onclick="showPage('salary',this)"><span class="ic">💳</span>Oylik hisob</div>
-  <div class="ni" onclick="showPage('schedule',this)"><span class="ic">📅</span>Dars jadvali</div>
+  <span class="nl" id="nl-staff">Xodimlar</span>
+  <div class="ni" onclick="showPage('teachers',this)" id="n-teachers"><span class="ic">👨‍🏫</span>O'qituvchilar<span class="nb nb-b" style="background:var(--blue-d);color:var(--blue-l)">6</span></div>
+  <div class="ni" onclick="showPage('salary',this)" id="n-salary"><span class="ic">💳</span>Oylik hisob</div>
+  <div class="ni" onclick="showPage('schedule',this)" id="n-schedule"><span class="ic">📅</span>Dars jadvali</div>
 
-  <span class="nl">O'quvchilar</span>
-  <div class="ni" onclick="showPage('students',this)"><span class="ic">👥</span>Barcha o'quvchilar<span class="nb nb-g">48</span></div>
-  <div class="ni" onclick="showPage('payments',this)"><span class="ic">💸</span>To'lovlar<span class="nb nb-r">5</span></div>
-  <div class="ni" onclick="showPage('credentials',this)"><span class="ic">🔑</span>Login/Parol</div>
+  <span class="nl" id="nl-students">O'quvchilar</span>
+  <div class="ni" onclick="showPage('students',this)" id="n-all-students"><span class="ic">👥</span>Barcha o'quvchilar<span class="nb nb-g">48</span></div>
+  <div class="ni" onclick="showPage('payments',this)" id="n-payments"><span class="ic">💸</span>To'lovlar<span class="nb nb-r">5</span></div>
+  <div class="ni" onclick="showPage('credentials',this)" id="n-credentials"><span class="ic">🔑</span>Login/Parol</div>
 
-  <span class="nl">Tizim</span>
-  <div class="ni" onclick="showPage('groups',this)"><span class="ic">🗂️</span>Guruhlar</div>
-  <div class="ni" onclick="showPage('settings',this)"><span class="ic">⚙️</span>Sozlamalar</div>
-  <div class="ni" onclick="showPage('logs',this)"><span class="ic">📋</span>Faoliyat jurnali</div>
+  <span class="nl" id="nl-sys">Tizim</span>
+  <div class="ni" onclick="showPage('groups',this)" id="n-groups"><span class="ic">🗂️</span>Guruhlar</div>
+  <div class="ni" onclick="showPage('settings',this)" id="n-settings"><span class="ic">⚙️</span>Sozlamalar</div>
+  <div class="ni" onclick="showPage('logs',this)" id="n-logs"><span class="ic">📋</span>Faoliyat jurnali</div>
   </div><!-- /sidebar-nav -->
 
   <div class="s-foot">
@@ -1227,29 +1227,6 @@ function logout() {
 
 var _T={uz:{'u-role':'Admin',},ru:{'u-role':'Админ',},en:{'u-role':'Admin',},};
 
-function doLang(l){
-  localStorage.setItem('lang',l);
-  document.querySelectorAll('.lb,.lb,.lang-btn').forEach(function(b){
-    var isActive=(b.textContent.trim().toLowerCase()===l);
-    b.style.background=isActive?'var(--blue)':'transparent';
-    b.style.color=isActive?'#fff':'var(--text2)';
-    if(isActive)b.classList.add('active'); else b.classList.remove('active');
-  });
-  var _T={uz:{'u-role':'Admin'},ru:{'u-role':'Админ'},en:{'u-role':'Admin'}};
-  var t=_T[l]||_T.uz;
-  Object.keys(t).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=t[id];});
-}
-function doTheme(){
-  document.body.classList.toggle('light');
-  var l=document.body.classList.contains('light');
-  localStorage.setItem('theme',l?'light':'dark');
-  var b=document.getElementById('tb-theme');if(b)b.textContent=l?'☀️':'🌙';
-}
-(function(){
-  var t=localStorage.getItem('theme')||'dark';
-  if(t==='light'){document.body.classList.add('light');var b=document.getElementById('tb-theme');if(b)b.textContent='☀️';}
-  setTimeout(function(){doLang(localStorage.getItem('lang')||'uz');},200);
-})();
 
 async function createUserAPI() {
   const token = localStorage.getItem('access_token');
@@ -1553,6 +1530,25 @@ createUserAPI = async function() {
   setTimeout(loadUsersList, 500);
 };
 
+
+function doLang(l) {
+  localStorage.setItem('lang', l);
+  var _T = {uz:{'nl-gen':'Umumiy','nl-staff':'Xodimlar','nl-students':'O\'quvchilar','nl-sys':'Tizim','n-home':'Bosh sahifa','n-finance':'Moliya','n-stats':'Statistika','n-teachers':'O\'qituvchilar','n-salary':'Oylik hisob','n-schedule':'Dars jadvali','n-all-students':'Barcha o\'quvchilar','n-payments':'To\'lovlar','n-credentials':'Login/Parol','n-groups':'Guruhlar','n-settings':'Sozlamalar','n-logs':'Faoliyat jurnali','u-role':'Super Admin','page-title':'Bosh sahifa','page-sub':'Tizim umumiy ko\'rinishi'},ru:{'nl-gen':'Общее','nl-staff':'Персонал','nl-students':'Студенты','nl-sys':'Система','n-home':'Главная','n-finance':'Финансы','n-stats':'Статистика','n-teachers':'Учителя','n-salary':'Зарплата','n-schedule':'Расписание','n-all-students':'Все студенты','n-payments':'Платежи','n-credentials':'Логин/Пароль','n-groups':'Группы','n-settings':'Настройки','n-logs':'Журнал активности','u-role':'Супер Админ','page-title':'Главная','page-sub':'Обзор системы'},en:{'nl-gen':'General','nl-staff':'Staff','nl-students':'Students','nl-sys':'System','n-home':'Home','n-finance':'Finance','n-stats':'Statistics','n-teachers':'Teachers','n-salary':'Salary','n-schedule':'Schedule','n-all-students':'All students','n-payments':'Payments','n-credentials':'Login/Password','n-groups':'Groups','n-settings':'Settings','n-logs':'Activity log','u-role':'Super Admin','page-title':'Home','page-sub':'System overview'}};
+  var t = _T[l] || _T.uz;
+  Object.keys(t).forEach(function(id) {
+    var el = document.getElementById(id);
+    if(el) el.textContent = t[id];
+  });
+  document.querySelectorAll('.lang-btn,.lb').forEach(function(b) {
+    var isActive = b.textContent.trim().toUpperCase() === l.toUpperCase();
+    b.style.background = isActive ? 'var(--blue)' : 'transparent';
+    b.style.color = isActive ? '#fff' : 'var(--text2)';
+  });
+}
+(function() {
+  var saved = localStorage.getItem('lang') || 'uz';
+  setTimeout(function() { doLang(saved); }, 300);
+})();
 </script>
 </body>
 </html>

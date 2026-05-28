@@ -1037,29 +1037,6 @@ function logout() {
 
 var _T={uz:{'nl-main':'Asosiy','n-home':'Bosh sahifa','n-courses':'Kurslar','n-books':'Kitoblar','n-quiz':'Testlar','n-db':'Bazalar','nl-other':'Boshqa','n-sched':'Jadval','n-pay':'To\'lov','n-stats':'Statistika','u-role':'Talaba',},ru:{'nl-main':'Главное','n-home':'Главная','n-courses':'Курсы','n-books':'Книги','n-quiz':'Тесты','n-db':'Базы','nl-other':'Другое','n-sched':'Расписание','n-pay':'Оплата','n-stats':'Статистика','u-role':'Студент',},en:{'nl-main':'Main','n-home':'Home','n-courses':'Courses','n-books':'Books','n-quiz':'Quizzes','n-db':'Databases','nl-other':'Other','n-sched':'Schedule','n-pay':'Payment','n-stats':'Statistics','u-role':'Student',},};
 
-function doLang(l){
-  localStorage.setItem('lang',l);
-  document.querySelectorAll('.lang-btn,.lb,.lang-btn').forEach(function(b){
-    var isActive=(b.textContent.trim().toLowerCase()===l);
-    b.style.background=isActive?'var(--blue)':'transparent';
-    b.style.color=isActive?'#fff':'var(--text2)';
-    if(isActive)b.classList.add('active'); else b.classList.remove('active');
-  });
-  var _T={uz:{'nl-main':'Asosiy','n-home':'Bosh sahifa','n-courses':'Kurslar','n-books':'Kitoblar','n-quiz':'Testlar','n-db':'Bazalar','nl-other':'Boshqa','n-sched':'Jadval','n-pay':'To\'lov','n-stats':'Statistika','u-role':'Talaba','page-title':'Bosh sahifa','page-sub':'Xush kelibsiz!'},ru:{'nl-main':'Главное','n-home':'Главная','n-courses':'Курсы','n-books':'Книги','n-quiz':'Тесты','n-db':'Базы','nl-other':'Другое','n-sched':'Расписание','n-pay':'Оплата','n-stats':'Статистика','u-role':'Студент','page-title':'Главная','page-sub':'Добро пожаловать!'},en:{'nl-main':'Main','n-home':'Home','n-courses':'Courses','n-books':'Books','n-quiz':'Quizzes','n-db':'Databases','nl-other':'Other','n-sched':'Schedule','n-pay':'Payment','n-stats':'Statistics','u-role':'Student','page-title':'Home','page-sub':'Welcome!'}};
-  var t=_T[l]||_T.uz;
-  Object.keys(t).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=t[id];});
-}
-function doTheme(){
-  document.body.classList.toggle('light');
-  var l=document.body.classList.contains('light');
-  localStorage.setItem('theme',l?'light':'dark');
-  var b=document.getElementById('tb-theme');if(b)b.textContent=l?'☀️':'🌙';
-}
-(function(){
-  var t=localStorage.getItem('theme')||'dark';
-  if(t==='light'){document.body.classList.add('light');var b=document.getElementById('tb-theme');if(b)b.textContent='☀️';}
-  setTimeout(function(){doLang(localStorage.getItem('lang')||'uz');},200);
-})();
 
 // ===== O'QUVCHI REAL MA'LUMOTLAR =====
 async function loadMyGrades() {
@@ -1100,6 +1077,25 @@ async function loadMyGrades() {
 
 setTimeout(function() { loadMyGrades(); }, 600);
 
+
+function doLang(l) {
+  localStorage.setItem('lang', l);
+  var _T = {uz:{'nl-main':'Asosiy','nl-other':'Boshqa','n-home':'Bosh sahifa','n-courses':'Kurslar','n-books':'Kitoblar','n-quiz':'Testlar','n-db':'Bazalar','n-sched':'Jadval','n-pay':'To\'lov','n-stats':'Statistika','u-role':'Talaba','page-title':'Bosh sahifa','page-sub':'Xush kelibsiz!','s1':'Faol kurslar','s2':'Testlar yechildi','s3':'Kitoblar o\'qildi','s4':'O\'rtacha ball'},ru:{'nl-main':'Главное','nl-other':'Другое','n-home':'Главная','n-courses':'Курсы','n-books':'Книги','n-quiz':'Тесты','n-db':'Базы','n-sched':'Расписание','n-pay':'Оплата','n-stats':'Статистика','u-role':'Студент','page-title':'Главная','page-sub':'Добро пожаловать!','s1':'Активные курсы','s2':'Тестов пройдено','s3':'Книг прочитано','s4':'Средний балл'},en:{'nl-main':'Main','nl-other':'Other','n-home':'Home','n-courses':'Courses','n-books':'Books','n-quiz':'Quizzes','n-db':'Databases','n-sched':'Schedule','n-pay':'Payment','n-stats':'Statistics','u-role':'Student','page-title':'Home','page-sub':'Welcome!','s1':'Active courses','s2':'Tests passed','s3':'Books read','s4':'Average score'}};
+  var t = _T[l] || _T.uz;
+  Object.keys(t).forEach(function(id) {
+    var el = document.getElementById(id);
+    if(el) el.textContent = t[id];
+  });
+  document.querySelectorAll('.lang-btn,.lb').forEach(function(b) {
+    var isActive = b.textContent.trim().toUpperCase() === l.toUpperCase();
+    b.style.background = isActive ? 'var(--blue)' : 'transparent';
+    b.style.color = isActive ? '#fff' : 'var(--text2)';
+  });
+}
+(function() {
+  var saved = localStorage.getItem('lang') || 'uz';
+  setTimeout(function() { doLang(saved); }, 300);
+})();
 </script>
 </body>
 </html>

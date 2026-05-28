@@ -962,29 +962,6 @@ function printCred(){
 
 var _T={uz:{'u-role':'Resepshn',},ru:{'u-role':'Ресепшн',},en:{'u-role':'Receptionist',},};
 
-function doLang(l){
-  localStorage.setItem('lang',l);
-  document.querySelectorAll('.lb,.lb,.lang-btn').forEach(function(b){
-    var isActive=(b.textContent.trim().toLowerCase()===l);
-    b.style.background=isActive?'var(--blue)':'transparent';
-    b.style.color=isActive?'#fff':'var(--text2)';
-    if(isActive)b.classList.add('active'); else b.classList.remove('active');
-  });
-  var _T={uz:{'u-role':'Resepshn'},ru:{'u-role':'Ресепшн'},en:{'u-role':'Receptionist'}};
-  var t=_T[l]||_T.uz;
-  Object.keys(t).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=t[id];});
-}
-function doTheme(){
-  document.body.classList.toggle('light');
-  var l=document.body.classList.contains('light');
-  localStorage.setItem('theme',l?'light':'dark');
-  var b=document.getElementById('tb-theme');if(b)b.textContent=l?'☀️':'🌙';
-}
-(function(){
-  var t=localStorage.getItem('theme')||'dark';
-  if(t==='light'){document.body.classList.add('light');var b=document.getElementById('tb-theme');if(b)b.textContent='☀️';}
-  setTimeout(function(){doLang(localStorage.getItem('lang')||'uz');},200);
-})();
 
 // ===== TO'LOV API =====
 const PAY_API = 'https://bozorov-school.onrender.com';
@@ -1032,6 +1009,25 @@ async function loadPaymentHistory() {
   return [];
 }
 
+
+function doLang(l) {
+  localStorage.setItem('lang', l);
+  var _T = {uz:{'u-role':'Resepshn','page-title':'Bosh sahifa','page-sub':'Bugungi holat','n-home':'Bosh sahifa','n-pay':'To\'lov qabul','n-att':'Davomat','n-students':'O\'quvchilar','n-results':'Natijalar','n-cred':'Login yaratish','n-search':'Qidirish'},ru:{'u-role':'Ресепшн','page-title':'Главная','page-sub':'Статус сегодня','n-home':'Главная','n-pay':'Приём оплат','n-att':'Посещаемость','n-students':'Студенты','n-results':'Результаты','n-cred':'Создать логин','n-search':'Поиск'},en:{'u-role':'Receptionist','page-title':'Home','page-sub':'Today status','n-home':'Home','n-pay':'Accept payment','n-att':'Attendance','n-students':'Students','n-results':'Results','n-cred':'Create login','n-search':'Search'}};
+  var t = _T[l] || _T.uz;
+  Object.keys(t).forEach(function(id) {
+    var el = document.getElementById(id);
+    if(el) el.textContent = t[id];
+  });
+  document.querySelectorAll('.lang-btn,.lb').forEach(function(b) {
+    var isActive = b.textContent.trim().toUpperCase() === l.toUpperCase();
+    b.style.background = isActive ? 'var(--blue)' : 'transparent';
+    b.style.color = isActive ? '#fff' : 'var(--text2)';
+  });
+}
+(function() {
+  var saved = localStorage.getItem('lang') || 'uz';
+  setTimeout(function() { doLang(saved); }, 300);
+})();
 </script>
 </body>
 </html>

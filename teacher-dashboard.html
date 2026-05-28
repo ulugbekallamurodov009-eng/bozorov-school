@@ -805,29 +805,6 @@ function logout() {
 
 var _T={uz:{'u-role':'O\'qituvchi',},ru:{'u-role':'Учитель',},en:{'u-role':'Teacher',},};
 
-function doLang(l){
-  localStorage.setItem('lang',l);
-  document.querySelectorAll('.lb,.lb,.lang-btn').forEach(function(b){
-    var isActive=(b.textContent.trim().toLowerCase()===l);
-    b.style.background=isActive?'var(--blue)':'transparent';
-    b.style.color=isActive?'#fff':'var(--text2)';
-    if(isActive)b.classList.add('active'); else b.classList.remove('active');
-  });
-  var _T={uz:{'u-role':'O\'qituvchi'},ru:{'u-role':'Учитель'},en:{'u-role':'Teacher'}};
-  var t=_T[l]||_T.uz;
-  Object.keys(t).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=t[id];});
-}
-function doTheme(){
-  document.body.classList.toggle('light');
-  var l=document.body.classList.contains('light');
-  localStorage.setItem('theme',l?'light':'dark');
-  var b=document.getElementById('tb-theme');if(b)b.textContent=l?'☀️':'🌙';
-}
-(function(){
-  var t=localStorage.getItem('theme')||'dark';
-  if(t==='light'){document.body.classList.add('light');var b=document.getElementById('tb-theme');if(b)b.textContent='☀️';}
-  setTimeout(function(){doLang(localStorage.getItem('lang')||'uz');},200);
-})();
 
 // ===== TEACHER API =====
 const T_API = 'https://bozorov-school.onrender.com';
@@ -910,6 +887,25 @@ async function loadMyGroups() {
 
 setTimeout(function() { loadMyGroups(); }, 600);
 
+
+function doLang(l) {
+  localStorage.setItem('lang', l);
+  var _T = {uz:{'u-role':'O\'qituvchi','page-title':'Bosh sahifa','page-sub':'Xush kelibsiz!','nl-main':'Asosiy','nl-edu':'O\'quv','n-home':'Bosh sahifa','n-students':'O\'quvchilar','n-grades':'Baholar','n-quiz':'Test yaratish','n-books':'Kitoblar','n-schedule':'Jadval','n-monthly':'Oylik hisobot','n-attendance':'Davomat'},ru:{'u-role':'Учитель','page-title':'Главная','page-sub':'Добро пожаловать!','nl-main':'Главное','nl-edu':'Учебное','n-home':'Главная','n-students':'Студенты','n-grades':'Оценки','n-quiz':'Создать тест','n-books':'Книги','n-schedule':'Расписание','n-monthly':'Месячный отчёт','n-attendance':'Посещаемость'},en:{'u-role':'Teacher','page-title':'Home','page-sub':'Welcome!','nl-main':'Main','nl-edu':'Academic','n-home':'Home','n-students':'Students','n-grades':'Grades','n-quiz':'Create quiz','n-books':'Books','n-schedule':'Schedule','n-monthly':'Monthly report','n-attendance':'Attendance'}};
+  var t = _T[l] || _T.uz;
+  Object.keys(t).forEach(function(id) {
+    var el = document.getElementById(id);
+    if(el) el.textContent = t[id];
+  });
+  document.querySelectorAll('.lang-btn,.lb').forEach(function(b) {
+    var isActive = b.textContent.trim().toUpperCase() === l.toUpperCase();
+    b.style.background = isActive ? 'var(--blue)' : 'transparent';
+    b.style.color = isActive ? '#fff' : 'var(--text2)';
+  });
+}
+(function() {
+  var saved = localStorage.getItem('lang') || 'uz';
+  setTimeout(function() { doLang(saved); }, 300);
+})();
 </script>
 </body>
 </html>
