@@ -203,10 +203,13 @@
 body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b7280;--border:rgba(0,0,0,.10);}body{transition:background .3s,color .3s;}
 .login-theme{position:fixed;top:1rem;right:1rem;z-index:20;width:36px;height:36px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;}
 
-  @media(max-width:390px){
-    .card{padding:1.25rem;border-radius:14px;}
-    .logo-name{font-size:16px;}
-  }
+@media(max-width:480px){
+  .container{max-width:100%;padding:0 .5rem;}
+  .card{padding:1.25rem!important;border-radius:14px!important;}
+  .card-title{font-size:18px!important;}
+  .lang-row{margin-bottom:1rem!important;}
+  .submit-wrap{height:52px!important;}
+}
 </style>
 </head>
 <body>
@@ -347,7 +350,7 @@ function resetBtn() {
 }
 
 // ===== BACKEND KONFIGURATSIYA =====
-const API_BASE = 'http://localhost:8000'; // Backend URL sini shu yerda o'zgartiring
+const API_BASE = 'https://bozorov-school.onrender.com'; // Backend URL sini shu yerda o'zgartiring
 
 // Role bo'yicha dashboard sahifalariga yo'naltirish
 const ROLE_PAGES = {
