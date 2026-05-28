@@ -85,7 +85,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .badge-purple{background:var(--purple-d);color:#a78bfa;}
 
 /* TABLE */
-table{width:100%;border-collapse:collapse;min-width:500px;}.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;}
+table{width:100%;border-collapse:collapse;}
 th{font-size:11px;color:var(--text2);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.5px;text-transform:uppercase;}
 td{font-size:13px;padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
@@ -170,12 +170,60 @@ textarea{resize:vertical;min-height:70px;}
 
 /* MOBILE */
 .menu-btn{display:none;position:fixed;top:1rem;left:1rem;z-index:200;width:36px;height:36px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-size:18px;cursor:pointer;align-items:center;justify-content:center;color:var(--text);}
-@media(max-width:768px){.sidebar{transform:translateX(-100%)}.topbar{flex-wrap:wrap;gap:8px;}.tb-l h2{font-size:17px;}.tb-r{flex-wrap:wrap;gap:6px;}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:1rem;padding-top:3.5rem}.menu-btn{display:flex}.stats4,.stats3{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}.row2,.row3{grid-template-columns:1fr}.sch-grid{grid-template-columns:50px repeat(6,1fr);font-size:9px}.sch-cell{min-height:36px;font-size:9px;padding:2px}.modal{max-height:90vh;overflow-y:auto}.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}}
+.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:1rem;padding-top:3.5rem}.menu-btn{display:flex}.stats4,.stats3{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--green);color:#fff;padding:10px 20px;border-radius:10px;font-size:14px;transition:transform .3s;z-index:999;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b7280;--border:rgba(0,0,0,.08);}body{transition:background .3s,color .3s;}
+
+/* ===== MOBIL ===== */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s;width:260px;}
+  .sidebar.open{transform:translateX(0);}
+  .main,.main-content{margin-left:0!important;padding:1rem;padding-top:4rem;}
+  .menu-btn,.mob-menu-btn{display:flex!important;}
+  
+  /* Stats grid */
+  .stats4,.stats3,.s4,.s3{grid-template-columns:1fr 1fr!important;}
+  .sc{padding:.75rem!important;}
+  .sn,.stat-num{font-size:18px!important;}
+  
+  /* Content grids */
+  .g2,.g3,.grid2,.grid3{grid-template-columns:1fr!important;}
+  
+  /* Tables - horizontal scroll */
+  .card{overflow-x:auto;}
+  table{min-width:500px;}
+  
+  /* Topbar */
+  .topbar,.topbar-wrap{flex-wrap:wrap;gap:8px;}
+  .tb-l h2,.topbar-left h2{font-size:16px!important;}
+  .tb-r,.topbar-right{gap:6px!important;}
+  
+  /* Sidebar footer */
+  .s-foot,.sidebar-footer{padding:.75rem 1rem;}
+  
+  /* Cards padding */
+  .card,.modal{padding:.875rem!important;}
+  
+  /* Hide non-essential topbar items on small screens */
+  @media(max-width:480px){
+    .tb-r .clock,.topbar-right .clock{display:none;}
+    .s4,.stats4{grid-template-columns:1fr 1fr!important;}
+  }
+}
+
+/* Menu button - always ready */
+.menu-btn,.mob-menu-btn{
+  display:none;
+  position:fixed;top:1rem;left:1rem;z-index:200;
+  width:38px;height:38px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;font-size:20px;cursor:pointer;
+  align-items:center;justify-content:center;
+  color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
 </style>
 </head>
 <body>
@@ -304,7 +352,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
       <div>
         <div class="card-title">📊 O'qituvchi statistikasi</div>
         <div class="card">
-          <div class="table-wrap"><table>
+          <table>
             <thead><tr><th>O'qituvchi</th><th>Fan</th><th>O'quvchi</th><th>O'rtacha ball</th><th>Holat</th></tr></thead>
             <tbody>
               <tr><td>Akbar Axmadov</td><td>Matematika</td><td>24</td><td><span style="color:var(--green);font-weight:600">87%</span></td><td><span class="tag tag-green">Aktiv</span></td></tr>
@@ -314,7 +362,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
               <tr><td>Malika Rashidova</td><td>Biologiya</td><td>8</td><td><span style="color:var(--amber);font-weight:600">80%</span></td><td><span class="tag tag-green">Aktiv</span></td></tr>
               <tr><td>Farhodjon Nazarov</td><td>Tarix</td><td>8</td><td><span style="color:var(--amber);font-weight:600">76%</span></td><td><span class="tag tag-amber">Ta'tilda</span></td></tr>
             </tbody>
-          </table></div>
+          </table>
         </div>
       </div>
     </div>
@@ -450,7 +498,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
       <div>
         <div class="card-title">🏫 Xonalar holati</div>
         <div class="card">
-          <div class="table-wrap"><table>
+          <table>
             <thead><tr><th>Xona</th><th>Sig'im</th><th>Hozir</th><th>Holat</th></tr></thead>
             <tbody>
               <tr><td>Xona 101</td><td>20</td><td>Matematika A</td><td><span class="tag tag-red">Band</span></td></tr>
@@ -459,7 +507,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
               <tr><td>Xona 202</td><td>25</td><td>—</td><td><span class="tag tag-green">Bo'sh</span></td></tr>
               <tr><td>Katta zal</td><td>60</td><td>—</td><td><span class="tag tag-green">Bo'sh</span></td></tr>
             </tbody>
-          </table></div>
+          </table>
         </div>
       </div>
     </div>
@@ -476,7 +524,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
         <button class="btn btn-blue btn-sm" onclick="showModal('add-student')">➕ Yangi</button>
         <button class="btn btn-out btn-sm" onclick="toast('📥 Excel yuklab olindi!')">📥 Excel</button>
       </div>
-      <div class="table-wrap"><table>
+      <table>
         <thead><tr><th>#</th><th>Ism Familiya</th><th>Guruh</th><th>Telefon</th><th>Ball</th><th>To'lov</th><th>Login</th><th>Amal</th></tr></thead>
         <tbody id="st-body">
           <tr><td style="color:var(--text2)">1</td><td>Sherzod Zoirov</td><td>Mat A</td><td>+998 91 234 56 78</td><td><span style="color:var(--green);font-weight:600">92%</span></td><td><span class="tag tag-green">✅ To'lagan</span></td><td><code style="font-size:11px;color:var(--blue-l)">sherzod01</code></td><td><button class="btn btn-out btn-sm" onclick="toast('✏️ Tahrirlash ochildi!')">✏️</button></td></tr>
@@ -486,7 +534,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
           <tr><td style="color:var(--text2)">5</td><td>Elbek Qo'qonov</td><td>Kimyo</td><td>+998 97 678 90 12</td><td><span style="color:var(--amber);font-weight:600">71%</span></td><td><span class="tag tag-red">❌ To'lamagan</span></td><td><code style="font-size:11px;color:var(--blue-l)">elbek05</code></td><td><button class="btn btn-out btn-sm" onclick="toast('✏️ Tahrirlash ochildi!')">✏️</button></td></tr>
           <tr><td style="color:var(--text2)">6</td><td>Umida Mustafoyeva</td><td>Ingliz A</td><td>+998 91 789 01 23</td><td><span style="color:var(--green);font-weight:600">82%</span></td><td><span class="tag tag-amber">⚠️ Qisman</span></td><td><code style="font-size:11px;color:var(--blue-l)">umida06</code></td><td><button class="btn btn-out btn-sm" onclick="toast('✏️ Tahrirlash ochildi!')">✏️</button></td></tr>
         </tbody>
-      </table></div>
+      </table>
     </div>
   </div>
 
@@ -505,7 +553,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
         <button class="btn btn-green btn-sm" onclick="toast('📱 Barcha qarzdorlarga SMS yuborildi!')">📱 Ommaviy SMS</button>
         <button class="btn btn-out btn-sm" onclick="toast('📥 Hisobot yuklab olindi!')">📥 Eksport</button>
       </div>
-      <div class="table-wrap"><table>
+      <table>
         <thead><tr><th>#</th><th>O'quvchi</th><th>Guruh</th><th>Summa</th><th>To'langan</th><th>Qoldiq</th><th>Holat</th><th>Sana</th><th>Amal</th></tr></thead>
         <tbody>
           <tr><td style="color:var(--text2)">1</td><td>Sherzod Zoirov</td><td>Mat A</td><td>300,000</td><td style="color:var(--green)">300,000</td><td>—</td><td><span class="tag tag-green">To'langan</span></td><td style="font-size:12px;color:var(--text2)">01.06</td><td><button class="btn btn-out btn-sm" onclick="toast('📄 Chek ochildi!')">📄</button></td></tr>
@@ -514,7 +562,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
           <tr><td style="color:var(--text2)">4</td><td>Elbek Qo'qonov</td><td>Kimyo</td><td>250,000</td><td style="color:var(--red)">0</td><td style="color:var(--red)">250,000</td><td><span class="tag tag-red">To'lanmagan</span></td><td style="font-size:12px;color:var(--red)">—</td><td><button class="btn btn-red btn-sm" onclick="toast('📱 SMS yuborildi!')">SMS</button></td></tr>
           <tr><td style="color:var(--text2)">5</td><td>Umida Mustafoyeva</td><td>Ingliz A</td><td>280,000</td><td style="color:var(--amber)">150,000</td><td style="color:var(--amber)">130,000</td><td><span class="tag tag-amber">Qisman</span></td><td style="font-size:12px;color:var(--amber)">10.06</td><td><button class="btn btn-out btn-sm" onclick="toast('📱 Eslatma!')">⚠️</button></td></tr>
         </tbody>
-      </table></div>
+      </table>
     </div>
   </div>
 
@@ -528,7 +576,8 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
             <select id="cred-type" onchange="updateCredForm()">
               <option value="student">O'quvchi</option>
               <option value="teacher">O'qituvchi</option>
-              <option value="receptionist">Resepsionist</option>
+              <option value="receptionist">Resepshn</option>
+              <option value="admin">Admin</option>
             </select>
           </div>
           <div class="row2">
@@ -569,7 +618,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
           </div>
 
           <div style="display:flex;gap:8px">
-            <button class="btn btn-blue" style="flex:1" onclick="toast('✅ Login yaratildi va SMS yuborildi!')">✅ Yaratish</button>
+            <button class="btn btn-blue" style="flex:1" onclick="createUserAPI()">✅ Yaratish</button>
             <button class="btn btn-out btn-sm" onclick="toast('📱 SMS yuborildi!')">📱 SMS</button>
             <button class="btn btn-out btn-sm" onclick="toast('📄 Chop etildi!')">🖨️</button>
           </div>
@@ -679,7 +728,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
   <div class="page" id="page-logs">
     <div class="card-title">📋 Faoliyat jurnali</div>
     <div class="card g1">
-      <div class="table-wrap"><table>
+      <table>
         <thead><tr><th>Vaqt</th><th>Foydalanuvchi</th><th>Harakat</th><th>Tafsilot</th></tr></thead>
         <tbody>
           <tr><td style="font-size:12px;color:var(--text2)">10:45</td><td>Admin</td><td><span class="tag tag-green">Yaratildi</span></td><td style="font-size:12px">Sherzod Zoirov uchun login yaratildi</td></tr>
@@ -688,7 +737,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
           <tr><td style="font-size:12px;color:var(--text2)">09:20</td><td>Admin</td><td><span class="tag tag-amber">Jadval</span></td><td style="font-size:12px">Chorshanba 14:00 — Matematika B jadvaliga qo'shildi</td></tr>
           <tr><td style="font-size:12px;color:var(--text2)">08:45</td><td>Admin</td><td><span class="tag tag-red">SMS</span></td><td style="font-size:12px">Muhammadali To'ychiyevga to'lov eslatmasi yuborildi</td></tr>
         </tbody>
-      </table></div>
+      </table>
     </div>
   </div>
 
@@ -1201,6 +1250,74 @@ function doTheme(){
   if(t==='light'){document.body.classList.add('light');var b=document.getElementById('tb-theme');if(b)b.textContent='☀️';}
   setTimeout(function(){doLang(localStorage.getItem('lang')||'uz');},200);
 })();
+
+async function createUserAPI() {
+  const token = localStorage.getItem('access_token');
+  const first = document.getElementById('cred-first')?.value?.trim();
+  const last  = document.getElementById('cred-last')?.value?.trim();
+  const role  = document.getElementById('cred-type')?.value;
+  const phone = document.querySelector('#page-credentials input[type="text"]')?.value?.trim();
+
+  if(!first || !last) { toast('Ism va familiyani kiriting!'); return; }
+
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = '⏳ Yaratilmoqda...';
+
+  try {
+    const res = await fetch('https://bozorov-school.onrender.com/api/users/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        first_name: first,
+        last_name: last,
+        role: role,
+        phone: phone || null,
+        subject: document.getElementById('new-teacher-subject')?.value || null,
+        salary_pct: 30.0
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      toast('Xato: ' + (data.detail || 'Nomalum xato'));
+      btn.disabled = false;
+      btn.textContent = '✅ Yaratish';
+      return;
+    }
+
+    // Show credentials
+    document.getElementById('gen-login').textContent = data.login;
+    document.getElementById('gen-pass').textContent  = data.password_plain;
+
+    // Add to list
+    allCreds.unshift({
+      name: first + ' ' + last,
+      login: data.login,
+      pass: data.password_plain,
+      type: role,
+      group: '-'
+    });
+    renderCreds(allCreds);
+
+    toast('✅ ' + first + ' ' + last + ' uchun login yaratildi!');
+
+    // Clear form
+    document.getElementById('cred-first').value = '';
+    document.getElementById('cred-last').value  = '';
+
+  } catch(e) {
+    toast('Server bilan ulanishda xato!');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '✅ Yaratish';
+}
+
 </script>
 </body>
 </html>

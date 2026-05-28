@@ -71,8 +71,13 @@ def create_user(
     current_user: User = Depends(get_current_user)
 ):
     # Faqat admin yarata oladi
-    if current_user.role != UserRole.admin:
-        raise HTTPException(status_code=403, detail="Ruxsat yo'q")
+    if current_user.role not in [UserRole.admin, UserRole.receptionist]:
+        raise HTTPException(status_code=403, detail="Ruxsat yoq")
+
+    # Receptionist faqat student yarata oladi
+    if current_user.role == UserRole.receptionist and data.role != UserRole.student:
+        raise HTTPException(status_code=403, detail="Resepshn faqat oquvchi yarata oladi")
+    # Admin barcha rollarni yarata oladi (admin ham)
 
     # Login va parol generatsiya
     base_login = generate_login(data.first_name, data.last_name, data.role)
