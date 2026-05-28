@@ -1060,6 +1060,46 @@ function doTheme(){
   if(t==='light'){document.body.classList.add('light');var b=document.getElementById('tb-theme');if(b)b.textContent='☀️';}
   setTimeout(function(){doLang(localStorage.getItem('lang')||'uz');},200);
 })();
+
+// ===== O'QUVCHI REAL MA'LUMOTLAR =====
+async function loadMyGrades() {
+  const token = localStorage.getItem('access_token');
+  if(!token) return;
+  try {
+    const res = await fetch('https://bozorov-school.onrender.com/api/stats/my-grades', {
+      headers: {'Authorization': 'Bearer ' + token}
+    });
+    if(!res.ok) return;
+    const d = await res.json();
+    
+    // Update average score
+    var avgEl = document.getElementById('s4');
+    if(avgEl && d.average > 0) avgEl.textContent = d.average + '%';
+    
+    // If grades exist, show in quiz page
+    if(d.grades && d.grades.length > 0) {
+      var tbody = document.getElementById('quiz-tbody');
+      if(tbody) {
+        tbody.innerHTML = '';
+        d.grades.forEach(function(g, i) {
+          var row = document.createElement('tr');
+          var pct = g.percentage || 0;
+          var color = pct >= 80 ? 'var(--green)' : pct >= 60 ? 'var(--amber)' : 'var(--red)';
+          row.innerHTML = '<td style="color:var(--text2)">' + (i+1) + '</td>'
+            + '<td>' + (g.topic || 'Mavzu') + '</td>'
+            + '<td style="color:' + color + ';font-weight:500">' + g.score + '/' + g.max_score + '</td>'
+            + '<td style="color:' + color + '">' + pct + '%</td>'
+            + '<td style="color:var(--text2);font-size:12px">' + (g.date || '') + '</td>';
+          tbody.appendChild(row);
+        });
+      }
+    }
+    console.log('✅ Baholar yuklandi:', d.total, 'ta, o\'rtacha:', d.average + '%');
+  } catch(e) { console.log('Grades xato:', e); }
+}
+
+setTimeout(function() { loadMyGrades(); }, 600);
+
 </script>
 </body>
 </html>

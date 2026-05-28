@@ -374,3 +374,125 @@ def attendance_history(
     current_user: User = Depends(get_current_user)
 ):
     return {"message": "Davomat tarixi", "records": []}
+
+
+# ======== STATISTICS ========
+from fastapi import APIRouter as _AR3
+stats_router = _AR3(prefix="/api/stats", tags=["Statistics"])
+
+@stats_router.get("/overview")
+def get_overview(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Umumiy statistika - admin uchun"""
+    from app.models.user import User as U, UserRole
+    from app.models.finance import Payment, PaymentStatus
+    from datetime import datetime
+
+    total_students  = db.query(U).filter(U.role == UserRole.student).count()
+    total_teachers  = db.query(U).filter(U.role == UserRole.teacher).count()
+    
+    month = datetime.now().strftime("%Y-%m")
+    payments = db.query(Payment).filter(Payment.month == month).all()
+    total_income = sum(p.paid_amount for p in payments)
+    paid_count   = len([p for p in payments if p.status == PaymentStatus.paid])
+    unpaid_count = len([p for p in payments if p.status == PaymentStatus.unpaid])
+
+    return {
+        "total_students": total_students,
+        "total_teachers": total_teachers,
+        "monthly_income": total_income,
+        "paid_count":   paid_count,
+        "unpaid_count": unpaid_count,
+        "month": month
+    }
+
+@stats_router.get("/my-grades")
+def my_grades(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """O'quvchi o'z baholarini ko'radi"""
+    from app.models.finance import Grade
+    from app.models.school import Student
+
+    student = db.query(Student).filter(Student.user_id == current_user.id).first()
+    if not student:
+        return {"grades": [], "average": 0, "message": "Profil topilmadi"}
+
+    grades = db.query(Grade).filter(Grade.student_id == student.id).order_by(Grade.date.desc()).limit(20).all()
+    
+    grade_list = [{
+        "id": g.id,
+        "score": g.score,
+        "max_score": g.max_score,
+        "percentage": g.percentage,
+        "topic": g.topic or "Mavzu yo'q",
+        "grade_type": g.grade_type,
+        "date": str(g.date)[:10] if g.date else ""
+    } for g in grades]
+
+    avg = round(sum(g.percentage for g in grades) / len(grades), 1) if grades else 0
+
+    return {
+        "grades": grade_list,
+        "average": avg,
+        "total": len(grades)
+    }
+
+@stats_router.get("/my-groups")
+def teacher_groups(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """O'qituvchi o'z guruhlarini ko'radi"""
+    from app.models.school import Teacher, Group
+
+    teacher = db.query(Teacher).filter(Teacher.user_id == current_user.id).first()
+    if not teacher:
+        return {"groups": [], "total_students": 0}
+
+    groups = db.query(Group).filter(Group.teacher_id == teacher.id).all()
+    
+    result = []
+    for g in groups:
+        result.append({
+            "id": g.id,
+            "name": g.name,
+            "subject": g.subject,
+            "student_count": len(g.students),
+            "monthly_fee": g.monthly_fee,
+            "is_active": g.is_active
+        })
+
+    total_students = sum(len(g.students) for g in groups)
+    return {
+        "groups": result,
+        "total_students": total_students,
+        "teacher_subject": teacher.subject
+    }
+
+@stats_router.get("/payments-summary")
+def payments_summary(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """To'lov umumiy hisobi"""
+    from app.models.finance import Payment, PaymentStatus
+    from datetime import datetime
+    
+    month = datetime.now().strftime("%Y-%m")
+    payments = db.query(Payment).filter(Payment.month == month).all()
+    
+    total = sum(p.amount for p in payments)
+    collected = sum(p.paid_amount for p in payments)
+    
+    return {
+        "month": month,
+        "total_expected": total,
+        "total_collected": collected,
+        "paid": len([p for p in payments if p.status == PaymentStatus.paid]),
+        "unpaid": len([p for p in payments if p.status == PaymentStatus.unpaid]),
+        "partial": len([p for p in payments if p.status == PaymentStatus.partial]),
+    }

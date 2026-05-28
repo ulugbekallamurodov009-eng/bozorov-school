@@ -874,6 +874,42 @@ async function saveGradeAPI(studentName, score, maxScore, topic) {
   return result;
 }
 
+
+// ===== O'QITUVCHI REAL MA'LUMOTLAR =====
+async function loadMyGroups() {
+  const token = localStorage.getItem('access_token');
+  if(!token) return;
+  try {
+    const res = await fetch('https://bozorov-school.onrender.com/api/stats/my-groups', {
+      headers: {'Authorization': 'Bearer ' + token}
+    });
+    if(!res.ok) return;
+    const d = await res.json();
+
+    // Update student count
+    var stEl = document.getElementById('stat-my-students');
+    if(stEl) stEl.textContent = d.total_students;
+
+    // Update groups list if exists
+    var groupsEl = document.getElementById('my-groups-list');
+    if(groupsEl && d.groups.length > 0) {
+      groupsEl.innerHTML = '';
+      d.groups.forEach(function(g) {
+        var div = document.createElement('div');
+        div.style.cssText = 'padding:10px;background:var(--bg3);border-radius:10px;margin-bottom:8px;border:1px solid var(--border)';
+        div.innerHTML = '<div style="display:flex;justify-content:space-between">'
+          + '<span style="font-weight:500">' + g.name + '</span>'
+          + '<span style="color:var(--blue-l)">' + g.student_count + ' o\'quvchi</span></div>'
+          + '<div style="font-size:12px;color:var(--text2);margin-top:4px">' + g.subject + ' • ' + (g.monthly_fee||0).toLocaleString() + " so'm/oy</div>";
+        groupsEl.appendChild(div);
+      });
+    }
+    console.log('✅ Guruhlar yuklandi:', d.groups.length, 'ta');
+  } catch(e) { console.log('Groups xato:', e); }
+}
+
+setTimeout(function() { loadMyGroups(); }, 600);
+
 </script>
 </body>
 </html>

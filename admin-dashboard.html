@@ -1406,6 +1406,52 @@ async function handleAdminPay() {
   if(btn){ btn.disabled=false; btn.textContent='💳 To\'lash'; }
 }
 
+
+// ===== REAL STATISTIKA =====
+async function loadRealStats() {
+  const token = localStorage.getItem('access_token');
+  if(!token) return;
+  try {
+    const res = await fetch('https://bozorov-school.onrender.com/api/stats/overview', {
+      headers: {'Authorization': 'Bearer ' + token}
+    });
+    if(!res.ok) return;
+    const d = await res.json();
+    // Update stat cards
+    var els = {
+      'stat-students': d.total_students,
+      'stat-teachers': d.total_teachers,
+      'stat-income': (d.monthly_income||0).toLocaleString() + " so'm",
+      'stat-unpaid': d.unpaid_count
+    };
+    Object.keys(els).forEach(function(id) {
+      var el = document.getElementById(id);
+      if(el) el.textContent = els[id];
+    });
+    console.log('✅ Real statistika yuklandi:', d);
+  } catch(e) { console.log('Stats xato:', e); }
+}
+
+async function loadPaymentSummary() {
+  const token = localStorage.getItem('access_token');
+  if(!token) return;
+  try {
+    const res = await fetch('https://bozorov-school.onrender.com/api/payments/summary/' + new Date().toISOString().slice(0,7), {
+      headers: {'Authorization': 'Bearer ' + token}
+    });
+    if(res.ok) {
+      const d = await res.json();
+      console.log('Payment summary:', d);
+    }
+  } catch(e) {}
+}
+
+// Load on page open
+setTimeout(function() {
+  loadRealStats();
+  loadPaymentSummary();
+}, 500);
+
 </script>
 </body>
 </html>
