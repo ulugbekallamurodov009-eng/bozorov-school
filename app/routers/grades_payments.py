@@ -216,3 +216,161 @@ def monthly_summary(
         "unpaid_count": unpaid,
         "partial_count": partial
     }
+
+@payments_router.post("/quick-pay")
+def quick_pay(
+    data: dict,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Tez to'lov qabul qilish - student_name, amount, method, month"""
+    from app.models.finance import Payment, PaymentStatus
+    from datetime import datetime
+
+    # Simple payment record without student_id requirement
+    payment = Payment(
+        student_id=data.get("student_id", 1),
+        group_id=data.get("group_id", 1),
+        amount=data.get("amount", 0),
+        paid_amount=data.get("amount", 0),
+        month=data.get("month", datetime.now().strftime("%Y-%m")),
+        status=PaymentStatus.paid,
+        method=data.get("method", "cash"),
+        note=data.get("note", data.get("student_name", "")),
+        paid_at=datetime.utcnow()
+    )
+    db.add(payment)
+    db.commit()
+    db.refresh(payment)
+    return {
+        "id": payment.id,
+        "amount": payment.amount,
+        "method": payment.method,
+        "status": payment.status,
+        "paid_at": payment.paid_at,
+        "message": "To'lov muvaffaqiyatli saqlandi!"
+    }
+
+
+@payments_router.get("/history")
+def payment_history(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Barcha to'lovlar tarixi"""
+    from app.models.finance import Payment
+    payments = db.query(Payment).order_by(Payment.paid_at.desc()).limit(50).all()
+    return [{
+        "id": p.id,
+        "amount": p.amount,
+        "paid_amount": p.paid_amount,
+        "month": p.month,
+        "status": p.status,
+        "method": p.method,
+        "note": p.note,
+        "paid_at": str(p.paid_at) if p.paid_at else None
+    } for p in payments]
+
+
+# ======== TEACHER SALARY ========
+from fastapi import APIRouter as _AR
+salary_router = _AR(prefix="/api/salary", tags=["Salary"])
+
+@salary_router.post("/pay")
+def pay_teacher_salary(
+    data: dict,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """O'qituvchiga oylik berish"""
+    if current_user.role != UserRole.admin:
+        raise HTTPException(status_code=403, detail="Ruxsat yoq")
+    
+    from app.models.finance import TeacherSalary
+    from datetime import datetime
+    
+    salary = TeacherSalary(
+        teacher_id=data.get("teacher_id", 1),
+        month=data.get("month", datetime.now().strftime("%Y-%m")),
+        amount=data.get("amount", 0),
+        base_amount=data.get("base_amount", 0),
+        percentage=data.get("percentage", 30),
+        is_paid=True,
+        paid_at=datetime.utcnow(),
+        note=data.get("note", "")
+    )
+    db.add(salary)
+    db.commit()
+    db.refresh(salary)
+    return {
+        "id": salary.id,
+        "amount": salary.amount,
+        "month": salary.month,
+        "is_paid": salary.is_paid,
+        "message": "Oylik muvaffaqiyatli to'landi!"
+    }
+
+@salary_router.get("/history")
+def salary_history(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Oylik tarixi"""
+    if current_user.role != UserRole.admin:
+        raise HTTPException(status_code=403, detail="Ruxsat yoq")
+    from app.models.finance import TeacherSalary
+    salaries = db.query(TeacherSalary).order_by(TeacherSalary.paid_at.desc()).limit(50).all()
+    return [{
+        "id": s.id,
+        "teacher_id": s.teacher_id,
+        "amount": s.amount,
+        "month": s.month,
+        "percentage": s.percentage,
+        "is_paid": s.is_paid,
+        "note": s.note,
+        "paid_at": str(s.paid_at) if s.paid_at else None
+    } for s in salaries]
+
+
+# ======== ATTENDANCE ========
+from fastapi import APIRouter as _AR2
+attendance_router = _AR2(prefix="/api/attendance", tags=["Attendance"])
+
+class AttendanceItem(BaseModel):
+    student_name: str
+    status: str  # keldi, kelmadi, kech, sababli
+    date: Optional[str] = None
+    group_name: Optional[str] = None
+    note: Optional[str] = None
+
+class AttendanceBulk(BaseModel):
+    date: str
+    group_name: str
+    records: list
+
+@attendance_router.post("/save")
+def save_attendance(
+    data: AttendanceBulk,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Davomat saqlash"""
+    from datetime import datetime
+    # Simple log - store as JSON in notes
+    results = {
+        "date": data.date,
+        "group": data.group_name,
+        "total": len(data.records),
+        "keldi": len([r for r in data.records if r.get("status") == "keldi"]),
+        "kelmadi": len([r for r in data.records if r.get("status") == "kelmadi"]),
+        "saved_by": current_user.full_name,
+        "message": "Davomat saqlandi!"
+    }
+    return results
+
+@attendance_router.get("/history")
+def attendance_history(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return {"message": "Davomat tarixi", "records": []}

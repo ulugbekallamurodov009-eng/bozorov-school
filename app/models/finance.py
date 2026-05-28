@@ -72,17 +72,3 @@ class TeacherSalary(Base):
     paid_at    = Column(DateTime(timezone=True), nullable=True)
     note       = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-
-class Attendance(Base):
-    __tablename__ = "attendance"
-
-    id         = Column(Integer, primary_key=True, index=True)
-    student_id = Column(Integer, ForeignKey("students.id"), nullable=False)
-    group_id   = Column(Integer, ForeignKey("groups.id"),   nullable=False)
-    date       = Column(DateTime(timezone=True), nullable=False)
-    is_present = Column(Boolean, default=True)
-    note       = Column(String, nullable=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-    student = relationship("Student", backref="attendance_records")

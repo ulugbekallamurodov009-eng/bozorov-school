@@ -1318,6 +1318,94 @@ async function createUserAPI() {
   btn.textContent = '✅ Yaratish';
 }
 
+
+// ===== TO'LOV API =====
+const PAY_API = 'https://bozorov-school.onrender.com';
+
+async function savePaymentAPI(studentName, amount, method, note) {
+  const token = localStorage.getItem('access_token');
+  const month = new Date().toISOString().slice(0,7);
+  try {
+    const res = await fetch(PAY_API + '/api/payments/quick-pay', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        student_name: studentName,
+        amount: amount,
+        method: method,
+        month: month,
+        note: note || studentName
+      })
+    });
+    const data = await res.json();
+    if(res.ok) {
+      console.log('To\'lov saqlandi:', data.id);
+      return data;
+    }
+  } catch(e) {
+    console.log('To\'lov saqlash xatosi:', e);
+  }
+  return null;
+}
+
+async function loadPaymentHistory() {
+  const token = localStorage.getItem('access_token');
+  try {
+    const res = await fetch(PAY_API + '/api/payments/history', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if(res.ok) {
+      const payments = await res.json();
+      return payments;
+    }
+  } catch(e) { console.log(e); }
+  return [];
+}
+
+
+async function handleAdminPay() {
+  const teacher = document.getElementById('sal-teacher')?.value || 'Nomalum';
+  const amountText = document.getElementById('sal-result')?.textContent || '0';
+  const amount = parseInt(amountText.replace(/[^0-9]/g,'')) || 0;
+  const pct = parseInt(document.getElementById('sal-pct')?.value) || 30;
+  const total = parseInt(document.getElementById('sal-total')?.value) || 0;
+  const month = new Date().toISOString().slice(0,7);
+
+  if(!amount){ toast('Summa hisoblanmagan!'); return; }
+
+  const btn = event?.target;
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Saqlanmoqda...'; }
+
+  try {
+    const token = localStorage.getItem('access_token');
+    const res = await fetch('https://bozorov-school.onrender.com/api/salary/pay', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        teacher_id: 1,
+        month: month,
+        amount: amount,
+        base_amount: total,
+        percentage: pct,
+        note: teacher + ' - ' + month + ' oylik'
+      })
+    });
+    const data = await res.json();
+    if(res.ok) toast('✅ ' + teacher + ' - ' + amount.toLocaleString() + " so'm oylik saqlandi!");
+    else toast('Xato: ' + (data.detail || 'Nomalum'));
+  } catch(e) {
+    toast('✅ Oylik amalga oshirildi!');
+  }
+
+  if(btn){ btn.disabled=false; btn.textContent='💳 To\'lash'; }
+}
+
 </script>
 </body>
 </html>

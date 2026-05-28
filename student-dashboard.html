@@ -351,16 +351,12 @@ body {
   border-radius: 10px; font-size: 18px; cursor: pointer;
   align-items: center; justify-content: center; color: var(--text);
 }
-@media (max-width: 768px) {
-  .sidebar { transform: translateX(-100%); }
+
   .sidebar.open { transform: translateX(0); }
   .main { margin-left: 0; padding: 1rem; padding-top: 3.5rem; }
   .menu-btn { display: flex; }
   .stats-row { grid-template-columns: 1fr 1fr; }
   .grid2, .grid3 { grid-template-columns: 1fr; }
-  .row2, .row3 { grid-template-columns: 1fr; }
-  .modal { max-height: 90vh; overflow-y: auto; }
-  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
 
 /* Animations */
@@ -385,6 +381,54 @@ body {
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
 body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b7280;--border:rgba(0,0,0,.08);}body{transition:background .3s,color .3s;}
+
+/* ===== MOBIL ===== */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s;width:260px;}
+  .sidebar.open{transform:translateX(0);}
+  .main,.main-content{margin-left:0!important;padding:1rem;padding-top:4rem;}
+  .menu-btn,.mob-menu-btn{display:flex!important;}
+  
+  /* Stats grid */
+  .stats4,.stats3,.s4,.s3{grid-template-columns:1fr 1fr!important;}
+  .sc{padding:.75rem!important;}
+  .sn,.stat-num{font-size:18px!important;}
+  
+  /* Content grids */
+  .g2,.g3,.grid2,.grid3{grid-template-columns:1fr!important;}
+  
+  /* Tables - horizontal scroll */
+  .card{overflow-x:auto;}
+  table{min-width:500px;}
+  
+  /* Topbar */
+  .topbar,.topbar-wrap{flex-wrap:wrap;gap:8px;}
+  .tb-l h2,.topbar-left h2{font-size:16px!important;}
+  .tb-r,.topbar-right{gap:6px!important;}
+  
+  /* Sidebar footer */
+  .s-foot,.sidebar-footer{padding:.75rem 1rem;}
+  
+  /* Cards padding */
+  .card,.modal{padding:.875rem!important;}
+  
+  /* Hide non-essential topbar items on small screens */
+  @media(max-width:480px){
+    .tb-r .clock,.topbar-right .clock{display:none;}
+    .s4,.stats4{grid-template-columns:1fr 1fr!important;}
+  }
+}
+
+/* Menu button - always ready */
+.menu-btn,.mob-menu-btn{
+  display:none;
+  position:fixed;top:1rem;left:1rem;z-index:200;
+  width:38px;height:38px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;font-size:20px;cursor:pointer;
+  align-items:center;justify-content:center;
+  color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
 </style>
 </head>
 <body>

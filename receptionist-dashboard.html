@@ -79,7 +79,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .badge-amber{background:var(--amber-d);color:var(--amber);}
 
 /* TABLE */
-table{width:100%;border-collapse:collapse;min-width:500px;}.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;}
+table{width:100%;border-collapse:collapse;}
 th{font-size:11px;color:var(--text2);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.5px;text-transform:uppercase;}
 td{font-size:13px;padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
@@ -139,7 +139,7 @@ select option{background:var(--bg2);}
 
 /* MOBILE */
 .menu-btn{display:none;position:fixed;top:1rem;left:1rem;z-index:200;width:36px;height:36px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-size:18px;cursor:pointer;align-items:center;justify-content:center;color:var(--text);}
-@media(max-width:768px){.sidebar{transform:translateX(-100%)}.topbar{flex-wrap:wrap;gap:8px;}.tb-l h2{font-size:17px;}.tb-r{flex-wrap:wrap;gap:6px;}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:1rem;padding-top:3.5rem}.menu-btn{display:flex}.stats4{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}.row2,.row3{grid-template-columns:1fr}.modal{max-height:90vh;overflow-y:auto}.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}}
+.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:1rem;padding-top:3.5rem}.menu-btn{display:flex}.stats4{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);color:#fff;padding:10px 20px;border-radius:10px;font-size:14px;transition:transform .3s;z-index:999;white-space:nowrap;pointer-events:none;}
@@ -157,6 +157,54 @@ select option{background:var(--bg2);}
 .copy-btn{background:none;border:none;color:var(--text2);cursor:pointer;font-size:15px;transition:color .15s;padding:2px;}
 .copy-btn:hover{color:var(--teal);}
 body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b7280;--border:rgba(0,0,0,.08);}body{transition:background .3s,color .3s;}
+
+/* ===== MOBIL ===== */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s;width:260px;}
+  .sidebar.open{transform:translateX(0);}
+  .main,.main-content{margin-left:0!important;padding:1rem;padding-top:4rem;}
+  .menu-btn,.mob-menu-btn{display:flex!important;}
+  
+  /* Stats grid */
+  .stats4,.stats3,.s4,.s3{grid-template-columns:1fr 1fr!important;}
+  .sc{padding:.75rem!important;}
+  .sn,.stat-num{font-size:18px!important;}
+  
+  /* Content grids */
+  .g2,.g3,.grid2,.grid3{grid-template-columns:1fr!important;}
+  
+  /* Tables - horizontal scroll */
+  .card{overflow-x:auto;}
+  table{min-width:500px;}
+  
+  /* Topbar */
+  .topbar,.topbar-wrap{flex-wrap:wrap;gap:8px;}
+  .tb-l h2,.topbar-left h2{font-size:16px!important;}
+  .tb-r,.topbar-right{gap:6px!important;}
+  
+  /* Sidebar footer */
+  .s-foot,.sidebar-footer{padding:.75rem 1rem;}
+  
+  /* Cards padding */
+  .card,.modal{padding:.875rem!important;}
+  
+  /* Hide non-essential topbar items on small screens */
+  @media(max-width:480px){
+    .tb-r .clock,.topbar-right .clock{display:none;}
+    .s4,.stats4{grid-template-columns:1fr 1fr!important;}
+  }
+}
+
+/* Menu button - always ready */
+.menu-btn,.mob-menu-btn{
+  display:none;
+  position:fixed;top:1rem;left:1rem;z-index:200;
+  width:38px;height:38px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;font-size:20px;cursor:pointer;
+  align-items:center;justify-content:center;
+  color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
 </style>
 </head>
 <body>
@@ -215,7 +263,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
       <div>
         <div class="card-title">💳 Bugungi to'lovlar <span class="badge badge-green" id="home-pay-count">+4 ta</span></div>
         <div class="card">
-          <div class="table-wrap"><table>
+          <table>
             <thead><tr><th>O'quvchi</th><th>Summa</th><th>Usul</th><th>Vaqt</th></tr></thead>
             <tbody id="home-pay-body">
               <tr><td>Sherzod Zoirov</td><td style="color:var(--green);font-weight:500">300,000</td><td><span class="tag tag-teal">Click</span></td><td style="font-size:12px;color:var(--text2)">09:15</td></tr>
@@ -223,7 +271,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
               <tr><td>Gulnigor Sattorova</td><td style="color:var(--green);font-weight:500">280,000</td><td><span class="tag tag-teal">Payme</span></td><td style="font-size:12px;color:var(--text2)">10:08</td></tr>
               <tr><td>Azamat Axrorov</td><td style="color:var(--green);font-weight:500">300,000</td><td><span class="tag tag-amber">Naqd</span></td><td style="font-size:12px;color:var(--text2)">10:22</td></tr>
             </tbody>
-          </table></div>
+          </table>
           <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px">
             <span style="color:var(--text2)">Bugungi jami:</span>
             <span style="font-weight:600;color:var(--green)" id="home-daily-total">1,180,000 so'm</span>
@@ -343,7 +391,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
             <span style="font-size:13px;color:var(--text2)">Jami:</span>
             <span style="font-weight:600;color:var(--green)" id="daily-total">1,180,000 so'm</span>
           </div>
-          <div class="table-wrap"><table>
+          <table>
             <thead><tr><th>Vaqt</th><th>O'quvchi</th><th>Summa</th><th>Usul</th><th>Holat</th></tr></thead>
             <tbody id="pay-history-body">
               <tr><td style="font-size:12px;color:var(--text2)">09:15</td><td>Sherzod Z.</td><td style="color:var(--green);font-weight:500">300,000</td><td><span class="tag tag-teal">Click</span></td><td><span class="tag tag-green">✅</span></td></tr>
@@ -351,7 +399,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
               <tr><td style="font-size:12px;color:var(--text2)">10:08</td><td>Gulnigor S.</td><td style="color:var(--green);font-weight:500">280,000</td><td><span class="tag tag-teal">Payme</span></td><td><span class="tag tag-green">✅</span></td></tr>
               <tr><td style="font-size:12px;color:var(--text2)">10:22</td><td>Azamat A.</td><td style="color:var(--green);font-weight:500">300,000</td><td><span class="tag tag-amber">Naqd</span></td><td><span class="tag tag-green">✅</span></td></tr>
             </tbody>
-          </table></div>
+          </table>
         </div>
       </div>
     </div>
@@ -426,7 +474,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
           <option>Barcha holat</option><option>Tolagan</option><option>Tolamagan</option>
         </select>
       </div>
-      <div class="table-wrap"><table>
+      <table>
         <thead><tr><th>#</th><th>Ism Familiya</th><th>Guruh</th><th>Telefon</th><th>To'lov</th><th>Davomat</th><th>Amal</th></tr></thead>
         <tbody id="st-body">
           <tr><td style="color:var(--text2)">1</td><td>Sherzod Zoirov</td><td>Mat A</td><td style="font-size:12px;color:var(--text2)">+998 91 234 56 78</td><td><span class="tag tag-green">Tolagan</span></td><td style="color:var(--green)">96%</td><td><button class="btn btn-out btn-sm" onclick="showToast('Profil ochildi!','info')">Ko'rish</button></td></tr>
@@ -440,7 +488,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
           <tr><td style="color:var(--text2)">9</td><td>Davlat Roquyev</td><td>Mat A</td><td style="font-size:12px;color:var(--text2)">+998 94 012 34 56</td><td><span class="tag tag-red">Tolamagan</span></td><td style="color:var(--red)">68%</td><td><button class="btn btn-teal btn-sm" onclick="openPayModal('Davlat Roquyev',300000)">To'lov</button></td></tr>
           <tr><td style="color:var(--text2)">10</td><td>Marjona Faxriddinova</td><td>Kimyo</td><td style="font-size:12px;color:var(--text2)">+998 97 123 45 67</td><td><span class="tag tag-green">Tolagan</span></td><td style="color:var(--green)">88%</td><td><button class="btn btn-out btn-sm" onclick="showToast('Profil ochildi!','info')">Ko'rish</button></td></tr>
         </tbody>
-      </table></div>
+      </table>
     </div>
   </div>
 
@@ -937,6 +985,53 @@ function doTheme(){
   if(t==='light'){document.body.classList.add('light');var b=document.getElementById('tb-theme');if(b)b.textContent='☀️';}
   setTimeout(function(){doLang(localStorage.getItem('lang')||'uz');},200);
 })();
+
+// ===== TO'LOV API =====
+const PAY_API = 'https://bozorov-school.onrender.com';
+
+async function savePaymentAPI(studentName, amount, method, note) {
+  const token = localStorage.getItem('access_token');
+  const month = new Date().toISOString().slice(0,7);
+  try {
+    const res = await fetch(PAY_API + '/api/payments/quick-pay', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        student_name: studentName,
+        amount: amount,
+        method: method,
+        month: month,
+        note: note || studentName
+      })
+    });
+    const data = await res.json();
+    if(res.ok) {
+      console.log('To\'lov saqlandi:', data.id);
+      return data;
+    }
+  } catch(e) {
+    console.log('To\'lov saqlash xatosi:', e);
+  }
+  return null;
+}
+
+async function loadPaymentHistory() {
+  const token = localStorage.getItem('access_token');
+  try {
+    const res = await fetch(PAY_API + '/api/payments/history', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if(res.ok) {
+      const payments = await res.json();
+      return payments;
+    }
+  } catch(e) { console.log(e); }
+  return [];
+}
+
 </script>
 </body>
 </html>

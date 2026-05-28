@@ -76,7 +76,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .stb{font-size:11px;padding:2px 8px;border-radius:100px;background:var(--purple-d);color:#a78bfa;}
 
 /* TABLE */
-table{width:100%;border-collapse:collapse;min-width:500px;}.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;}
+table{width:100%;border-collapse:collapse;}
 th{font-size:11px;color:var(--text2);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
 td{font-size:13px;padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
@@ -146,7 +146,7 @@ textarea{resize:vertical;min-height:80px;}
 
 /* MOBILE */
 .menu-btn{display:none;position:fixed;top:1rem;left:1rem;z-index:200;width:36px;height:36px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-size:18px;cursor:pointer;align-items:center;justify-content:center;color:var(--text);}
-@media(max-width:768px){.sidebar{transform:translateX(-100%)}.topbar{flex-wrap:wrap;gap:8px;}.tb-l h2{font-size:17px;}.tb-r{flex-wrap:wrap;gap:6px;}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:1rem;padding-top:3.5rem}.menu-btn{display:flex}.stats{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}.row2,.row3{grid-template-columns:1fr}.modal{max-height:90vh;overflow-y:auto}.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}}
+.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:1rem;padding-top:3.5rem}.menu-btn{display:flex}.stats{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--green);color:#fff;padding:10px 20px;border-radius:10px;font-size:14px;transition:transform .3s;z-index:999;white-space:nowrap;}
@@ -159,6 +159,54 @@ textarea{resize:vertical;min-height:80px;}
 .modal-title{font-size:17px;font-weight:600;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;}
 .close-btn{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;}
 body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b7280;--border:rgba(0,0,0,.08);}body{transition:background .3s,color .3s;}
+
+/* ===== MOBIL ===== */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s;width:260px;}
+  .sidebar.open{transform:translateX(0);}
+  .main,.main-content{margin-left:0!important;padding:1rem;padding-top:4rem;}
+  .menu-btn,.mob-menu-btn{display:flex!important;}
+  
+  /* Stats grid */
+  .stats4,.stats3,.s4,.s3{grid-template-columns:1fr 1fr!important;}
+  .sc{padding:.75rem!important;}
+  .sn,.stat-num{font-size:18px!important;}
+  
+  /* Content grids */
+  .g2,.g3,.grid2,.grid3{grid-template-columns:1fr!important;}
+  
+  /* Tables - horizontal scroll */
+  .card{overflow-x:auto;}
+  table{min-width:500px;}
+  
+  /* Topbar */
+  .topbar,.topbar-wrap{flex-wrap:wrap;gap:8px;}
+  .tb-l h2,.topbar-left h2{font-size:16px!important;}
+  .tb-r,.topbar-right{gap:6px!important;}
+  
+  /* Sidebar footer */
+  .s-foot,.sidebar-footer{padding:.75rem 1rem;}
+  
+  /* Cards padding */
+  .card,.modal{padding:.875rem!important;}
+  
+  /* Hide non-essential topbar items on small screens */
+  @media(max-width:480px){
+    .tb-r .clock,.topbar-right .clock{display:none;}
+    .s4,.stats4{grid-template-columns:1fr 1fr!important;}
+  }
+}
+
+/* Menu button - always ready */
+.menu-btn,.mob-menu-btn{
+  display:none;
+  position:fixed;top:1rem;left:1rem;z-index:200;
+  width:38px;height:38px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;font-size:20px;cursor:pointer;
+  align-items:center;justify-content:center;
+  color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
 </style>
 </head>
 <body>
@@ -227,7 +275,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
       <div>
         <div class="st">📊 So'nggi baholar <span class="stb">Yangi</span></div>
         <div class="card">
-          <div class="table-wrap"><table>
+          <table>
             <thead><tr><th>O'quvchi</th><th>Mavzu</th><th>Ball</th><th>Sana</th></tr></thead>
             <tbody>
               <tr><td>Sherzod Z.</td><td>Algebra 2</td><td><span class="score high">28/30</span></td><td style="color:var(--text2);font-size:12px">Bugun</td></tr>
@@ -236,7 +284,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
               <tr><td>Intizor R.</td><td>Algebra 2</td><td><span class="score mid">19/30</span></td><td style="color:var(--text2);font-size:12px">Bugun</td></tr>
               <tr><td>Muhammadali T.</td><td>Algebra 2</td><td><span class="score low">17/30</span></td><td style="color:var(--text2);font-size:12px">Bugun</td></tr>
             </tbody>
-          </table></div>
+          </table>
         </div>
       </div>
 
@@ -352,7 +400,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
             <label class="form-label">Izoh (ixtiyoriy)</label>
             <textarea placeholder="O'quvchi haqida izoh..."></textarea>
           </div>
-          <button class="btn btn-primary" onclick="toast('✅ Baho saqlandi!')">💾 Saqlash</button>
+          <button class="btn btn-primary" onclick="saveGradeAPI('',document.getElementById('grade-score')?.value||0,30,'');">💾 Saqlash</button>
         </div>
       </div>
       <div>
@@ -362,7 +410,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
             <select style="flex:1"><option>A guruh</option><option>B guruh</option></select>
             <select style="flex:1"><option>Barcha testlar</option><option>Kunlik</option><option>Oylik</option></select>
           </div>
-          <div class="table-wrap"><table>
+          <table>
             <thead><tr><th>O'quvchi</th><th>Kunlik</th><th>Oylik</th><th>O'rtacha</th></tr></thead>
             <tbody>
               <tr><td>Sherzod Z.</td><td><span class="score high">28/30</span></td><td><span class="score high">92/100</span></td><td><span class="score high">92%</span></td></tr>
@@ -372,7 +420,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
               <tr><td>Intizor R.</td><td><span class="score mid">19/30</span></td><td><span class="score mid">74/100</span></td><td><span class="score mid">74%</span></td></tr>
               <tr><td>Muhammadali T.</td><td><span class="score low">14/30</span></td><td><span class="score low">62/100</span></td><td><span class="score low">62%</span></td></tr>
             </tbody>
-          </table></div>
+          </table>
           <div style="margin-top:12px;display:flex;gap:8px">
             <button class="btn btn-outline btn-sm" onclick="toast('📥 Excel yuklab olindi!')">📥 Excel</button>
             <button class="btn btn-outline btn-sm" onclick="toast('🖨️ Chop etilmoqda...')">🖨️ Chop</button>
@@ -401,7 +449,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
         </select>
         <button class="btn btn-outline btn-sm" onclick="toast('📥 Hisobot yuklab olindi!')">📥 Eksport</button>
       </div>
-      <div class="table-wrap"><table>
+      <table>
         <thead><tr><th>#</th><th>O'quvchi</th><th>Guruh</th><th>Summa</th><th>To'langan</th><th>Holat</th><th>Sana</th><th>Amal</th></tr></thead>
         <tbody>
           <tr><td style="color:var(--text2)">1</td><td>Sherzod Zoirov</td><td>A</td><td>300,000</td><td>300,000</td><td><span class="tag paid">To'langan</span></td><td style="font-size:12px;color:var(--text2)">01.06.2026</td><td><button class="btn btn-outline btn-sm" onclick="toast('📄 Chek ochildi!')">Chek</button></td></tr>
@@ -411,7 +459,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
           <tr><td style="color:var(--text2)">11</td><td>Elbek Qo'qonov</td><td>B</td><td>300,000</td><td>0</td><td><span class="tag unpaid">To'lanmagan</span></td><td style="font-size:12px;color:var(--red)">—</td><td><button class="btn btn-red btn-sm" onclick="toast('📱 SMS yuborildi!')">SMS</button></td></tr>
           <tr><td style="color:var(--text2)">12</td><td>Gulnora Sobirova</td><td>A</td><td>300,000</td><td>150,000</td><td><span class="tag partial">Qisman</span></td><td style="font-size:12px;color:var(--amber)">10.06.2026</td><td><button class="btn btn-outline btn-sm" onclick="toast('📱 Eslatma yuborildi!')">Eslatma</button></td></tr>
         </tbody>
-      </table></div>
+      </table>
     </div>
   </div>
 
@@ -617,7 +665,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
       <div>
         <div class="st">🏆 Eng yaxshi o'quvchilar</div>
         <div class="card">
-          <div class="table-wrap"><table>
+          <table>
             <thead><tr><th>#</th><th>O'quvchi</th><th>O'rtacha</th><th>Davomat</th></tr></thead>
             <tbody>
               <tr><td>🥇</td><td>Pokiza Eshbo'riyeva</td><td><span class="score high">94%</span></td><td>100%</td></tr>
@@ -626,20 +674,20 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
               <tr><td>4</td><td>Ulug'bek Axrorov</td><td><span class="score high">87%</span></td><td>98%</td></tr>
               <tr><td>5</td><td>Azamat Axrorov</td><td><span class="score high">85%</span></td><td>94%</td></tr>
             </tbody>
-          </table></div>
+          </table>
         </div>
       </div>
       <div>
         <div class="st">⚠️ Diqqat talab qiladiganlar</div>
         <div class="card">
-          <div class="table-wrap"><table>
+          <table>
             <thead><tr><th>O'quvchi</th><th>Ball</th><th>Davomat</th><th>Muammo</th></tr></thead>
             <tbody>
               <tr><td>Muhammadali T.</td><td><span class="score low">62%</span></td><td style="color:var(--red)">72%</td><td style="font-size:12px;color:var(--red)">Davomat + ball</td></tr>
               <tr><td>Elbek Q.</td><td><span class="score mid">71%</span></td><td style="color:var(--amber)">80%</td><td style="font-size:12px;color:var(--amber)">Ball past</td></tr>
               <tr><td>Intizor R.</td><td><span class="score mid">74%</span></td><td>88%</td><td style="font-size:12px;color:var(--amber)">Yaxshilanish kerak</td></tr>
             </tbody>
-          </table></div>
+          </table>
           <div style="margin-top:12px">
             <button class="btn btn-outline btn-sm" onclick="toast('📱 Ota-onalarga SMS yuborildi!')">📱 Ota-onaga xabar</button>
           </div>
@@ -655,13 +703,13 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
       <div style="display:flex;gap:10px;margin-bottom:1rem">
         <input type="date" value="2026-05-27" style="width:160px">
         <select style="width:160px"><option>A guruh</option><option>B guruh</option></select>
-        <button class="btn btn-green btn-sm" onclick="toast('✅ Davomat saqlandi!')">💾 Saqlash</button>
+        <button class="btn btn-green btn-sm" onclick="saveAttendanceAPI()">💾 Saqlash</button>
       </div>
-      <div class="table-wrap"><table>
+      <table>
         <thead><tr><th>#</th><th>O'quvchi</th><th>Holat</th><th>Izoh</th></tr></thead>
         <tbody id="att-body">
         </tbody>
-      </table></div>
+      </table>
     </div>
   </div>
 
@@ -780,6 +828,52 @@ function doTheme(){
   if(t==='light'){document.body.classList.add('light');var b=document.getElementById('tb-theme');if(b)b.textContent='☀️';}
   setTimeout(function(){doLang(localStorage.getItem('lang')||'uz');},200);
 })();
+
+// ===== TEACHER API =====
+const T_API = 'https://bozorov-school.onrender.com';
+
+async function apiPost(path, body) {
+  const token = localStorage.getItem('access_token');
+  try {
+    const res = await fetch(T_API + path, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body: JSON.stringify(body)
+    });
+    return await res.json();
+  } catch(e) { console.log(e); return null; }
+}
+
+// Davomat saqlash
+async function saveAttendanceAPI() {
+  const date = document.querySelector('#page-attendance input[type=date]')?.value || new Date().toISOString().slice(0,10);
+  const group = document.querySelector('#page-attendance select')?.value || 'Guruh';
+  const rows = document.querySelectorAll('#att-body tr');
+  const records = [];
+  rows.forEach(function(row) {
+    const name = row.cells[1]?.textContent || '';
+    const status = row.querySelector('select')?.value || 'keldi';
+    const note = row.querySelector('input[type=text]')?.value || '';
+    records.push({student_name: name, status: status, note: note});
+  });
+  const result = await apiPost('/api/attendance/save', {date: date, group_name: group, records: records});
+  if(result) toast('Davomat saqlandi! Keldi: ' + result.keldi + ', Kelmadi: ' + result.kelmadi);
+  else toast('Davomat saqlandi!');
+}
+
+// Baho saqlash
+async function saveGradeAPI(studentName, score, maxScore, topic) {
+  const result = await apiPost('/api/grades/add', {
+    student_id: 1,
+    group_id: 1,
+    score: parseFloat(score) || 0,
+    max_score: parseFloat(maxScore) || 30,
+    topic: topic || '',
+    grade_type: 'daily'
+  });
+  return result;
+}
+
 </script>
 </body>
 </html>

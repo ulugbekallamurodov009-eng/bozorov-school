@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import engine, Base
 from app.routers.auth import router as auth_router
 from app.routers.users import router as users_router
-from app.routers.grades_payments import grades_router, payments_router
+from app.routers.grades_payments import grades_router, payments_router, salary_router, attendance_router
 from app.models import user, school, finance  # noqa
 
 Base.metadata.create_all(bind=engine)
@@ -63,6 +63,8 @@ app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(grades_router)
 app.include_router(payments_router)
+app.include_router(salary_router)
+app.include_router(attendance_router)
 
 @app.get("/")
 def root():
