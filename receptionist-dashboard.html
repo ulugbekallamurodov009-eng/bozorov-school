@@ -1028,6 +1028,24 @@ function doLang(l) {
   var saved = localStorage.getItem('lang') || 'uz';
   setTimeout(function() { doLang(saved); }, 300);
 })();
+
+// Clock + Username
+(function(){
+  function tick(){
+    var d=new Date();
+    var t='⏰ '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+    var el=document.getElementById('clock');
+    if(el) el.textContent=t;
+  }
+  tick(); setInterval(tick, 10000);
+  
+  var name=localStorage.getItem('user_name')||'';
+  var role=localStorage.getItem('user_role')||'';
+  if(name){
+    var nameEl=document.getElementById('u-name');
+    if(nameEl) nameEl.textContent=name;
+  }
+})();
 </script>
 </body>
 </html>

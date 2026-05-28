@@ -163,6 +163,7 @@ body {
   border-radius: 14px; padding: 1rem 1.1rem;
   display: flex; align-items: center; gap: 12px;
   transition: border-color 0.2s;
+  animation: fadeIn 0.4s ease both;
 }
 .stat-card:hover { border-color: var(--border2); }
 .stat-icon {
@@ -481,7 +482,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
     <div class="user-info" style="margin-bottom:10px">
       <div class="user-avatar">👤</div>
       <div>
-        <div class="user-name">Ulug'bek A.</div>
+        <div class="user-name"><span id="student-uname">Foydalanuvchi</span></div>
         <div class="user-role" id="u-role">Talaba</div>
       </div>
     </div>
@@ -496,15 +497,11 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
   <div class="topbar">
     <div class="topbar-left">
       <h2 id="page-title">Bosh sahifa</h2>
-      <p id="page-sub">Xush kelibsiz, Ulug'bek!</p>
+      <p id="page-sub">Xush kelibsiz!</p>
     </div>
     <div class="topbar-right">
-      <div class="lang-row">
-        <button class="lang-btn active" onclick="doLang('uz')">UZ</button>
-        <button class="lang-btn" onclick="doLang('ru')">RU</button>
-        <button class="lang-btn" onclick="doLang('en')">EN</button>
-      </div>
       <button id="tb-theme" onclick="doTheme()" style="width:34px;height:34px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;">🌙</button>
+      <div class="clock-badge" id="student-clock" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:13px;color:var(--blue-light);font-variant-numeric:tabular-nums;">⏰ 00:00</div>
       <div class="notif-btn">🔔<div class="notif-dot"></div></div>
     </div>
   </div>
@@ -1096,6 +1093,29 @@ function doLang(l) {
   var saved = localStorage.getItem('lang') || 'uz';
   setTimeout(function() { doLang(saved); }, 300);
 })();
+
+// Clock
+function tickClock() {
+  var d = new Date();
+  var h = String(d.getHours()).padStart(2,'0');
+  var m = String(d.getMinutes()).padStart(2,'0');
+  var el = document.getElementById('student-clock');
+  if(el) el.textContent = '⏰ ' + h + ':' + m;
+}
+tickClock();
+setInterval(tickClock, 10000);
+
+// Show real username
+(function(){
+  var name = localStorage.getItem('user_name') || '';
+  if(name) {
+    var nameEl = document.getElementById('student-uname');
+    if(nameEl) nameEl.textContent = name.split(' ')[0] + ' ' + (name.split(' ')[1] ? name.split(' ')[1][0]+'.' : '');
+    var subEl = document.getElementById('page-sub');
+    if(subEl) subEl.textContent = 'Xush kelibsiz, ' + name.split(' ')[0] + '!';
+  }
+})();
+
 </script>
 </body>
 </html>

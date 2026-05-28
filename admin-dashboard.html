@@ -272,7 +272,8 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
   <div class="topbar">
     <div class="tb-l"><h2 id="page-title">Bosh sahifa</h2><p id="page-sub">Tizim umumiy ko'rinishi</p></div>
     <div class="tb-r">
-      <div style="display:flex;gap:3px;padding:3px;background:var(--bg3);border-radius:8px;"><button id="lb-uz" onclick="doLang('uz')" style="padding:4px 9px;border:none;border-radius:6px;font-size:11px;cursor:pointer;background:var(--blue);color:#fff">UZ</button><button id="lb-ru" onclick="doLang('ru')" style="padding:4px 9px;border:none;border-radius:6px;font-size:11px;cursor:pointer;background:transparent;color:var(--text2)">RU</button><button id="lb-en" onclick="doLang('en')" style="padding:4px 9px;border:none;border-radius:6px;font-size:11px;cursor:pointer;background:transparent;color:var(--text2)">EN</button></div><button id="tb-theme" onclick="doTheme()" style="width:34px;height:34px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;">🌙</button>
+      <button id="tb-theme" onclick="doTheme()" style="width:34px;height:34px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;">🌙</button>
+      <div id="admin-clock" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:13px;color:var(--teal);font-variant-numeric:tabular-nums;">⏰ 00:00</div>
       <div class="icon-btn">🔔<div class="dot dot-r"></div></div>
       <div class="icon-btn" onclick="toast('⚙️ Sozlamalar ochildi!')">⚙️</div>
     </div>
@@ -1548,6 +1549,24 @@ function doLang(l) {
 (function() {
   var saved = localStorage.getItem('lang') || 'uz';
   setTimeout(function() { doLang(saved); }, 300);
+})();
+
+// Clock + Username
+(function(){
+  function tick(){
+    var d=new Date();
+    var t='⏰ '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+    var el=document.getElementById('admin-clock');
+    if(el) el.textContent=t;
+  }
+  tick(); setInterval(tick, 10000);
+  
+  var name=localStorage.getItem('user_name')||'';
+  var role=localStorage.getItem('user_role')||'';
+  if(name){
+    var nameEl=document.getElementById('u-name');
+    if(nameEl) nameEl.textContent=name;
+  }
 })();
 </script>
 </body>

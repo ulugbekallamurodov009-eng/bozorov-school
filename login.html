@@ -182,7 +182,7 @@
     border: none; border-radius: 10px;
     font-size: 15px; font-weight: 500;
     cursor: pointer;
-    transition: background 0.2s, transform 0.1s, left 0.07s cubic-bezier(0.22,1,0.36,1), top 0.07s cubic-bezier(0.22,1,0.36,1), width 0.07s;
+    transition: background 0.2s, transform 0.05s, left 0.04s cubic-bezier(0.22,1,0.36,1), top 0.04s cubic-bezier(0.22,1,0.36,1), width 0.04s;
     left: 0; top: 0;
     white-space: nowrap; overflow: hidden;
   }
@@ -314,26 +314,39 @@ function isIncomplete() {
 
 function tryEscape() {
   if (!isIncomplete()) return;
-  const wrap = document.getElementById('submit-wrap');
-  const btn  = document.getElementById('submit-btn');
-  wrap.style.height = '120px';
-  const maxX = wrap.offsetWidth - 120;
-  const maxY = 80;
-  const curL = parseFloat(btn.style.left) || 0;
-  const curT = parseFloat(btn.style.top)  || 0;
-  // Always move far away from cursor
-  let newL, newT, tries = 0;
+  var wrap = document.getElementById('submit-wrap');
+  var btn  = document.getElementById('submit-btn');
+  wrap.style.height = '130px';
+  var maxX = wrap.offsetWidth - 100;
+  var maxY = 90;
+  var curL = parseFloat(btn.style.left) || 0;
+  var curT = parseFloat(btn.style.top)  || 0;
+  var newL, newT, tries = 0;
   do {
     newL = Math.random() * maxX;
     newT = Math.random() * maxY;
     tries++;
-  } while (tries < 20 && Math.abs(newL - curL) < 100 && Math.abs(newT - curT) < 30);
+  } while (tries < 30 && Math.abs(newL-curL) < 120 && Math.abs(newT-curT) < 40);
   btn.style.left = newL + 'px';
   btn.style.top  = newT + 'px';
-  btn.style.width = Math.max(100, wrap.offsetWidth - newL - 10) + 'px';
-  // Also shrink randomly sometimes
-  if (Math.random() > 0.6) btn.style.width = '120px';
+  // Random size
+  var sizes = [90, 110, 130, 'auto'];
+  var s = sizes[Math.floor(Math.random()*sizes.length)];
+  btn.style.width = s === 'auto' ? (wrap.offsetWidth - newL - 5) + 'px' : s + 'px';
 }
+
+// Also escape on mousemove near button
+document.addEventListener('mousemove', function(e) {
+  if (!isIncomplete()) return;
+  var btn = document.getElementById('submit-btn');
+  if (!btn) return;
+  var rect = btn.getBoundingClientRect();
+  var dist = Math.sqrt(
+    Math.pow(e.clientX - (rect.left + rect.width/2), 2) +
+    Math.pow(e.clientY - (rect.top + rect.height/2), 2)
+  );
+  if (dist < 80) tryEscape();
+});
 
 // Reset button position when both fields filled
 document.getElementById('login-input').addEventListener('input', resetBtn);
