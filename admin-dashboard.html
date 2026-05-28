@@ -1452,6 +1452,107 @@ setTimeout(function() {
   loadPaymentSummary();
 }, 500);
 
+
+// ===== FOYDALANUVCHILAR RO'YXATI =====
+async function loadUsersList() {
+  const token = localStorage.getItem('access_token');
+  if(!token) return;
+  try {
+    const res = await fetch('https://bozorov-school.onrender.com/api/users/list', {
+      headers: {'Authorization': 'Bearer ' + token}
+    });
+    if(!res.ok) return;
+    const users = await res.json();
+
+    // Update credentials list
+    var listEl = document.getElementById('cred-list');
+    if(!listEl) return;
+
+    if(!users.length) {
+      listEl.innerHTML = '<div style="text-align:center;color:var(--text2);padding:2rem">Hali foydalanuvchi yo\'q</div>';
+      return;
+    }
+
+    var roleColors = {
+      admin: 'var(--purple)', teacher: 'var(--blue-l)',
+      student: 'var(--green)', receptionist: 'var(--teal)'
+    };
+    var roleNames = {
+      admin: 'Admin', teacher: "O'qituvchi",
+      student: "O'quvchi", receptionist: 'Resepshn'
+    };
+
+    listEl.innerHTML = users.map(function(u) {
+      var color = roleColors[u.role] || 'var(--text2)';
+      var rname = roleNames[u.role] || u.role;
+      var status = u.is_active
+        ? '<span class="tag tag-green">Faol</span>'
+        : '<span class="tag tag-red">Bloklangan</span>';
+      return '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
+        + '<div style="font-size:14px;font-weight:500">' + u.full_name + '</div>'
+        + '<span style="font-size:11px;padding:2px 8px;border-radius:100px;background:' + color + '22;color:' + color + '">' + rname + '</span>'
+        + '</div>'
+        + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+        + '<span style="font-size:12px;color:var(--text2);width:55px">Login:</span>'
+        + '<code style="flex:1;background:var(--bg2);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--teal);border:1px solid var(--border)">' + u.login + '</code>'
+        + '<button onclick="navigator.clipboard.writeText('' + u.login + '');toast('Nusxalandi!')" style="background:none;border:none;color:var(--text2);cursor:pointer">📋</button>'
+        + '</div>'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">'
+        + status
+        + '<button onclick="toggleUserActive(' + u.id + ',this)" class="btn b-out b-sm">' + (u.is_active ? '🚫 Bloklash' : '✅ Faollashtirish') + '</button>'
+        + '</div></div>';
+    }).join('');
+
+    // Update count
+    var countEl = document.getElementById('cred-count');
+    if(countEl) countEl.textContent = users.length + ' ta';
+
+  } catch(e) { console.log('Users list xato:', e); }
+}
+
+async function toggleUserActive(userId, btn) {
+  const token = localStorage.getItem('access_token');
+  try {
+    const res = await fetch('https://bozorov-school.onrender.com/api/users/' + userId + '/toggle-active', {
+      method: 'PUT',
+      headers: {'Authorization': 'Bearer ' + token}
+    });
+    if(res.ok) {
+      toast('Holat o\'zgardi!');
+      loadUsersList();
+    }
+  } catch(e) { toast('Xato!'); }
+}
+
+async function resetUserPassword(userId) {
+  const token = localStorage.getItem('access_token');
+  try {
+    const res = await fetch('https://bozorov-school.onrender.com/api/users/' + userId + '/reset-password', {
+      method: 'PUT',
+      headers: {'Authorization': 'Bearer ' + token}
+    });
+    if(res.ok) {
+      const d = await res.json();
+      toast('Yangi parol: ' + d.new_password);
+    }
+  } catch(e) { toast('Xato!'); }
+}
+
+// Credentials sahifasi ochilganda yuklash
+var origShowPage = showPage;
+showPage = function(id, el) {
+  origShowPage(id, el);
+  if(id === 'credentials') loadUsersList();
+};
+
+// After creating user - reload list
+var origCreateUserAPI = createUserAPI;
+createUserAPI = async function() {
+  await origCreateUserAPI.apply(this, arguments);
+  setTimeout(loadUsersList, 500);
+};
+
 </script>
 </body>
 </html>
