@@ -182,7 +182,7 @@
     border: none; border-radius: 10px;
     font-size: 15px; font-weight: 500;
     cursor: pointer;
-    transition: background 0.2s, transform 0.05s, left 0.04s cubic-bezier(0.22,1,0.36,1), top 0.04s cubic-bezier(0.22,1,0.36,1), width 0.04s;
+    transition: background 0.2s, transform 0.1s, left 0.07s cubic-bezier(0.22,1,0.36,1), top 0.07s cubic-bezier(0.22,1,0.36,1), width 0.07s;
     left: 0; top: 0;
     white-space: nowrap; overflow: hidden;
   }
@@ -200,23 +200,12 @@
     white-space: nowrap;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
-body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b7280;--border:rgba(0,0,0,.10);}body{transition:background .3s,color .3s;}
-.login-theme{position:fixed;top:1rem;right:1rem;z-index:20;width:36px;height:36px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;}
-
-@media(max-width:480px){
-  .container{max-width:100%;padding:0 .5rem;}
-  .card{padding:1.25rem!important;border-radius:14px!important;}
-  .card-title{font-size:18px!important;}
-  .lang-row{margin-bottom:1rem!important;}
-  .submit-wrap{height:52px!important;}
-}
 </style>
 </head>
 <body>
 
 <!-- Floating particles -->
 <div class="particles" id="particles"></div>
-<button id="lt-btn" class="lt-btn" onclick="ltToggle()">🌙</button>
 
 <div class="container">
   <div class="logo">
@@ -228,11 +217,6 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
   </div>
 
   <div class="card">
-    <div class="lang-row">
-      <button class="lang-btn active" onclick="setLang('uz',this)">🇺🇿 UZ</button>
-      <button class="lang-btn" onclick="setLang('ru',this)">🇷🇺 RU</button>
-      <button class="lang-btn" onclick="setLang('en',this)">🇬🇧 EN</button>
-    </div>
 
     <h1 class="card-title" id="title">Tizimga kirish</h1>
     <p class="card-sub" id="subtitle">Login va parolingizni kiriting</p>
@@ -284,7 +268,7 @@ function setLang(l, btn) {
   lang = l;
   localStorage.setItem('lang', l);
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  if(btn) btn.classList.add('active');
   const t = T[l];
   document.getElementById('title').textContent = t.title;
   document.getElementById('subtitle').textContent = t.subtitle;
@@ -314,39 +298,26 @@ function isIncomplete() {
 
 function tryEscape() {
   if (!isIncomplete()) return;
-  var wrap = document.getElementById('submit-wrap');
-  var btn  = document.getElementById('submit-btn');
-  wrap.style.height = '130px';
-  var maxX = wrap.offsetWidth - 100;
-  var maxY = 90;
-  var curL = parseFloat(btn.style.left) || 0;
-  var curT = parseFloat(btn.style.top)  || 0;
-  var newL, newT, tries = 0;
+  const wrap = document.getElementById('submit-wrap');
+  const btn  = document.getElementById('submit-btn');
+  wrap.style.height = '120px';
+  const maxX = wrap.offsetWidth - 120;
+  const maxY = 80;
+  const curL = parseFloat(btn.style.left) || 0;
+  const curT = parseFloat(btn.style.top)  || 0;
+  // Always move far away from cursor
+  let newL, newT, tries = 0;
   do {
     newL = Math.random() * maxX;
     newT = Math.random() * maxY;
     tries++;
-  } while (tries < 30 && Math.abs(newL-curL) < 120 && Math.abs(newT-curT) < 40);
+  } while (tries < 20 && Math.abs(newL - curL) < 100 && Math.abs(newT - curT) < 30);
   btn.style.left = newL + 'px';
   btn.style.top  = newT + 'px';
-  // Random size
-  var sizes = [90, 110, 130, 'auto'];
-  var s = sizes[Math.floor(Math.random()*sizes.length)];
-  btn.style.width = s === 'auto' ? (wrap.offsetWidth - newL - 5) + 'px' : s + 'px';
+  btn.style.width = Math.max(100, wrap.offsetWidth - newL - 10) + 'px';
+  // Also shrink randomly sometimes
+  if (Math.random() > 0.6) btn.style.width = '120px';
 }
-
-// Also escape on mousemove near button
-document.addEventListener('mousemove', function(e) {
-  if (!isIncomplete()) return;
-  var btn = document.getElementById('submit-btn');
-  if (!btn) return;
-  var rect = btn.getBoundingClientRect();
-  var dist = Math.sqrt(
-    Math.pow(e.clientX - (rect.left + rect.width/2), 2) +
-    Math.pow(e.clientY - (rect.top + rect.height/2), 2)
-  );
-  if (dist < 80) tryEscape();
-});
 
 // Reset button position when both fields filled
 document.getElementById('login-input').addEventListener('input', resetBtn);
@@ -363,7 +334,7 @@ function resetBtn() {
 }
 
 // ===== BACKEND KONFIGURATSIYA =====
-const API_BASE = 'https://bozorov-school.onrender.com'; // Backend URL sini shu yerda o'zgartiring
+const API_BASE = 'http://localhost:8000'; // Backend URL sini shu yerda o'zgartiring
 
 // Role bo'yicha dashboard sahifalariga yo'naltirish
 const ROLE_PAGES = {
@@ -452,54 +423,6 @@ for (let i = 0; i < 18; i++) {
   `;
   container.appendChild(p);
 }
-
-function loginToggleTheme(){
-  document.body.classList.toggle('light');
-  var l=document.body.classList.contains('light');
-  localStorage.setItem('theme',l?'light':'dark');
-  var b=document.getElementById('login-theme-btn');
-  if(b)b.textContent=l?'☀️':'🌙';
-}
-(function(){
-  var t=localStorage.getItem('theme')||'dark';
-  if(t==='light'){document.body.classList.add('light');var b=document.getElementById('login-theme-btn');if(b)b.textContent='☀️';}
-  var saved=localStorage.getItem('lang');
-  if(saved && saved!=='uz'){
-    setTimeout(function(){
-      var btn=document.querySelector('.lang-btn[onclick*="'+saved+'"]');
-      if(btn){lang=saved;document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');
-        var T={uz:{title:'Tizimga kirish',sub:'Login va parolingizni kiriting',ll:'Login',pl:'Parol',bt:'Kirish'},
-               ru:{title:'Вход в систему',sub:'Введите логин и пароль',ll:'Логин',pl:'Пароль',bt:'Войти'},
-               en:{title:'Sign In',sub:'Enter your login and password',ll:'Login',pl:'Password',bt:'Sign In'}};
-        var t2=T[saved];
-        if(t2){
-          var el;
-          el=document.getElementById('title');if(el)el.textContent=t2.title;
-          el=document.getElementById('subtitle');if(el)el.textContent=t2.sub;
-          el=document.getElementById('btn-text');if(el)el.textContent=t2.bt;
-          el=document.getElementById('label-login');if(el)el.textContent=t2.ll;
-          el=document.getElementById('label-pass');if(el)el.textContent=t2.pl;
-        }
-      }
-    },100);
-  }
-})();
-
-function ltToggle(){
-  document.body.classList.toggle('light');
-  var l=document.body.classList.contains('light');
-  localStorage.setItem('theme',l?'light':'dark');
-  var b=document.getElementById('lt-btn');
-  if(b) b.textContent = l ? '☀️' : '🌙';
-}
-(function(){
-  var t = localStorage.getItem('theme') || 'dark';
-  if(t==='light'){
-    document.body.classList.add('light');
-    var b=document.getElementById('lt-btn');
-    if(b) b.textContent='☀️';
-  }
-})();
 </script>
 </body>
 </html>

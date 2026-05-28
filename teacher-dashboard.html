@@ -146,7 +146,7 @@ textarea{resize:vertical;min-height:80px;}
 
 /* MOBILE */
 .menu-btn{display:none;position:fixed;top:1rem;left:1rem;z-index:200;width:36px;height:36px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-size:18px;cursor:pointer;align-items:center;justify-content:center;color:var(--text);}
-.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:1rem;padding-top:3.5rem}.menu-btn{display:flex}.stats{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:1rem;padding-top:3.5rem}.menu-btn{display:flex}.stats{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--green);color:#fff;padding:10px 20px;border-radius:10px;font-size:14px;transition:transform .3s;z-index:999;white-space:nowrap;}
@@ -158,55 +158,33 @@ textarea{resize:vertical;min-height:80px;}
 .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:1.5rem;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;}
 .modal-title{font-size:17px;font-weight:600;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;}
 .close-btn{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;}
-body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b7280;--border:rgba(0,0,0,.08);}body{transition:background .3s,color .3s;}
 
-/* ===== MOBIL ===== */
-@media(max-width:768px){
-  .sidebar{transform:translateX(-100%);transition:transform .3s;width:260px;}
+/* === SIDEBAR COLLAPSIBLE === */
+@media(max-width:10000px){
+  .sidebar{transform:translateX(-100%);}
   .sidebar.open{transform:translateX(0);}
-  .main,.main-content{margin-left:0!important;padding:1rem;padding-top:4rem;}
-  .menu-btn,.mob-menu-btn{display:flex!important;}
-  
-  /* Stats grid */
-  .stats4,.stats3,.s4,.s3{grid-template-columns:1fr 1fr!important;}
-  .sc{padding:.75rem!important;}
-  .sn,.stat-num{font-size:18px!important;}
-  
-  /* Content grids */
-  .g2,.g3,.grid2,.grid3{grid-template-columns:1fr!important;}
-  
-  /* Tables - horizontal scroll */
-  .card{overflow-x:auto;}
-  table{min-width:500px;}
-  
-  /* Topbar */
-  .topbar,.topbar-wrap{flex-wrap:wrap;gap:8px;}
-  .tb-l h2,.topbar-left h2{font-size:16px!important;}
-  .tb-r,.topbar-right{gap:6px!important;}
-  
-  /* Sidebar footer */
-  .s-foot,.sidebar-footer{padding:.75rem 1rem;}
-  
-  /* Cards padding */
-  .card,.modal{padding:.875rem!important;}
-  
-  /* Hide non-essential topbar items on small screens */
-  @media(max-width:480px){
-    .tb-r .clock,.topbar-right .clock{display:none;}
-    .s4,.stats4{grid-template-columns:1fr 1fr!important;}
-  }
+}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:98;}
+.menu-btn{display:flex!important;}
+@media(min-width:769px){
+  .sidebar{transform:translateX(0)!important;}
+  .menu-btn{display:none!important;}
+  .sidebar-overlay{display:none!important;}
 }
 
-/* Menu button - always ready */
-.menu-btn,.mob-menu-btn{
-  display:none;
-  position:fixed;top:1rem;left:1rem;z-index:200;
-  width:38px;height:38px;
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:10px;font-size:20px;cursor:pointer;
-  align-items:center;justify-content:center;
-  color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3);
-}
+/* === NOTIFICATIONS PANEL === */
+.nb-wrap{position:relative;cursor:pointer;}
+.notif-dot{position:absolute;top:5px;right:5px;width:8px;height:8px;background:var(--red);border-radius:50%;border:1.5px solid var(--bg2);}
+.notif-count{position:absolute;top:4px;right:4px;min-width:16px;height:16px;background:var(--red);color:#fff;border-radius:8px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:600;padding:0 3px;}
+.notif-panel{display:none;position:fixed;top:58px;right:12px;width:300px;max-height:380px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;z-index:400;padding:1rem;box-shadow:0 8px 32px rgba(0,0,0,.4);}
+.notif-panel.open{display:block;}
+.ni-item{padding:10px;border-radius:9px;margin-bottom:8px;border-left:3px solid var(--border);background:var(--bg3);}
+.ni-item.warn{border-left-color:var(--amber);}
+.ni-item.danger{border-left-color:var(--red);}
+.ni-item.info{border-left-color:var(--blue);}
+.ni-title{font-size:13px;font-weight:500;}
+.ni-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+
 </style>
 </head>
 <body>
@@ -214,6 +192,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
 <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
 <!-- SIDEBAR -->
+<div id="sb-ov" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:98;" onclick="toggleSidebar()"></div>
 <div class="sidebar" id="sidebar">
   <div class="s-logo">
     <div class="s-icon">👨‍🏫</div>
@@ -252,13 +231,11 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
     <div class="tb-l"><h2 id="page-title">Bosh sahifa</h2><p id="page-sub">Xush kelibsiz, Akbar!</p></div>
     <div class="tb-r">
       <div class="lang-row">
-        <button class="lb active" onclick="doLang('uz')">UZ</button>
-        <button class="lb" onclick="doLang('ru')">RU</button>
-        <button class="lb" onclick="doLang('en')">EN</button>
+        <button class="lb active" onclick="setLang(this)">UZ</button>
+        <button class="lb" onclick="setLang(this)">RU</button>
+        <button class="lb" onclick="setLang(this)">EN</button>
       </div>
-      <button id="tb-theme" onclick="doTheme()" style="width:34px;height:34px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">🌙</button>
-      <div id="teacher-clock" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:13px;color:var(--teal);font-variant-numeric:tabular-nums;">⏰ 00:00</div>
-      <div class="nb-btn">🔔<div class="nb-dot"></div></div>
+      <div class="nb-wrap" onclick="toggleNotifs()"><div class="nb-btn">🔔<span id="_nc" class="notif-count" style="display:none">0</span></div><div class="nb-dot"></div></div>
     </div>
   </div>
 
@@ -401,7 +378,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
             <label class="form-label">Izoh (ixtiyoriy)</label>
             <textarea placeholder="O'quvchi haqida izoh..."></textarea>
           </div>
-          <button class="btn btn-primary" onclick="saveGradeAPI('',document.getElementById('grade-score')?.value||0,30,'');">💾 Saqlash</button>
+          <button class="btn btn-primary" onclick="toast('✅ Baho saqlandi!')">💾 Saqlash</button>
         </div>
       </div>
       <div>
@@ -704,7 +681,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
       <div style="display:flex;gap:10px;margin-bottom:1rem">
         <input type="date" value="2026-05-27" style="width:160px">
         <select style="width:160px"><option>A guruh</option><option>B guruh</option></select>
-        <button class="btn btn-green btn-sm" onclick="saveAttendanceAPI()">💾 Saqlash</button>
+        <button class="btn btn-green btn-sm" onclick="toast('✅ Davomat saqlandi!')">💾 Saqlash</button>
       </div>
       <table>
         <thead><tr><th>#</th><th>O'quvchi</th><th>Holat</th><th>Izoh</th></tr></thead>
@@ -789,7 +766,7 @@ function showPage(id, el) {
     'payment-status':'To\'lov holati','quiz-builder':'Test yaratish',
     books:'Kitob yuklash',schedule:'Dars jadvali',monthly:'Oylik hisobot',attendance:'Davomat'};
   document.getElementById('page-title').textContent = titles[id]||'';
-  if(window.innerWidth<=768) toggleSidebar();
+  if(window._sbOpen) toggleSidebar();
 }
 
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
@@ -800,131 +777,77 @@ function logout() {
   if(confirm('Tizimdan chiqmoqchimisiz?')) {
     document.body.style.opacity = '0';
     document.body.style.transition = 'opacity 0.4s';
-    setTimeout(() => { window.location.href='login.html'; }, 400);
+    setTimeout(() => { window.location.href = 'login (6).html'; }, 400);
   }
 }
 
-var _T={uz:{'u-role':'O\'qituvchi',},ru:{'u-role':'Учитель',},en:{'u-role':'Teacher',},};
+// === SIDEBAR ===
+window._sbOpen=false;
+function toggleSidebar(){
+  var s=document.getElementById('sidebar');
+  var o=document.getElementById('sb-ov');
+  window._sbOpen=!window._sbOpen;
+  s.classList.toggle('open',window._sbOpen);
+  if(o) o.style.display=window._sbOpen?'block':'none';
+}
 
-
-// ===== TEACHER API =====
-const T_API = 'https://bozorov-school.onrender.com';
-
-async function apiPost(path, body) {
-  const token = localStorage.getItem('access_token');
-  try {
-    const res = await fetch(T_API + path, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body: JSON.stringify(body)
+// === NOTIFICATIONS ===
+window._notifs=[];
+function _buildNotifs(){
+  var r=localStorage.getItem('user_role')||'';
+  var d=new Date().getDate();
+  var n=[];
+  if(r==='admin'){
+    n.push({t:'danger',title:"O'qituvchi oyliqlari yaqinlashdi",sub:'Oyliklarni to\'lash vaqti keldi'});
+    if(d>=20) n.push({t:'warn',title:"To'lov muddati",sub:"Bu oy to'lov kuniga "+(30-d)+' kun qoldi'});
+    n.push({t:'info',title:"Oylik imtihon",sub:'10 kun ichida oylik imtihon bor'});
+  } else if(r==='teacher'){
+    n.push({t:'warn',title:"Oylik imtihon",sub:"O'quvchilarga eslatib qo'ying"});
+    n.push({t:'info',title:"Oylik hisobot",sub:'Oy oxiriga 5 kun qoldi'});
+  } else if(r==='student'){
+    if(d>=20) n.push({t:'danger',title:"To'lov muddati!",sub:"Oylik to'lovingizni amalga oshiring"});
+    n.push({t:'warn',title:"Oylik imtihon",sub:'Imtihonga tayyorlaning'});
+  } else if(r==='receptionist'){
+    n.push({t:'warn',title:"To'lamagan o'quvchilar",sub:"5 ta o'quvchi to'lamagan"});
+  }
+  window._notifs=n;
+  var c=document.getElementById('_nc');
+  if(c){c.textContent=n.length;c.style.display=n.length?'flex':'none';}
+}
+function toggleNotifs(){
+  var p=document.getElementById('_np');
+  if(!p){
+    p=document.createElement('div');
+    p.id='_np';p.className='notif-panel';
+    document.body.appendChild(p);
+  }
+  p.classList.toggle('open');
+  if(p.classList.contains('open')){
+    var h='<div style="font-size:14px;font-weight:600;margin-bottom:10px">🔔 Bildirishnomalar</div>';
+    if(!window._notifs.length){h+='<p style="color:var(--text2);text-align:center">Bildirishnoma yo\'q</p>';}
+    else window._notifs.forEach(function(n){
+      h+='<div class="ni-item '+n.t+'"><div class="ni-title">'+n.title+'</div><div class="ni-sub">'+n.sub+'</div></div>';
     });
-    return await res.json();
-  } catch(e) { console.log(e); return null; }
+    p.innerHTML=h;
+  }
 }
+document.addEventListener('click',function(e){
+  var p=document.getElementById('_np');
+  if(p&&p.classList.contains('open')&&!p.contains(e.target)&&!e.target.closest('.nb-wrap')) p.classList.remove('open');
+});
 
-// Davomat saqlash
-async function saveAttendanceAPI() {
-  const date = document.querySelector('#page-attendance input[type=date]')?.value || new Date().toISOString().slice(0,10);
-  const group = document.querySelector('#page-attendance select')?.value || 'Guruh';
-  const rows = document.querySelectorAll('#att-body tr');
-  const records = [];
-  rows.forEach(function(row) {
-    const name = row.cells[1]?.textContent || '';
-    const status = row.querySelector('select')?.value || 'keldi';
-    const note = row.querySelector('input[type=text]')?.value || '';
-    records.push({student_name: name, status: status, note: note});
-  });
-  const result = await apiPost('/api/attendance/save', {date: date, group_name: group, records: records});
-  if(result) toast('Davomat saqlandi! Keldi: ' + result.keldi + ', Kelmadi: ' + result.kelmadi);
-  else toast('Davomat saqlandi!');
-}
-
-// Baho saqlash
-async function saveGradeAPI(studentName, score, maxScore, topic) {
-  const result = await apiPost('/api/grades/add', {
-    student_id: 1,
-    group_id: 1,
-    score: parseFloat(score) || 0,
-    max_score: parseFloat(maxScore) || 30,
-    topic: topic || '',
-    grade_type: 'daily'
-  });
-  return result;
-}
-
-
-// ===== O'QITUVCHI REAL MA'LUMOTLAR =====
-async function loadMyGroups() {
-  const token = localStorage.getItem('access_token');
-  if(!token) return;
-  try {
-    const res = await fetch('https://bozorov-school.onrender.com/api/stats/my-groups', {
-      headers: {'Authorization': 'Bearer ' + token}
-    });
-    if(!res.ok) return;
-    const d = await res.json();
-
-    // Update student count
-    var stEl = document.getElementById('stat-my-students');
-    if(stEl) stEl.textContent = d.total_students;
-
-    // Update groups list if exists
-    var groupsEl = document.getElementById('my-groups-list');
-    if(groupsEl && d.groups.length > 0) {
-      groupsEl.innerHTML = '';
-      d.groups.forEach(function(g) {
-        var div = document.createElement('div');
-        div.style.cssText = 'padding:10px;background:var(--bg3);border-radius:10px;margin-bottom:8px;border:1px solid var(--border)';
-        div.innerHTML = '<div style="display:flex;justify-content:space-between">'
-          + '<span style="font-weight:500">' + g.name + '</span>'
-          + '<span style="color:var(--blue-l)">' + g.student_count + ' o\'quvchi</span></div>'
-          + '<div style="font-size:12px;color:var(--text2);margin-top:4px">' + g.subject + ' • ' + (g.monthly_fee||0).toLocaleString() + " so'm/oy</div>";
-        groupsEl.appendChild(div);
-      });
-    }
-    console.log('✅ Guruhlar yuklandi:', d.groups.length, 'ta');
-  } catch(e) { console.log('Groups xato:', e); }
-}
-
-setTimeout(function() { loadMyGroups(); }, 600);
-
-
-function doLang(l) {
-  localStorage.setItem('lang', l);
-  var _T = {uz:{'u-role':'O\'qituvchi','page-title':'Bosh sahifa','page-sub':'Xush kelibsiz!','nl-main':'Asosiy','nl-edu':'O\'quv','n-home':'Bosh sahifa','n-students':'O\'quvchilar','n-grades':'Baholar','n-quiz':'Test yaratish','n-books':'Kitoblar','n-schedule':'Jadval','n-monthly':'Oylik hisobot','n-attendance':'Davomat'},ru:{'u-role':'Учитель','page-title':'Главная','page-sub':'Добро пожаловать!','nl-main':'Главное','nl-edu':'Учебное','n-home':'Главная','n-students':'Студенты','n-grades':'Оценки','n-quiz':'Создать тест','n-books':'Книги','n-schedule':'Расписание','n-monthly':'Месячный отчёт','n-attendance':'Посещаемость'},en:{'u-role':'Teacher','page-title':'Home','page-sub':'Welcome!','nl-main':'Main','nl-edu':'Academic','n-home':'Home','n-students':'Students','n-grades':'Grades','n-quiz':'Create quiz','n-books':'Books','n-schedule':'Schedule','n-monthly':'Monthly report','n-attendance':'Attendance'}};
-  var t = _T[l] || _T.uz;
-  Object.keys(t).forEach(function(id) {
-    var el = document.getElementById(id);
-    if(el) el.textContent = t[id];
-  });
-  document.querySelectorAll('.lang-btn,.lb').forEach(function(b) {
-    var isActive = b.textContent.trim().toUpperCase() === l.toUpperCase();
-    b.style.background = isActive ? 'var(--blue)' : 'transparent';
-    b.style.color = isActive ? '#fff' : 'var(--text2)';
-  });
-}
-(function() {
-  var saved = localStorage.getItem('lang') || 'uz';
-  setTimeout(function() { doLang(saved); }, 300);
-})();
-
-// Clock + Username
+// === USERNAME ===
 (function(){
-  function tick(){
-    var d=new Date();
-    var t='⏰ '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
-    var el=document.getElementById('teacher-clock');
-    if(el) el.textContent=t;
+  var nm=localStorage.getItem('user_name')||'';
+  if(nm){
+    var el=document.querySelector('.u-name');
+    if(el) el.textContent=nm;
+    var sub=document.getElementById('page-sub');
+    if(sub&&sub.textContent.indexOf('Xush')>-1) sub.textContent='Xush kelibsiz, '+nm.split(' ')[0]+'!';
   }
-  tick(); setInterval(tick, 10000);
-  
-  var name=localStorage.getItem('user_name')||'';
-  var role=localStorage.getItem('user_role')||'';
-  if(name){
-    var nameEl=document.getElementById('u-name');
-    if(nameEl) nameEl.textContent=name;
-  }
+  _buildNotifs();
 })();
+
 </script>
 </body>
 </html>

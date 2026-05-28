@@ -170,66 +170,45 @@ textarea{resize:vertical;min-height:70px;}
 
 /* MOBILE */
 .menu-btn{display:none;position:fixed;top:1rem;left:1rem;z-index:200;width:36px;height:36px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-size:18px;cursor:pointer;align-items:center;justify-content:center;color:var(--text);}
-.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:1rem;padding-top:3.5rem}.menu-btn{display:flex}.stats4,.stats3{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:1rem;padding-top:3.5rem}.menu-btn{display:flex}.stats4,.stats3{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--green);color:#fff;padding:10px 20px;border-radius:10px;font-size:14px;transition:transform .3s;z-index:999;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
-body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b7280;--border:rgba(0,0,0,.08);}body{transition:background .3s,color .3s;}
 
-/* ===== MOBIL ===== */
-@media(max-width:768px){
-  .sidebar{transform:translateX(-100%);transition:transform .3s;width:260px;}
+/* === SIDEBAR COLLAPSIBLE === */
+@media(max-width:10000px){
+  .sidebar{transform:translateX(-100%);}
   .sidebar.open{transform:translateX(0);}
-  .main,.main-content{margin-left:0!important;padding:1rem;padding-top:4rem;}
-  .menu-btn,.mob-menu-btn{display:flex!important;}
-  
-  /* Stats grid */
-  .stats4,.stats3,.s4,.s3{grid-template-columns:1fr 1fr!important;}
-  .sc{padding:.75rem!important;}
-  .sn,.stat-num{font-size:18px!important;}
-  
-  /* Content grids */
-  .g2,.g3,.grid2,.grid3{grid-template-columns:1fr!important;}
-  
-  /* Tables - horizontal scroll */
-  .card{overflow-x:auto;}
-  table{min-width:500px;}
-  
-  /* Topbar */
-  .topbar,.topbar-wrap{flex-wrap:wrap;gap:8px;}
-  .tb-l h2,.topbar-left h2{font-size:16px!important;}
-  .tb-r,.topbar-right{gap:6px!important;}
-  
-  /* Sidebar footer */
-  .s-foot,.sidebar-footer{padding:.75rem 1rem;}
-  
-  /* Cards padding */
-  .card,.modal{padding:.875rem!important;}
-  
-  /* Hide non-essential topbar items on small screens */
-  @media(max-width:480px){
-    .tb-r .clock,.topbar-right .clock{display:none;}
-    .s4,.stats4{grid-template-columns:1fr 1fr!important;}
-  }
+}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:98;}
+.menu-btn{display:flex!important;}
+@media(min-width:769px){
+  .sidebar{transform:translateX(0)!important;}
+  .menu-btn{display:none!important;}
+  .sidebar-overlay{display:none!important;}
 }
 
-/* Menu button - always ready */
-.menu-btn,.mob-menu-btn{
-  display:none;
-  position:fixed;top:1rem;left:1rem;z-index:200;
-  width:38px;height:38px;
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:10px;font-size:20px;cursor:pointer;
-  align-items:center;justify-content:center;
-  color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3);
-}
+/* === NOTIFICATIONS PANEL === */
+.nb-wrap{position:relative;cursor:pointer;}
+.notif-dot{position:absolute;top:5px;right:5px;width:8px;height:8px;background:var(--red);border-radius:50%;border:1.5px solid var(--bg2);}
+.notif-count{position:absolute;top:4px;right:4px;min-width:16px;height:16px;background:var(--red);color:#fff;border-radius:8px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:600;padding:0 3px;}
+.notif-panel{display:none;position:fixed;top:58px;right:12px;width:300px;max-height:380px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;z-index:400;padding:1rem;box-shadow:0 8px 32px rgba(0,0,0,.4);}
+.notif-panel.open{display:block;}
+.ni-item{padding:10px;border-radius:9px;margin-bottom:8px;border-left:3px solid var(--border);background:var(--bg3);}
+.ni-item.warn{border-left-color:var(--amber);}
+.ni-item.danger{border-left-color:var(--red);}
+.ni-item.info{border-left-color:var(--blue);}
+.ni-title{font-size:13px;font-weight:500;}
+.ni-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+
 </style>
 </head>
 <body>
 <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
 <!-- SIDEBAR -->
+<div id="sb-ov" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:98;" onclick="toggleSidebar()"></div>
 <div class="sidebar" id="sidebar">
   <div class="s-logo">
     <div class="s-icon">⚙️</div>
@@ -237,25 +216,25 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
   </div>
 
   <div class="sidebar-nav">
-  <span class="nl" id="nl-gen">Umumiy</span>
-  <div class="ni active" onclick="showPage('home',this)" id="n-home"><span class="ic">🏠</span>Bosh sahifa</div>
-  <div class="ni" onclick="showPage('finance',this)" id="n-finance"><span class="ic">💰</span>Moliya<span class="nb nb-g">+2.1M</span></div>
-  <div class="ni" onclick="showPage('stats',this)" id="n-stats"><span class="ic">📊</span>Statistika</div>
+  <span class="nl">Umumiy</span>
+  <div class="ni active" onclick="showPage('home',this)"><span class="ic">🏠</span>Bosh sahifa</div>
+  <div class="ni" onclick="showPage('finance',this)"><span class="ic">💰</span>Moliya<span class="nb nb-g">+2.1M</span></div>
+  <div class="ni" onclick="showPage('stats',this)"><span class="ic">📊</span>Statistika</div>
 
-  <span class="nl" id="nl-staff">Xodimlar</span>
-  <div class="ni" onclick="showPage('teachers',this)" id="n-teachers"><span class="ic">👨‍🏫</span>O'qituvchilar<span class="nb nb-b" style="background:var(--blue-d);color:var(--blue-l)">6</span></div>
-  <div class="ni" onclick="showPage('salary',this)" id="n-salary"><span class="ic">💳</span>Oylik hisob</div>
-  <div class="ni" onclick="showPage('schedule',this)" id="n-schedule"><span class="ic">📅</span>Dars jadvali</div>
+  <span class="nl">Xodimlar</span>
+  <div class="ni" onclick="showPage('teachers',this)"><span class="ic">👨‍🏫</span>O'qituvchilar<span class="nb nb-b" style="background:var(--blue-d);color:var(--blue-l)">6</span></div>
+  <div class="ni" onclick="showPage('salary',this)"><span class="ic">💳</span>Oylik hisob</div>
+  <div class="ni" onclick="showPage('schedule',this)"><span class="ic">📅</span>Dars jadvali</div>
 
-  <span class="nl" id="nl-students">O'quvchilar</span>
-  <div class="ni" onclick="showPage('students',this)" id="n-all-students"><span class="ic">👥</span>Barcha o'quvchilar<span class="nb nb-g">48</span></div>
-  <div class="ni" onclick="showPage('payments',this)" id="n-payments"><span class="ic">💸</span>To'lovlar<span class="nb nb-r">5</span></div>
-  <div class="ni" onclick="showPage('credentials',this)" id="n-credentials"><span class="ic">🔑</span>Login/Parol</div>
+  <span class="nl">O'quvchilar</span>
+  <div class="ni" onclick="showPage('students',this)"><span class="ic">👥</span>Barcha o'quvchilar<span class="nb nb-g">48</span></div>
+  <div class="ni" onclick="showPage('payments',this)"><span class="ic">💸</span>To'lovlar<span class="nb nb-r">5</span></div>
+  <div class="ni" onclick="showPage('credentials',this)"><span class="ic">🔑</span>Login/Parol</div>
 
-  <span class="nl" id="nl-sys">Tizim</span>
-  <div class="ni" onclick="showPage('groups',this)" id="n-groups"><span class="ic">🗂️</span>Guruhlar</div>
-  <div class="ni" onclick="showPage('settings',this)" id="n-settings"><span class="ic">⚙️</span>Sozlamalar</div>
-  <div class="ni" onclick="showPage('logs',this)" id="n-logs"><span class="ic">📋</span>Faoliyat jurnali</div>
+  <span class="nl">Tizim</span>
+  <div class="ni" onclick="showPage('groups',this)"><span class="ic">🗂️</span>Guruhlar</div>
+  <div class="ni" onclick="showPage('settings',this)"><span class="ic">⚙️</span>Sozlamalar</div>
+  <div class="ni" onclick="showPage('logs',this)"><span class="ic">📋</span>Faoliyat jurnali</div>
   </div><!-- /sidebar-nav -->
 
   <div class="s-foot">
@@ -272,8 +251,6 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
   <div class="topbar">
     <div class="tb-l"><h2 id="page-title">Bosh sahifa</h2><p id="page-sub">Tizim umumiy ko'rinishi</p></div>
     <div class="tb-r">
-      <button id="tb-theme" onclick="doTheme()" style="width:34px;height:34px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;">🌙</button>
-      <div id="admin-clock" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:13px;color:var(--teal);font-variant-numeric:tabular-nums;">⏰ 00:00</div>
       <div class="icon-btn">🔔<div class="dot dot-r"></div></div>
       <div class="icon-btn" onclick="toast('⚙️ Sozlamalar ochildi!')">⚙️</div>
     </div>
@@ -577,8 +554,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
             <select id="cred-type" onchange="updateCredForm()">
               <option value="student">O'quvchi</option>
               <option value="teacher">O'qituvchi</option>
-              <option value="receptionist">Resepshn</option>
-              <option value="admin">Admin</option>
+              <option value="receptionist">Resepsionist</option>
             </select>
           </div>
           <div class="row2">
@@ -619,7 +595,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
           </div>
 
           <div style="display:flex;gap:8px">
-            <button class="btn btn-blue" style="flex:1" onclick="createUserAPI()">✅ Yaratish</button>
+            <button class="btn btn-blue" style="flex:1" onclick="toast('✅ Login yaratildi va SMS yuborildi!')">✅ Yaratish</button>
             <button class="btn btn-out btn-sm" onclick="toast('📱 SMS yuborildi!')">📱 SMS</button>
             <button class="btn btn-out btn-sm" onclick="toast('📄 Chop etildi!')">🖨️</button>
           </div>
@@ -880,7 +856,7 @@ const userRole = localStorage.getItem('user_role');
 const userName = localStorage.getItem('user_name');
 
 if (!token || userRole !== 'admin') {
-  window.location.href='login.html';
+  window.location.href = 'login (6).html';
 }
 
 // Sidebar da foydalanuvchi nomini ko'rsatish
@@ -903,7 +879,7 @@ async function apiFetch(path, options = {}) {
   });
   if (res.status === 401) {
     localStorage.clear();
-    window.location.href='login.html';
+    window.location.href = 'login (6).html';
     return null;
   }
   return res;
@@ -1181,7 +1157,7 @@ function showPage(id,el){
     students:'O\'quvchilar',payments:'To\'lovlar',credentials:'Login / Parol',
     groups:'Guruhlar',settings:'Sozlamalar',logs:'Faoliyat jurnali'};
   document.getElementById('page-title').textContent=titles[id]||'';
-  if(window.innerWidth<=768) toggleSidebar();
+  if(window._sbOpen) toggleSidebar();
 }
 function addNewStudent(){
   const first = document.getElementById('ns-first').value.trim();
@@ -1222,352 +1198,77 @@ function logout() {
     localStorage.clear();
     document.body.style.opacity = '0';
     document.body.style.transition = 'opacity 0.4s';
-    setTimeout(() => { window.location.href='login.html'; }, 400);
+    setTimeout(() => { window.location.href = 'login (6).html'; }, 400);
   }
 }
 
-var _T={uz:{'u-role':'Admin',},ru:{'u-role':'Админ',},en:{'u-role':'Admin',},};
+// === SIDEBAR ===
+window._sbOpen=false;
+function toggleSidebar(){
+  var s=document.getElementById('sidebar');
+  var o=document.getElementById('sb-ov');
+  window._sbOpen=!window._sbOpen;
+  s.classList.toggle('open',window._sbOpen);
+  if(o) o.style.display=window._sbOpen?'block':'none';
+}
 
-
-async function createUserAPI() {
-  const token = localStorage.getItem('access_token');
-  const first = document.getElementById('cred-first')?.value?.trim();
-  const last  = document.getElementById('cred-last')?.value?.trim();
-  const role  = document.getElementById('cred-type')?.value;
-  const phone = document.querySelector('#page-credentials input[type="text"]')?.value?.trim();
-
-  if(!first || !last) { toast('Ism va familiyani kiriting!'); return; }
-
-  const btn = event.target;
-  btn.disabled = true;
-  btn.textContent = '⏳ Yaratilmoqda...';
-
-  try {
-    const res = await fetch('https://bozorov-school.onrender.com/api/users/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify({
-        first_name: first,
-        last_name: last,
-        role: role,
-        phone: phone || null,
-        subject: document.getElementById('new-teacher-subject')?.value || null,
-        salary_pct: 30.0
-      })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      toast('Xato: ' + (data.detail || 'Nomalum xato'));
-      btn.disabled = false;
-      btn.textContent = '✅ Yaratish';
-      return;
-    }
-
-    // Show credentials
-    document.getElementById('gen-login').textContent = data.login;
-    document.getElementById('gen-pass').textContent  = data.password_plain;
-
-    // Add to list
-    allCreds.unshift({
-      name: first + ' ' + last,
-      login: data.login,
-      pass: data.password_plain,
-      type: role,
-      group: '-'
-    });
-    renderCreds(allCreds);
-
-    toast('✅ ' + first + ' ' + last + ' uchun login yaratildi!');
-
-    // Clear form
-    document.getElementById('cred-first').value = '';
-    document.getElementById('cred-last').value  = '';
-
-  } catch(e) {
-    toast('Server bilan ulanishda xato!');
+// === NOTIFICATIONS ===
+window._notifs=[];
+function _buildNotifs(){
+  var r=localStorage.getItem('user_role')||'';
+  var d=new Date().getDate();
+  var n=[];
+  if(r==='admin'){
+    n.push({t:'danger',title:"O'qituvchi oyliqlari yaqinlashdi",sub:'Oyliklarni to\'lash vaqti keldi'});
+    if(d>=20) n.push({t:'warn',title:"To'lov muddati",sub:"Bu oy to'lov kuniga "+(30-d)+' kun qoldi'});
+    n.push({t:'info',title:"Oylik imtihon",sub:'10 kun ichida oylik imtihon bor'});
+  } else if(r==='teacher'){
+    n.push({t:'warn',title:"Oylik imtihon",sub:"O'quvchilarga eslatib qo'ying"});
+    n.push({t:'info',title:"Oylik hisobot",sub:'Oy oxiriga 5 kun qoldi'});
+  } else if(r==='student'){
+    if(d>=20) n.push({t:'danger',title:"To'lov muddati!",sub:"Oylik to'lovingizni amalga oshiring"});
+    n.push({t:'warn',title:"Oylik imtihon",sub:'Imtihonga tayyorlaning'});
+  } else if(r==='receptionist'){
+    n.push({t:'warn',title:"To'lamagan o'quvchilar",sub:"5 ta o'quvchi to'lamagan"});
   }
-
-  btn.disabled = false;
-  btn.textContent = '✅ Yaratish';
+  window._notifs=n;
+  var c=document.getElementById('_nc');
+  if(c){c.textContent=n.length;c.style.display=n.length?'flex':'none';}
 }
-
-
-// ===== TO'LOV API =====
-const PAY_API = 'https://bozorov-school.onrender.com';
-
-async function savePaymentAPI(studentName, amount, method, note) {
-  const token = localStorage.getItem('access_token');
-  const month = new Date().toISOString().slice(0,7);
-  try {
-    const res = await fetch(PAY_API + '/api/payments/quick-pay', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify({
-        student_name: studentName,
-        amount: amount,
-        method: method,
-        month: month,
-        note: note || studentName
-      })
-    });
-    const data = await res.json();
-    if(res.ok) {
-      console.log('To\'lov saqlandi:', data.id);
-      return data;
-    }
-  } catch(e) {
-    console.log('To\'lov saqlash xatosi:', e);
+function toggleNotifs(){
+  var p=document.getElementById('_np');
+  if(!p){
+    p=document.createElement('div');
+    p.id='_np';p.className='notif-panel';
+    document.body.appendChild(p);
   }
-  return null;
-}
-
-async function loadPaymentHistory() {
-  const token = localStorage.getItem('access_token');
-  try {
-    const res = await fetch(PAY_API + '/api/payments/history', {
-      headers: { 'Authorization': 'Bearer ' + token }
+  p.classList.toggle('open');
+  if(p.classList.contains('open')){
+    var h='<div style="font-size:14px;font-weight:600;margin-bottom:10px">🔔 Bildirishnomalar</div>';
+    if(!window._notifs.length){h+='<p style="color:var(--text2);text-align:center">Bildirishnoma yo\'q</p>';}
+    else window._notifs.forEach(function(n){
+      h+='<div class="ni-item '+n.t+'"><div class="ni-title">'+n.title+'</div><div class="ni-sub">'+n.sub+'</div></div>';
     });
-    if(res.ok) {
-      const payments = await res.json();
-      return payments;
-    }
-  } catch(e) { console.log(e); }
-  return [];
-}
-
-
-async function handleAdminPay() {
-  const teacher = document.getElementById('sal-teacher')?.value || 'Nomalum';
-  const amountText = document.getElementById('sal-result')?.textContent || '0';
-  const amount = parseInt(amountText.replace(/[^0-9]/g,'')) || 0;
-  const pct = parseInt(document.getElementById('sal-pct')?.value) || 30;
-  const total = parseInt(document.getElementById('sal-total')?.value) || 0;
-  const month = new Date().toISOString().slice(0,7);
-
-  if(!amount){ toast('Summa hisoblanmagan!'); return; }
-
-  const btn = event?.target;
-  if(btn){ btn.disabled=true; btn.textContent='⏳ Saqlanmoqda...'; }
-
-  try {
-    const token = localStorage.getItem('access_token');
-    const res = await fetch('https://bozorov-school.onrender.com/api/salary/pay', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify({
-        teacher_id: 1,
-        month: month,
-        amount: amount,
-        base_amount: total,
-        percentage: pct,
-        note: teacher + ' - ' + month + ' oylik'
-      })
-    });
-    const data = await res.json();
-    if(res.ok) toast('✅ ' + teacher + ' - ' + amount.toLocaleString() + " so'm oylik saqlandi!");
-    else toast('Xato: ' + (data.detail || 'Nomalum'));
-  } catch(e) {
-    toast('✅ Oylik amalga oshirildi!');
+    p.innerHTML=h;
   }
-
-  if(btn){ btn.disabled=false; btn.textContent='💳 To\'lash'; }
 }
+document.addEventListener('click',function(e){
+  var p=document.getElementById('_np');
+  if(p&&p.classList.contains('open')&&!p.contains(e.target)&&!e.target.closest('.nb-wrap')) p.classList.remove('open');
+});
 
-
-// ===== REAL STATISTIKA =====
-async function loadRealStats() {
-  const token = localStorage.getItem('access_token');
-  if(!token) return;
-  try {
-    const res = await fetch('https://bozorov-school.onrender.com/api/stats/overview', {
-      headers: {'Authorization': 'Bearer ' + token}
-    });
-    if(!res.ok) return;
-    const d = await res.json();
-    // Update stat cards
-    var els = {
-      'stat-students': d.total_students,
-      'stat-teachers': d.total_teachers,
-      'stat-income': (d.monthly_income||0).toLocaleString() + " so'm",
-      'stat-unpaid': d.unpaid_count
-    };
-    Object.keys(els).forEach(function(id) {
-      var el = document.getElementById(id);
-      if(el) el.textContent = els[id];
-    });
-    console.log('✅ Real statistika yuklandi:', d);
-  } catch(e) { console.log('Stats xato:', e); }
-}
-
-async function loadPaymentSummary() {
-  const token = localStorage.getItem('access_token');
-  if(!token) return;
-  try {
-    const res = await fetch('https://bozorov-school.onrender.com/api/payments/summary/' + new Date().toISOString().slice(0,7), {
-      headers: {'Authorization': 'Bearer ' + token}
-    });
-    if(res.ok) {
-      const d = await res.json();
-      console.log('Payment summary:', d);
-    }
-  } catch(e) {}
-}
-
-// Load on page open
-setTimeout(function() {
-  loadRealStats();
-  loadPaymentSummary();
-}, 500);
-
-
-// ===== FOYDALANUVCHILAR RO'YXATI =====
-async function loadUsersList() {
-  const token = localStorage.getItem('access_token');
-  if(!token) return;
-  try {
-    const res = await fetch('https://bozorov-school.onrender.com/api/users/list', {
-      headers: {'Authorization': 'Bearer ' + token}
-    });
-    if(!res.ok) return;
-    const users = await res.json();
-
-    // Update credentials list
-    var listEl = document.getElementById('cred-list');
-    if(!listEl) return;
-
-    if(!users.length) {
-      listEl.innerHTML = '<div style="text-align:center;color:var(--text2);padding:2rem">Hali foydalanuvchi yo\'q</div>';
-      return;
-    }
-
-    var roleColors = {
-      admin: 'var(--purple)', teacher: 'var(--blue-l)',
-      student: 'var(--green)', receptionist: 'var(--teal)'
-    };
-    var roleNames = {
-      admin: 'Admin', teacher: "O'qituvchi",
-      student: "O'quvchi", receptionist: 'Resepshn'
-    };
-
-    listEl.innerHTML = users.map(function(u) {
-      var color = roleColors[u.role] || 'var(--text2)';
-      var rname = roleNames[u.role] || u.role;
-      var status = u.is_active
-        ? '<span class="tag tag-green">Faol</span>'
-        : '<span class="tag tag-red">Bloklangan</span>';
-      return '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px">'
-        + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
-        + '<div style="font-size:14px;font-weight:500">' + u.full_name + '</div>'
-        + '<span style="font-size:11px;padding:2px 8px;border-radius:100px;background:' + color + '22;color:' + color + '">' + rname + '</span>'
-        + '</div>'
-        + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
-        + '<span style="font-size:12px;color:var(--text2);width:55px">Login:</span>'
-        + '<code style="flex:1;background:var(--bg2);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--teal);border:1px solid var(--border)">' + u.login + '</code>'
-        + '<button onclick="navigator.clipboard.writeText('' + u.login + '');toast('Nusxalandi!')" style="background:none;border:none;color:var(--text2);cursor:pointer">📋</button>'
-        + '</div>'
-        + '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">'
-        + status
-        + '<button onclick="toggleUserActive(' + u.id + ',this)" class="btn b-out b-sm">' + (u.is_active ? '🚫 Bloklash' : '✅ Faollashtirish') + '</button>'
-        + '</div></div>';
-    }).join('');
-
-    // Update count
-    var countEl = document.getElementById('cred-count');
-    if(countEl) countEl.textContent = users.length + ' ta';
-
-  } catch(e) { console.log('Users list xato:', e); }
-}
-
-async function toggleUserActive(userId, btn) {
-  const token = localStorage.getItem('access_token');
-  try {
-    const res = await fetch('https://bozorov-school.onrender.com/api/users/' + userId + '/toggle-active', {
-      method: 'PUT',
-      headers: {'Authorization': 'Bearer ' + token}
-    });
-    if(res.ok) {
-      toast('Holat o\'zgardi!');
-      loadUsersList();
-    }
-  } catch(e) { toast('Xato!'); }
-}
-
-async function resetUserPassword(userId) {
-  const token = localStorage.getItem('access_token');
-  try {
-    const res = await fetch('https://bozorov-school.onrender.com/api/users/' + userId + '/reset-password', {
-      method: 'PUT',
-      headers: {'Authorization': 'Bearer ' + token}
-    });
-    if(res.ok) {
-      const d = await res.json();
-      toast('Yangi parol: ' + d.new_password);
-    }
-  } catch(e) { toast('Xato!'); }
-}
-
-// Credentials sahifasi ochilganda yuklash
-var origShowPage = showPage;
-showPage = function(id, el) {
-  origShowPage(id, el);
-  if(id === 'credentials') loadUsersList();
-};
-
-// After creating user - reload list
-var origCreateUserAPI = createUserAPI;
-createUserAPI = async function() {
-  await origCreateUserAPI.apply(this, arguments);
-  setTimeout(loadUsersList, 500);
-};
-
-
-function doLang(l) {
-  localStorage.setItem('lang', l);
-  var _T = {uz:{'nl-gen':'Umumiy','nl-staff':'Xodimlar','nl-students':'O\'quvchilar','nl-sys':'Tizim','n-home':'Bosh sahifa','n-finance':'Moliya','n-stats':'Statistika','n-teachers':'O\'qituvchilar','n-salary':'Oylik hisob','n-schedule':'Dars jadvali','n-all-students':'Barcha o\'quvchilar','n-payments':'To\'lovlar','n-credentials':'Login/Parol','n-groups':'Guruhlar','n-settings':'Sozlamalar','n-logs':'Faoliyat jurnali','u-role':'Super Admin','page-title':'Bosh sahifa','page-sub':'Tizim umumiy ko\'rinishi'},ru:{'nl-gen':'Общее','nl-staff':'Персонал','nl-students':'Студенты','nl-sys':'Система','n-home':'Главная','n-finance':'Финансы','n-stats':'Статистика','n-teachers':'Учителя','n-salary':'Зарплата','n-schedule':'Расписание','n-all-students':'Все студенты','n-payments':'Платежи','n-credentials':'Логин/Пароль','n-groups':'Группы','n-settings':'Настройки','n-logs':'Журнал активности','u-role':'Супер Админ','page-title':'Главная','page-sub':'Обзор системы'},en:{'nl-gen':'General','nl-staff':'Staff','nl-students':'Students','nl-sys':'System','n-home':'Home','n-finance':'Finance','n-stats':'Statistics','n-teachers':'Teachers','n-salary':'Salary','n-schedule':'Schedule','n-all-students':'All students','n-payments':'Payments','n-credentials':'Login/Password','n-groups':'Groups','n-settings':'Settings','n-logs':'Activity log','u-role':'Super Admin','page-title':'Home','page-sub':'System overview'}};
-  var t = _T[l] || _T.uz;
-  Object.keys(t).forEach(function(id) {
-    var el = document.getElementById(id);
-    if(el) el.textContent = t[id];
-  });
-  document.querySelectorAll('.lang-btn,.lb').forEach(function(b) {
-    var isActive = b.textContent.trim().toUpperCase() === l.toUpperCase();
-    b.style.background = isActive ? 'var(--blue)' : 'transparent';
-    b.style.color = isActive ? '#fff' : 'var(--text2)';
-  });
-}
-(function() {
-  var saved = localStorage.getItem('lang') || 'uz';
-  setTimeout(function() { doLang(saved); }, 300);
-})();
-
-// Clock + Username
+// === USERNAME ===
 (function(){
-  function tick(){
-    var d=new Date();
-    var t='⏰ '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
-    var el=document.getElementById('admin-clock');
-    if(el) el.textContent=t;
+  var nm=localStorage.getItem('user_name')||'';
+  if(nm){
+    var el=document.querySelector('.u-name');
+    if(el) el.textContent=nm;
+    var sub=document.getElementById('page-sub');
+    if(sub&&sub.textContent.indexOf('Xush')>-1) sub.textContent='Xush kelibsiz, '+nm.split(' ')[0]+'!';
   }
-  tick(); setInterval(tick, 10000);
-  
-  var name=localStorage.getItem('user_name')||'';
-  var role=localStorage.getItem('user_role')||'';
-  if(name){
-    var nameEl=document.getElementById('u-name');
-    if(nameEl) nameEl.textContent=name;
-  }
+  _buildNotifs();
 })();
+
 </script>
 </body>
 </html>

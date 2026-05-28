@@ -163,7 +163,6 @@ body {
   border-radius: 14px; padding: 1rem 1.1rem;
   display: flex; align-items: center; gap: 12px;
   transition: border-color 0.2s;
-  animation: fadeIn 0.4s ease both;
 }
 .stat-card:hover { border-color: var(--border2); }
 .stat-icon {
@@ -352,7 +351,8 @@ body {
   border-radius: 10px; font-size: 18px; cursor: pointer;
   align-items: center; justify-content: center; color: var(--text);
 }
-
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
   .sidebar.open { transform: translateX(0); }
   .main { margin-left: 0; padding: 1rem; padding-top: 3.5rem; }
   .menu-btn { display: flex; }
@@ -381,55 +381,33 @@ body {
   white-space: nowrap;
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
-body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b7280;--border:rgba(0,0,0,.08);}body{transition:background .3s,color .3s;}
 
-/* ===== MOBIL ===== */
-@media(max-width:768px){
-  .sidebar{transform:translateX(-100%);transition:transform .3s;width:260px;}
+/* === SIDEBAR COLLAPSIBLE === */
+@media(max-width:10000px){
+  .sidebar{transform:translateX(-100%);}
   .sidebar.open{transform:translateX(0);}
-  .main,.main-content{margin-left:0!important;padding:1rem;padding-top:4rem;}
-  .menu-btn,.mob-menu-btn{display:flex!important;}
-  
-  /* Stats grid */
-  .stats4,.stats3,.s4,.s3{grid-template-columns:1fr 1fr!important;}
-  .sc{padding:.75rem!important;}
-  .sn,.stat-num{font-size:18px!important;}
-  
-  /* Content grids */
-  .g2,.g3,.grid2,.grid3{grid-template-columns:1fr!important;}
-  
-  /* Tables - horizontal scroll */
-  .card{overflow-x:auto;}
-  table{min-width:500px;}
-  
-  /* Topbar */
-  .topbar,.topbar-wrap{flex-wrap:wrap;gap:8px;}
-  .tb-l h2,.topbar-left h2{font-size:16px!important;}
-  .tb-r,.topbar-right{gap:6px!important;}
-  
-  /* Sidebar footer */
-  .s-foot,.sidebar-footer{padding:.75rem 1rem;}
-  
-  /* Cards padding */
-  .card,.modal{padding:.875rem!important;}
-  
-  /* Hide non-essential topbar items on small screens */
-  @media(max-width:480px){
-    .tb-r .clock,.topbar-right .clock{display:none;}
-    .s4,.stats4{grid-template-columns:1fr 1fr!important;}
-  }
+}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:98;}
+.menu-btn{display:flex!important;}
+@media(min-width:769px){
+  .sidebar{transform:translateX(0)!important;}
+  .menu-btn{display:none!important;}
+  .sidebar-overlay{display:none!important;}
 }
 
-/* Menu button - always ready */
-.menu-btn,.mob-menu-btn{
-  display:none;
-  position:fixed;top:1rem;left:1rem;z-index:200;
-  width:38px;height:38px;
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:10px;font-size:20px;cursor:pointer;
-  align-items:center;justify-content:center;
-  color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3);
-}
+/* === NOTIFICATIONS PANEL === */
+.nb-wrap{position:relative;cursor:pointer;}
+.notif-dot{position:absolute;top:5px;right:5px;width:8px;height:8px;background:var(--red);border-radius:50%;border:1.5px solid var(--bg2);}
+.notif-count{position:absolute;top:4px;right:4px;min-width:16px;height:16px;background:var(--red);color:#fff;border-radius:8px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:600;padding:0 3px;}
+.notif-panel{display:none;position:fixed;top:58px;right:12px;width:300px;max-height:380px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;z-index:400;padding:1rem;box-shadow:0 8px 32px rgba(0,0,0,.4);}
+.notif-panel.open{display:block;}
+.ni-item{padding:10px;border-radius:9px;margin-bottom:8px;border-left:3px solid var(--border);background:var(--bg3);}
+.ni-item.warn{border-left-color:var(--amber);}
+.ni-item.danger{border-left-color:var(--red);}
+.ni-item.info{border-left-color:var(--blue);}
+.ni-title{font-size:13px;font-weight:500;}
+.ni-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+
 </style>
 </head>
 <body>
@@ -437,6 +415,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
 <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
 <!-- Sidebar -->
+<div id="sb-ov" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:98;" onclick="toggleSidebar()"></div>
 <div class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <div class="logo-icon">BS</div>
@@ -482,7 +461,7 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
     <div class="user-info" style="margin-bottom:10px">
       <div class="user-avatar">👤</div>
       <div>
-        <div class="user-name"><span id="student-uname">Foydalanuvchi</span></div>
+        <div class="user-name">Ulug'bek A.</div>
         <div class="user-role" id="u-role">Talaba</div>
       </div>
     </div>
@@ -497,12 +476,15 @@ body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b72
   <div class="topbar">
     <div class="topbar-left">
       <h2 id="page-title">Bosh sahifa</h2>
-      <p id="page-sub">Xush kelibsiz!</p>
+      <p id="page-sub">Xush kelibsiz, Ulug'bek!</p>
     </div>
     <div class="topbar-right">
-      <button id="tb-theme" onclick="doTheme()" style="width:34px;height:34px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;">🌙</button>
-      <div class="clock-badge" id="student-clock" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:13px;color:var(--blue-light);font-variant-numeric:tabular-nums;">⏰ 00:00</div>
-      <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+      <div class="lang-row">
+        <button class="lang-btn active" onclick="setLang('uz',this)">UZ</button>
+        <button class="lang-btn" onclick="setLang('ru',this)">RU</button>
+        <button class="lang-btn" onclick="setLang('en',this)">EN</button>
+      </div>
+      <div class="nb-wrap" onclick="toggleNotifs()"><div class="notif-btn">🔔<span id="_nc" class="notif-count" style="display:none">0</span></div><div class="notif-dot"></div></div>
     </div>
   </div>
 
@@ -1028,92 +1010,75 @@ function logout() {
   if(confirm('Tizimdan chiqmoqchimisiz?')) {
     document.body.style.opacity = '0';
     document.body.style.transition = 'opacity 0.4s';
-    setTimeout(() => { window.location.href='login.html'; }, 400);
+    setTimeout(() => { window.location.href = 'login (6).html'; }, 400);
   }
 }
 
-var _T={uz:{'nl-main':'Asosiy','n-home':'Bosh sahifa','n-courses':'Kurslar','n-books':'Kitoblar','n-quiz':'Testlar','n-db':'Bazalar','nl-other':'Boshqa','n-sched':'Jadval','n-pay':'To\'lov','n-stats':'Statistika','u-role':'Talaba',},ru:{'nl-main':'Главное','n-home':'Главная','n-courses':'Курсы','n-books':'Книги','n-quiz':'Тесты','n-db':'Базы','nl-other':'Другое','n-sched':'Расписание','n-pay':'Оплата','n-stats':'Статистика','u-role':'Студент',},en:{'nl-main':'Main','n-home':'Home','n-courses':'Courses','n-books':'Books','n-quiz':'Quizzes','n-db':'Databases','nl-other':'Other','n-sched':'Schedule','n-pay':'Payment','n-stats':'Statistics','u-role':'Student',},};
+// === SIDEBAR ===
+window._sbOpen=false;
+function toggleSidebar(){
+  var s=document.getElementById('sidebar');
+  var o=document.getElementById('sb-ov');
+  window._sbOpen=!window._sbOpen;
+  s.classList.toggle('open',window._sbOpen);
+  if(o) o.style.display=window._sbOpen?'block':'none';
+}
 
-
-// ===== O'QUVCHI REAL MA'LUMOTLAR =====
-async function loadMyGrades() {
-  const token = localStorage.getItem('access_token');
-  if(!token) return;
-  try {
-    const res = await fetch('https://bozorov-school.onrender.com/api/stats/my-grades', {
-      headers: {'Authorization': 'Bearer ' + token}
+// === NOTIFICATIONS ===
+window._notifs=[];
+function _buildNotifs(){
+  var r=localStorage.getItem('user_role')||'';
+  var d=new Date().getDate();
+  var n=[];
+  if(r==='admin'){
+    n.push({t:'danger',title:"O'qituvchi oyliqlari yaqinlashdi",sub:'Oyliklarni to\'lash vaqti keldi'});
+    if(d>=20) n.push({t:'warn',title:"To'lov muddati",sub:"Bu oy to'lov kuniga "+(30-d)+' kun qoldi'});
+    n.push({t:'info',title:"Oylik imtihon",sub:'10 kun ichida oylik imtihon bor'});
+  } else if(r==='teacher'){
+    n.push({t:'warn',title:"Oylik imtihon",sub:"O'quvchilarga eslatib qo'ying"});
+    n.push({t:'info',title:"Oylik hisobot",sub:'Oy oxiriga 5 kun qoldi'});
+  } else if(r==='student'){
+    if(d>=20) n.push({t:'danger',title:"To'lov muddati!",sub:"Oylik to'lovingizni amalga oshiring"});
+    n.push({t:'warn',title:"Oylik imtihon",sub:'Imtihonga tayyorlaning'});
+  } else if(r==='receptionist'){
+    n.push({t:'warn',title:"To'lamagan o'quvchilar",sub:"5 ta o'quvchi to'lamagan"});
+  }
+  window._notifs=n;
+  var c=document.getElementById('_nc');
+  if(c){c.textContent=n.length;c.style.display=n.length?'flex':'none';}
+}
+function toggleNotifs(){
+  var p=document.getElementById('_np');
+  if(!p){
+    p=document.createElement('div');
+    p.id='_np';p.className='notif-panel';
+    document.body.appendChild(p);
+  }
+  p.classList.toggle('open');
+  if(p.classList.contains('open')){
+    var h='<div style="font-size:14px;font-weight:600;margin-bottom:10px">🔔 Bildirishnomalar</div>';
+    if(!window._notifs.length){h+='<p style="color:var(--text2);text-align:center">Bildirishnoma yo\'q</p>';}
+    else window._notifs.forEach(function(n){
+      h+='<div class="ni-item '+n.t+'"><div class="ni-title">'+n.title+'</div><div class="ni-sub">'+n.sub+'</div></div>';
     });
-    if(!res.ok) return;
-    const d = await res.json();
-    
-    // Update average score
-    var avgEl = document.getElementById('s4');
-    if(avgEl && d.average > 0) avgEl.textContent = d.average + '%';
-    
-    // If grades exist, show in quiz page
-    if(d.grades && d.grades.length > 0) {
-      var tbody = document.getElementById('quiz-tbody');
-      if(tbody) {
-        tbody.innerHTML = '';
-        d.grades.forEach(function(g, i) {
-          var row = document.createElement('tr');
-          var pct = g.percentage || 0;
-          var color = pct >= 80 ? 'var(--green)' : pct >= 60 ? 'var(--amber)' : 'var(--red)';
-          row.innerHTML = '<td style="color:var(--text2)">' + (i+1) + '</td>'
-            + '<td>' + (g.topic || 'Mavzu') + '</td>'
-            + '<td style="color:' + color + ';font-weight:500">' + g.score + '/' + g.max_score + '</td>'
-            + '<td style="color:' + color + '">' + pct + '%</td>'
-            + '<td style="color:var(--text2);font-size:12px">' + (g.date || '') + '</td>';
-          tbody.appendChild(row);
-        });
-      }
-    }
-    console.log('✅ Baholar yuklandi:', d.total, 'ta, o\'rtacha:', d.average + '%');
-  } catch(e) { console.log('Grades xato:', e); }
-}
-
-setTimeout(function() { loadMyGrades(); }, 600);
-
-
-function doLang(l) {
-  localStorage.setItem('lang', l);
-  var _T = {uz:{'nl-main':'Asosiy','nl-other':'Boshqa','n-home':'Bosh sahifa','n-courses':'Kurslar','n-books':'Kitoblar','n-quiz':'Testlar','n-db':'Bazalar','n-sched':'Jadval','n-pay':'To\'lov','n-stats':'Statistika','u-role':'Talaba','page-title':'Bosh sahifa','page-sub':'Xush kelibsiz!','s1':'Faol kurslar','s2':'Testlar yechildi','s3':'Kitoblar o\'qildi','s4':'O\'rtacha ball'},ru:{'nl-main':'Главное','nl-other':'Другое','n-home':'Главная','n-courses':'Курсы','n-books':'Книги','n-quiz':'Тесты','n-db':'Базы','n-sched':'Расписание','n-pay':'Оплата','n-stats':'Статистика','u-role':'Студент','page-title':'Главная','page-sub':'Добро пожаловать!','s1':'Активные курсы','s2':'Тестов пройдено','s3':'Книг прочитано','s4':'Средний балл'},en:{'nl-main':'Main','nl-other':'Other','n-home':'Home','n-courses':'Courses','n-books':'Books','n-quiz':'Quizzes','n-db':'Databases','n-sched':'Schedule','n-pay':'Payment','n-stats':'Statistics','u-role':'Student','page-title':'Home','page-sub':'Welcome!','s1':'Active courses','s2':'Tests passed','s3':'Books read','s4':'Average score'}};
-  var t = _T[l] || _T.uz;
-  Object.keys(t).forEach(function(id) {
-    var el = document.getElementById(id);
-    if(el) el.textContent = t[id];
-  });
-  document.querySelectorAll('.lang-btn,.lb').forEach(function(b) {
-    var isActive = b.textContent.trim().toUpperCase() === l.toUpperCase();
-    b.style.background = isActive ? 'var(--blue)' : 'transparent';
-    b.style.color = isActive ? '#fff' : 'var(--text2)';
-  });
-}
-(function() {
-  var saved = localStorage.getItem('lang') || 'uz';
-  setTimeout(function() { doLang(saved); }, 300);
-})();
-
-// Clock
-function tickClock() {
-  var d = new Date();
-  var h = String(d.getHours()).padStart(2,'0');
-  var m = String(d.getMinutes()).padStart(2,'0');
-  var el = document.getElementById('student-clock');
-  if(el) el.textContent = '⏰ ' + h + ':' + m;
-}
-tickClock();
-setInterval(tickClock, 10000);
-
-// Show real username
-(function(){
-  var name = localStorage.getItem('user_name') || '';
-  if(name) {
-    var nameEl = document.getElementById('student-uname');
-    if(nameEl) nameEl.textContent = name.split(' ')[0] + ' ' + (name.split(' ')[1] ? name.split(' ')[1][0]+'.' : '');
-    var subEl = document.getElementById('page-sub');
-    if(subEl) subEl.textContent = 'Xush kelibsiz, ' + name.split(' ')[0] + '!';
+    p.innerHTML=h;
   }
+}
+document.addEventListener('click',function(e){
+  var p=document.getElementById('_np');
+  if(p&&p.classList.contains('open')&&!p.contains(e.target)&&!e.target.closest('.nb-wrap')) p.classList.remove('open');
+});
+
+// === USERNAME ===
+(function(){
+  var nm=localStorage.getItem('user_name')||'';
+  if(nm){
+    var el=document.querySelector('.u-name');
+    if(el) el.textContent=nm;
+    var sub=document.getElementById('page-sub');
+    if(sub&&sub.textContent.indexOf('Xush')>-1) sub.textContent='Xush kelibsiz, '+nm.split(' ')[0]+'!';
+  }
+  _buildNotifs();
 })();
 
 </script>
