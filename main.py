@@ -1,34 +1,36 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import engine, Base
 from app.routers.auth import router as auth_router
 from app.routers.users import router as users_router
 from app.routers.grades_payments import grades_router, payments_router
-
-# Barcha modellarni import qilish (jadval yaratish uchun)
 from app.models import user, school, finance  # noqa
 
-# Ma'lumotlar bazasi jadvallarini yaratish
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Bozorov School API",
     description="O'quv markaz boshqaruv tizimi",
-    version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc"
+    version="1.0.0"
 )
 
-# CORS - Frontend bilan ishlash uchun
+# CORS - frontend URL larini qo'shing
+origins = [
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "https://*.vercel.app",  # Vercel
+    "*"  # Hozircha hammaga ruxsat
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Production da aniq domenlarni yozing
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Routerlarni ulash
 app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(grades_router)
@@ -36,11 +38,7 @@ app.include_router(payments_router)
 
 @app.get("/")
 def root():
-    return {
-        "message": "Bozorov School API ishlayapti! 🎓",
-        "docs": "/docs",
-        "version": "1.0.0"
-    }
+    return {"message": "Bozorov School API ishlayapti! 🎓", "version": "1.0.0"}
 
 @app.get("/health")
 def health():
