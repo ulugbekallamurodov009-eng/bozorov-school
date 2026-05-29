@@ -157,31 +157,81 @@ select option{background:var(--bg2);}
 .copy-btn{background:none;border:none;color:var(--text2);cursor:pointer;font-size:15px;transition:color .15s;padding:2px;}
 .copy-btn:hover{color:var(--teal);}
 
-/* === SIDEBAR COLLAPSIBLE === */
-@media(max-width:10000px){
-  .sidebar{transform:translateX(-100%);}
-  .sidebar.open{transform:translateX(0);}
+/* ===== LIGHT MODE ===== */
+body.light{
+  --bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;
+  --text:#111827;--text2:#6b7280;
+  --border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.15);
 }
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:98;}
-.menu-btn{display:flex!important;}
-@media(min-width:769px){
-  .sidebar{transform:translateX(0)!important;}
-  .menu-btn{display:none!important;}
-  .sidebar-overlay{display:none!important;}
-}
+body{transition:background .3s,color .3s;}
 
-/* === NOTIFICATIONS PANEL === */
-.nb-wrap{position:relative;cursor:pointer;}
-.notif-dot{position:absolute;top:5px;right:5px;width:8px;height:8px;background:var(--red);border-radius:50%;border:1.5px solid var(--bg2);}
-.notif-count{position:absolute;top:4px;right:4px;min-width:16px;height:16px;background:var(--red);color:#fff;border-radius:8px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:600;padding:0 3px;}
-.notif-panel{display:none;position:fixed;top:58px;right:12px;width:300px;max-height:380px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;z-index:400;padding:1rem;box-shadow:0 8px 32px rgba(0,0,0,.4);}
-.notif-panel.open{display:block;}
-.ni-item{padding:10px;border-radius:9px;margin-bottom:8px;border-left:3px solid var(--border);background:var(--bg3);}
-.ni-item.warn{border-left-color:var(--amber);}
-.ni-item.danger{border-left-color:var(--red);}
-.ni-item.info{border-left-color:var(--blue);}
-.ni-title{font-size:13px;font-weight:500;}
-.ni-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+/* ===== THEME BTN ===== */
+.theme-btn{
+  width:36px;height:36px;background:var(--bg2);
+  border:1px solid var(--border);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:18px;transition:all .2s;flex-shrink:0;
+}
+.theme-btn:hover{border-color:var(--border2);transform:scale(1.05);}
+
+/* ===== NOTIFICATIONS ===== */
+.notif-wrap{position:relative;display:inline-flex;}
+.notif-badge{
+  position:absolute;top:-4px;right:-4px;
+  min-width:18px;height:18px;
+  background:var(--red);color:#fff;
+  border-radius:9px;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;border:2px solid var(--bg2);
+}
+.notif-panel{
+  display:none;position:fixed;
+  top:58px;right:12px;
+  width:310px;max-height:420px;overflow-y:auto;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:16px;z-index:999;
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
+  animation:fadeDown .2s ease;
+}
+.notif-panel.show{display:block;}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.notif-header{
+  padding:14px 16px 10px;
+  font-size:14px;font-weight:600;
+  border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.notif-clear{font-size:12px;color:var(--text2);cursor:pointer;font-weight:400;}
+.notif-clear:hover{color:var(--red);}
+.notif-item{
+  padding:12px 16px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background .15s;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.notif-item:last-child{border-bottom:none;}
+.notif-item:hover{background:var(--bg3);}
+.notif-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.notif-title{font-size:13px;font-weight:500;color:var(--text);}
+.notif-sub{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.4;}
+.notif-empty{padding:24px;text-align:center;color:var(--text2);font-size:13px;}
+
+/* ===== MOBILE ===== */
+@media(max-width:768px){
+  .g2,.g3{grid-template-columns:1fr!important;}
+  .stats4{grid-template-columns:1fr 1fr!important;}
+  .stats3,.s3,.s4{grid-template-columns:1fr 1fr!important;}
+  .card{overflow-x:auto;}
+  table{min-width:480px;}
+  .row2,.r2{grid-template-columns:1fr!important;}
+  .topbar,.topbar-wrap{flex-wrap:wrap;gap:8px;}
+  .tb-l h2,.topbar-left h2{font-size:17px!important;}
+}
+@media(max-width:480px){
+  .main,.main-content{padding:.875rem!important;}
+  .stats4{grid-template-columns:1fr 1fr!important;}
+  .sc,.stat-card{padding:.75rem!important;}
+}
 
 </style>
 </head>
@@ -189,7 +239,6 @@ select option{background:var(--bg2);}
 <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
 <!-- SIDEBAR -->
-<div id="sb-ov" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:98;" onclick="toggleSidebar()"></div>
 <div class="sidebar" id="sidebar">
   <div class="s-logo">
     <div class="s-icon">🎫</div>
@@ -655,7 +704,7 @@ function showPage(id,el){
   document.getElementById('page-sub').textContent=pageSubs[id]||'';
   if(id==='attendance') loadAttendance();
   if(id==='results') loadResults();
-  if(window._sbOpen) toggleSidebar();
+  if(window.innerWidth<=768) toggleSidebar();
 }
 
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
@@ -674,7 +723,7 @@ function closeLogoutModal(){document.getElementById('modal-logout').classList.re
 function confirmLogout(){
   document.body.style.opacity='0';
   document.body.style.transition='opacity 0.4s';
-  setTimeout(function(){window.location.href='login (6).html';},400);
+  setTimeout(function(){window.location.href='login.html';},400);
 }
 
 // ===== ATTENDANCE =====
@@ -939,71 +988,109 @@ function printCred(){
   setTimeout(function(){win.print();},300);
 }
 
-// === SIDEBAR ===
-window._sbOpen=false;
-function toggleSidebar(){
-  var s=document.getElementById('sidebar');
-  var o=document.getElementById('sb-ov');
-  window._sbOpen=!window._sbOpen;
-  s.classList.toggle('open',window._sbOpen);
-  if(o) o.style.display=window._sbOpen?'block':'none';
+// ===== THEME =====
+function toggleTheme(){
+  document.body.classList.toggle('light');
+  var l=document.body.classList.contains('light');
+  localStorage.setItem('theme',l?'light':'dark');
+  document.querySelectorAll('.theme-btn').forEach(function(b){b.textContent=l?'☀️':'🌙';});
+}
+(function(){
+  var t=localStorage.getItem('theme')||'dark';
+  if(t==='light') document.body.classList.add('light');
+  document.querySelectorAll('.theme-btn').forEach(function(b){b.textContent=t==='light'?'☀️':'🌙';});
+})();
+
+// ===== NOTIFICATIONS =====
+var _allNotifs = [];
+function _loadNotifs(){
+  var r = localStorage.getItem('user_role')||'receptionist';
+  var d = new Date().getDate();
+  var m = new Date().getMonth()+1;
+  _allNotifs = [];
+  
+  if(r==='admin'){
+    if(d>=25) _allNotifs.push({icon:'💰',title:"O'qituvchi oyliqlari!",sub:'Oylik to\'lash muddati keldi, '+d+'-'+m});
+    if(d>=20) _allNotifs.push({icon:'📅',title:"To'lov muddati yaqinlashdi",sub:"O'quvchilar to'lov kuniga "+(30-d)+' kun qoldi'});
+    _allNotifs.push({icon:'📝',title:"Oylik imtihon",sub:'Bu oy oxirida oylik imtihon bor'});
+    _allNotifs.push({icon:'👥',title:"Yangi o'quvchilar",sub:"Yangi o'quvchilarni qo'shing"});
+  } else if(r==='teacher'){
+    _allNotifs.push({icon:'📝',title:"Oylik imtihon",sub:"O'quvchilarga xabar bering"});
+    _allNotifs.push({icon:'📊',title:"Oylik hisobot",sub:'Oy oxiriga '+(30-d)+' kun qoldi'});
+    if(d>=20) _allNotifs.push({icon:'✅',title:"Davomat kiriting",sub:'Bu hafta davomati kiritilmagan'});
+  } else if(r==='student'){
+    if(d>=20) _allNotifs.push({icon:'💳',title:"To'lov muddati!",sub:"Oylik to'lovni amalga oshiring"});
+    _allNotifs.push({icon:'📝',title:"Oylik imtihon",sub:'Imtihonga yaxshi tayyorlaning'});
+    _allNotifs.push({icon:'📚',title:"Yangi dars materiallari",sub:'Kitoblar bo\'limini tekshiring'});
+  } else if(r==='receptionist'){
+    _allNotifs.push({icon:'💸',title:"To'lamagan o'quvchilar",sub:"5 ta o'quvchi to'lov qilmagan"});
+    if(d>=25) _allNotifs.push({icon:'⏰',title:"Oy tugayapti",sub:'Qolgan to\'lovlarni yig\'ing'});
+  }
+  
+  var badge=document.getElementById('_nb');
+  if(badge){
+    badge.textContent=_allNotifs.length;
+    badge.style.display=_allNotifs.length>0?'flex':'none';
+  }
 }
 
-// === NOTIFICATIONS ===
-window._notifs=[];
-function _buildNotifs(){
-  var r=localStorage.getItem('user_role')||'';
-  var d=new Date().getDate();
-  var n=[];
-  if(r==='admin'){
-    n.push({t:'danger',title:"O'qituvchi oyliqlari yaqinlashdi",sub:'Oyliklarni to\'lash vaqti keldi'});
-    if(d>=20) n.push({t:'warn',title:"To'lov muddati",sub:"Bu oy to'lov kuniga "+(30-d)+' kun qoldi'});
-    n.push({t:'info',title:"Oylik imtihon",sub:'10 kun ichida oylik imtihon bor'});
-  } else if(r==='teacher'){
-    n.push({t:'warn',title:"Oylik imtihon",sub:"O'quvchilarga eslatib qo'ying"});
-    n.push({t:'info',title:"Oylik hisobot",sub:'Oy oxiriga 5 kun qoldi'});
-  } else if(r==='student'){
-    if(d>=20) n.push({t:'danger',title:"To'lov muddati!",sub:"Oylik to'lovingizni amalga oshiring"});
-    n.push({t:'warn',title:"Oylik imtihon",sub:'Imtihonga tayyorlaning'});
-  } else if(r==='receptionist'){
-    n.push({t:'warn',title:"To'lamagan o'quvchilar",sub:"5 ta o'quvchi to'lamagan"});
-  }
-  window._notifs=n;
-  var c=document.getElementById('_nc');
-  if(c){c.textContent=n.length;c.style.display=n.length?'flex':'none';}
-}
-function toggleNotifs(){
+function toggleNotifs(e){
+  if(e) e.stopPropagation();
   var p=document.getElementById('_np');
   if(!p){
     p=document.createElement('div');
     p.id='_np';p.className='notif-panel';
     document.body.appendChild(p);
   }
-  p.classList.toggle('open');
-  if(p.classList.contains('open')){
-    var h='<div style="font-size:14px;font-weight:600;margin-bottom:10px">🔔 Bildirishnomalar</div>';
-    if(!window._notifs.length){h+='<p style="color:var(--text2);text-align:center">Bildirishnoma yo\'q</p>';}
-    else window._notifs.forEach(function(n){
-      h+='<div class="ni-item '+n.t+'"><div class="ni-title">'+n.title+'</div><div class="ni-sub">'+n.sub+'</div></div>';
-    });
-    p.innerHTML=h;
-  }
+  p.classList.toggle('show');
+  if(p.classList.contains('show')) _renderNotifs(p);
 }
+
+function _renderNotifs(p){
+  var h='<div class="notif-header">🔔 Bildirishnomalar <span class="notif-clear" onclick="_clearNotifs()">Tozalash</span></div>';
+  if(!_allNotifs.length){
+    h+='<div class="notif-empty">✅ Bildirishnomalar yo\'q</div>';
+  } else {
+    _allNotifs.forEach(function(n){
+      h+='<div class="notif-item"><div class="notif-icon">'+n.icon+'</div><div><div class="notif-title">'+n.title+'</div><div class="notif-sub">'+n.sub+'</div></div></div>';
+    });
+  }
+  p.innerHTML=h;
+}
+
+function _clearNotifs(){
+  _allNotifs=[];
+  var badge=document.getElementById('_nb');
+  if(badge) badge.style.display='none';
+  var p=document.getElementById('_np');
+  if(p) _renderNotifs(p);
+}
+
 document.addEventListener('click',function(e){
   var p=document.getElementById('_np');
-  if(p&&p.classList.contains('open')&&!p.contains(e.target)&&!e.target.closest('.nb-wrap')) p.classList.remove('open');
+  if(p&&p.classList.contains('show')&&!p.contains(e.target)&&!e.target.closest('.notif-wrap')){
+    p.classList.remove('show');
+  }
 });
 
-// === USERNAME ===
+// ===== LOGOUT =====
+function logout(){
+  if(confirm('Tizimdan chiqmoqchimisiz?')){
+    localStorage.clear();
+    document.body.style.opacity='0';
+    document.body.style.transition='opacity 0.3s';
+    setTimeout(function(){window.location.href='login.html';},300);
+  }
+}
+
+// ===== USERNAME =====
 (function(){
   var nm=localStorage.getItem('user_name')||'';
   if(nm){
     var el=document.querySelector('.u-name');
     if(el) el.textContent=nm;
-    var sub=document.getElementById('page-sub');
-    if(sub&&sub.textContent.indexOf('Xush')>-1) sub.textContent='Xush kelibsiz, '+nm.split(' ')[0]+'!';
   }
-  _buildNotifs();
+  _loadNotifs();
 })();
 
 </script>

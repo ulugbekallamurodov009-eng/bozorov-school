@@ -200,11 +200,29 @@
     white-space: nowrap;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
+
+body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b7280;--border:rgba(0,0,0,.10);}
+body{transition:background .3s,color .3s;}
+.lt-theme-btn{
+  position:fixed;top:1rem;right:1rem;z-index:100;
+  width:40px;height:40px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;cursor:pointer;font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 12px rgba(0,0,0,.15);
+  transition:all .2s;
+}
+.lt-theme-btn:hover{transform:scale(1.05);box-shadow:0 4px 16px rgba(0,0,0,.25);}
+@media(max-width:480px){
+  .container{padding:0 .75rem;}
+  .card{padding:1.5rem !important;border-radius:16px !important;}
+}
 </style>
 </head>
 <body>
 
 <!-- Floating particles -->
+<button class="lt-theme-btn" id="lt-btn" onclick="ltTheme()" title="Kunduzgi/Tungi rejim">🌙</button>
 <div class="particles" id="particles"></div>
 
 <div class="container">
@@ -266,9 +284,8 @@ let lang = 'uz';
 
 function setLang(l, btn) {
   lang = l;
-  localStorage.setItem('lang', l);
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
+  btn.classList.add('active');
   const t = T[l];
   document.getElementById('title').textContent = t.title;
   document.getElementById('subtitle').textContent = t.subtitle;
@@ -334,7 +351,7 @@ function resetBtn() {
 }
 
 // ===== BACKEND KONFIGURATSIYA =====
-const API_BASE = 'http://localhost:8000'; // Backend URL sini shu yerda o'zgartiring
+const API_BASE = 'https://bozorov-school.onrender.com'; // Backend URL sini shu yerda o'zgartiring
 
 // Role bo'yicha dashboard sahifalariga yo'naltirish
 const ROLE_PAGES = {
@@ -423,6 +440,19 @@ for (let i = 0; i < 18; i++) {
   `;
   container.appendChild(p);
 }
+
+// Theme
+function ltTheme(){
+  document.body.classList.toggle('light');
+  var l=document.body.classList.contains('light');
+  localStorage.setItem('theme',l?'light':'dark');
+  var b=document.getElementById('lt-btn');
+  if(b) b.textContent=l?'☀️':'🌙';
+}
+(function(){
+  var t=localStorage.getItem('theme')||'dark';
+  if(t==='light'){document.body.classList.add('light');var b=document.getElementById('lt-btn');if(b)b.textContent='☀️';}
+})();
 </script>
 </body>
 </html>
