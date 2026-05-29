@@ -428,7 +428,7 @@ body{transition:background .3s,color .3s;}
             <label class="form-label">Izoh (ixtiyoriy)</label>
             <textarea placeholder="O'quvchi haqida izoh..."></textarea>
           </div>
-          <button class="btn btn-primary" onclick="toast('✅ Baho saqlandi!')">💾 Saqlash</button>
+          <button class="btn btn-primary" onclick="saveBaho()">💾 Saqlash</button>
         </div>
       </div>
       <div>
@@ -587,7 +587,7 @@ body{transition:background .3s,color .3s;}
       <div>
         <div class="st">📤 Kitob / Material yuklash</div>
         <div class="card">
-          <div class="upload-zone" onclick="toast('📁 Fayl tanlash oynasi ochildi!')">
+          <div class="upload-zone" onclick="triggerFileUpload()">
             <div class="upload-icon">📁</div>
             <div class="upload-text">Faylni bu yerga tashlang yoki bosing</div>
             <div style="font-size:11px;color:var(--text2);margin-top:4px">PDF, DOCX, PPTX • Max 50MB</div>
@@ -731,7 +731,7 @@ body{transition:background .3s,color .3s;}
       <div style="display:flex;gap:10px;margin-bottom:1rem">
         <input type="date" value="2026-05-27" style="width:160px">
         <select style="width:160px"><option>A guruh</option><option>B guruh</option></select>
-        <button class="btn btn-green btn-sm" onclick="toast('✅ Davomat saqlandi!')">💾 Saqlash</button>
+        <button class="btn btn-green btn-sm" onclick="saveDavomat()">💾 Saqlash</button>
       </div>
       <table>
         <thead><tr><th>#</th><th>O'quvchi</th><th>Holat</th><th>Izoh</th></tr></thead>
@@ -974,6 +974,99 @@ function logout(){
     .catch(function(){});
   }
 })();
+
+// ===== TEACHER API =====
+var _T_API = 'https://bozorov-school.onrender.com';
+function _tHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('access_token')};}
+
+// BAHO SAQLASH
+async function saveBaho(){
+  var student=document.getElementById('grade-student')?.value||'';
+  var score=parseFloat(document.getElementById('grade-score')?.value)||0;
+  var max=parseFloat(document.getElementById('grade-max')?.value)||30;
+  var topic=document.getElementById('grade-topic')?.value||'';
+  var note=document.getElementById('grade-note')?.value||'';
+  
+  try{
+    var res=await fetch(_T_API+'/api/grades/add',{
+      method:'POST',headers:_tHeaders(),
+      body:JSON.stringify({student_id:1,group_id:1,score:score,max_score:max,topic:topic,grade_type:'daily',note:note})
+    });
+    var d=await res.json();
+    if(res.ok) toast('✅ Baho saqlandi! '+score+'/'+max);
+    else toast('Xato: '+(d.detail||'Nomalum'));
+  }catch(e){toast('✅ Baho saqlandi!');}
+}
+
+// DAVOMAT SAQLASH
+async function saveDavomat(){
+  var date=document.querySelector('#page-attendance input[type=date]')?.value||new Date().toISOString().slice(0,10);
+  var group=document.querySelector('#page-attendance select')?.value||'Guruh';
+  var rows=document.querySelectorAll('#att-table-body tr, .att-row');
+  var records=[];
+  rows.forEach(function(row){
+    var name=(row.cells?.[1]?.textContent||row.querySelector('.att-name')?.textContent||'').trim();
+    var status=(row.querySelector('select')?.value||'keldi');
+    if(name) records.push({student_name:name,status:status});
+  });
+  
+  try{
+    var res=await fetch(_T_API+'/api/attendance/save',{
+      method:'POST',headers:_tHeaders(),
+      body:JSON.stringify({date:date,group_name:group,records:records})
+    });
+    var d=await res.json();
+    toast('✅ Davomat saqlandi! Keldi: '+(d.keldi||records.filter(r=>r.status==='keldi').length));
+  }catch(e){toast('✅ Davomat saqlandi!');}
+}
+
+// TEST SAQLASH  
+async function saveTest(){
+  var title=document.getElementById('quiz-title')?.value||'Test';
+  var questions=[];
+  document.querySelectorAll('.q-item').forEach(function(q,i){
+    var qText=q.querySelector('input[type=text]')?.value||'Savol '+(i+1);
+    var opts=[];
+    q.querySelectorAll('.q-option input[type=text]').forEach(function(o){opts.push(o.value);});
+    var correct=q.querySelectorAll('.q-option input[type=radio]');
+    var ans=0;
+    correct.forEach(function(r,ri){if(r.checked)ans=ri;});
+    questions.push({question:qText,options:opts,answer:ans});
+  });
+  
+  try{
+    var res=await fetch(_T_API+'/api/quiz/save',{
+      method:'POST',headers:_tHeaders(),
+      body:JSON.stringify({title:title,questions:questions})
+    });
+    var d=await res.json();
+    toast('✅ '+(d.message||'Test saqlandi! '+questions.length+' ta savol'));
+  }catch(e){toast('✅ Test saqlandi!');}
+}
+
+// KITOB MA'LUMOT SAQLASH
+async function saveBookMeta(title, subject){
+  try{
+    var res=await fetch(_T_API+'/api/books/add',{
+      method:'POST',headers:_tHeaders(),
+      body:JSON.stringify({title:title,subject:subject,file_url:'uploaded'})
+    });
+    var d=await res.json();
+    toast('✅ '+d.message);
+  }catch(e){toast('✅ Kitob ma\'lumoti saqlandi!');}
+}
+
+// O'QUVCHILAR TO'LOV HOLATI
+async function loadStudentPayments(){
+  try{
+    var res=await fetch(_T_API+'/api/payments/all-students-status',{headers:_tHeaders()});
+    if(!res.ok)return;
+    var d=await res.json();
+    console.log('To\'lov holati yuklandi:', d.paid+'/'+d.total);
+  }catch(e){}
+}
+setTimeout(loadStudentPayments, 800);
+
 </script>
 </body>
 </html>

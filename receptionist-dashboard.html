@@ -1146,6 +1146,19 @@ function logout(){
     .catch(function(){});
   }
 })();
+
+async function _savePaymentToBackend(name, amount, method){
+  var token=localStorage.getItem('access_token');
+  if(!token)return;
+  try{
+    fetch('https://bozorov-school.onrender.com/api/payments/quick-pay',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({student_name:name,amount:amount,method:method,month:new Date().toISOString().slice(0,7),note:name})
+    }).then(function(r){if(r.ok)console.log('Payment saved: '+name+' '+amount);});
+  }catch(e){}
+}
+
 </script>
 </body>
 </html>

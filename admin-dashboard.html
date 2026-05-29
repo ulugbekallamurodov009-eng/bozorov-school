@@ -252,6 +252,20 @@ body{transition:background .3s,color .3s;}
   .sc,.stat-card{padding:.75rem!important;}
 }
 
+
+/* Expense items */
+.expense-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;background:var(--bg3);
+  border-radius:10px;border:1px solid var(--border);
+  animation:fadeIn .3s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.expense-name{font-size:13px;font-weight:500;}
+.expense-amount{font-size:13px;font-weight:600;color:var(--red);}
+.expense-delete{background:none;border:none;cursor:pointer;color:var(--text2);font-size:14px;padding:2px 6px;border-radius:6px;}
+.expense-delete:hover{background:var(--red-d);color:var(--red);}
+
 </style>
 </head>
 <body>
@@ -821,14 +835,48 @@ body{transition:background .3s,color .3s;}
         <div class="bar-chart" id="finance-bar"></div>
       </div>
       <div class="card">
-        <div class="card-title">📋 Xarajatlar taqsimoti</div>
-        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
-          <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>O'qituvchi oyliqlari</span><span style="font-weight:600">8,640,000</span></div><div class="pb"><div class="pf" style="width:60%;background:var(--purple)"></div></div></div>
-          <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Ijara</span><span style="font-weight:600">2,000,000</span></div><div class="pb"><div class="pf" style="width:14%;background:var(--amber)"></div></div></div>
-          <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Kommunal</span><span style="font-weight:600">500,000</span></div><div class="pb"><div class="pf" style="width:3%;background:var(--teal)"></div></div></div>
-          <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Materiallar</span><span style="font-weight:600">800,000</span></div><div class="pb"><div class="pf" style="width:6%;background:var(--blue)"></div></div></div>
-          <hr style="border:none;border-top:1px solid var(--border)">
-          <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600"><span>Sof foyda</span><span style="color:var(--green)">2,460,000 so'm</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="card-title" style="margin:0">📋 Xarajatlar</div>
+          <button class="btn btn-primary btn-sm" onclick="openExpenseModal()">➕ Qo'shish</button>
+        </div>
+        <div id="expense-list" style="display:flex;flex-direction:column;gap:8px">
+          <!-- Dynamic expenses -->
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:10px 0">
+        <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600">
+          <span>Jami xarajat:</span>
+          <span id="total-expense" style="color:var(--red)">0 so'm</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-top:6px">
+          <span>Sof foyda:</span>
+          <span id="net-profit" style="color:var(--green)">0 so'm</span>
+        </div>
+
+        <!-- Expense Modal -->
+        <div id="expense-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center;">
+          <div style="background:var(--bg2);border-radius:16px;padding:1.5rem;width:360px;max-width:95vw;border:1px solid var(--border2)">
+            <div style="font-size:16px;font-weight:600;margin-bottom:1rem">➕ Yangi xarajat</div>
+            <div class="fg"><label class="fl">Xarajat nomi</label>
+              <select id="exp-type" style="width:100%">
+                <option value="ijara">🏠 Ijara</option>
+                <option value="kommunal">💡 Kommunal</option>
+                <option value="maosh">👨‍💼 Xodim maoshi</option>
+                <option value="material">📦 Material</option>
+                <option value="reklama">📢 Reklama</option>
+                <option value="boshqa">📌 Boshqa</option>
+              </select>
+            </div>
+            <div class="fg"><label class="fl">Summa (so'm)</label>
+              <input type="number" id="exp-amount" placeholder="Masalan: 2000000" style="width:100%">
+            </div>
+            <div class="fg"><label class="fl">Izoh (ixtiyoriy)</label>
+              <input type="text" id="exp-note" placeholder="Qo'shimcha izoh" style="width:100%">
+            </div>
+            <div style="display:flex;gap:8px;margin-top:1rem">
+              <button class="btn btn-primary" style="flex:1" onclick="saveExpense()">💾 Saqlash</button>
+              <button class="btn btn-out" style="flex:1" onclick="closeExpenseModal()">Bekor</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1504,9 +1552,9 @@ var _orig_showPage=showPage;
 showPage=function(id,el){
   _orig_showPage(id,el);
   if(id==='credentials')loadUsersList();
-  if(id==='payments')loadPaymentHistory();
+  if(id==='payments'){loadPaymentHistory();loadAllPaymentStatus();}
 };
-setTimeout(function(){loadAdminStats();loadPaymentHistory();},600);
+setTimeout(function(){loadAdminStats();loadPaymentHistory();loadAllPaymentStatus();},600);
 
 
 // Real username from backend
@@ -1546,6 +1594,181 @@ setTimeout(function(){loadAdminStats();loadPaymentHistory();},600);
     .catch(function(){});
   }
 })();
+
+// ADMIN: Barcha to'lovlar holati yuklash
+async function loadAllPaymentStatus(){
+  var token=localStorage.getItem('access_token');
+  if(!token)return;
+  try{
+    var res=await fetch('https://bozorov-school.onrender.com/api/payments/all-students-status',{
+      headers:{'Authorization':'Bearer '+token}
+    });
+    if(!res.ok)return;
+    var d=await res.json();
+    
+    // Update stats
+    var paidEl=document.getElementById('stat-paid-count');
+    var unpaidEl=document.getElementById('stat-unpaid-count');
+    if(paidEl) paidEl.textContent=d.paid;
+    if(unpaidEl) unpaidEl.textContent=d.unpaid;
+    
+    // Update payments table
+    var tbody=document.getElementById('pay-table-body');
+    if(tbody&&d.students&&d.students.length){
+      tbody.innerHTML='';
+      d.students.forEach(function(s,i){
+        var statusTag=s.paid
+          ?'<span class="tag tag-green">✅ To\'lagan</span>'
+          :s.paid_amount>0
+            ?'<span class="tag tag-amber">⚠️ Qisman</span>'
+            :'<span class="tag tag-red">❌ To\'lamagan</span>';
+        var tr=document.createElement('tr');
+        tr.innerHTML='<td style="color:var(--text2)">'+(i+1)+'</td>'
+          +'<td>'+s.name+'</td><td>—</td>'
+          +'<td style="font-size:12px;color:var(--text2)">—</td>'
+          +'<td>'+statusTag+'</td>'
+          +'<td><code style="font-size:11px;color:var(--blue-l)">'+s.login+'</code></td>'
+          +'<td><button class="btn btn-out btn-sm">✏️</button></td>';
+        tbody.appendChild(tr);
+      });
+    }
+    
+    console.log('To\'lovlar: '+d.paid+' to\'lagan, '+d.unpaid+' to\'lamagan');
+  }catch(e){console.log('Payment status error:', e);}
+}
+
+// Receptionist payment saving
+async function receptionSavePayment(name, amount, method){
+  var token=localStorage.getItem('access_token');
+  var month=new Date().toISOString().slice(0,7);
+  try{
+    var res=await fetch('https://bozorov-school.onrender.com/api/payments/quick-pay',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({student_name:name,amount:amount,method:method,month:month,note:name})
+    });
+    if(res.ok) console.log('Payment saved for', name);
+  }catch(e){console.log(e);}
+}
+
+
+// ===== XARAJATLAR =====
+var _expenses = JSON.parse(localStorage.getItem('bz_expenses') || '[]');
+var _INCOME = 14400000; // Demo income, will be replaced by real data
+
+var _expIcons = {
+  ijara:'🏠',kommunal:'💡',maosh:'👨‍💼',
+  material:'📦',reklama:'📢',boshqa:'📌'
+};
+var _expNames = {
+  ijara:'Ijara',kommunal:'Kommunal to\'lov',maosh:'Xodim maoshi',
+  material:'Material xarajat',reklama:'Reklama',boshqa:'Boshqa xarajat'
+};
+
+function openExpenseModal(){
+  var m=document.getElementById('expense-modal');
+  if(m){m.style.display='flex';document.getElementById('exp-amount').focus();}
+}
+function closeExpenseModal(){
+  var m=document.getElementById('expense-modal');
+  if(m)m.style.display='none';
+  document.getElementById('exp-amount').value='';
+  document.getElementById('exp-note').value='';
+}
+function saveExpense(){
+  var type=document.getElementById('exp-type').value;
+  var amount=parseInt(document.getElementById('exp-amount').value)||0;
+  var note=document.getElementById('exp-note').value.trim();
+  if(!amount){toast('Summani kiriting!');return;}
+  
+  var expense={
+    id:Date.now(),
+    type:type,
+    name:_expNames[type]||type,
+    icon:_expIcons[type]||'📌',
+    amount:amount,
+    note:note,
+    date:new Date().toLocaleDateString('uz')
+  };
+  _expenses.push(expense);
+  localStorage.setItem('bz_expenses',JSON.stringify(_expenses));
+  
+  // Also save to backend
+  var token=localStorage.getItem('access_token');
+  if(token){
+    fetch('https://bozorov-school.onrender.com/api/payments/quick-pay',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({
+        student_name:'XARAJAT: '+expense.name,
+        amount:-amount,
+        method:'expense',
+        month:new Date().toISOString().slice(0,7),
+        note:expense.name+(note?' - '+note:'')
+      })
+    }).catch(function(){});
+  }
+  
+  closeExpenseModal();
+  renderExpenses();
+  toast('✅ '+expense.name+' xarajati qo\'shildi!');
+}
+
+function deleteExpense(id){
+  _expenses=_expenses.filter(function(e){return e.id!==id;});
+  localStorage.setItem('bz_expenses',JSON.stringify(_expenses));
+  renderExpenses();
+  toast('Xarajat o\'chirildi!');
+}
+
+function renderExpenses(){
+  var list=document.getElementById('expense-list');
+  if(!list)return;
+  
+  if(!_expenses.length){
+    list.innerHTML='<div style="text-align:center;color:var(--text2);padding:1rem;font-size:13px">Xarajat qo\'shilmagan</div>';
+  }else{
+    list.innerHTML=_expenses.map(function(e){
+      return '<div class="expense-item">'
+        +'<div><div class="expense-name">'+e.icon+' '+e.name+'</div>'
+        +(e.note?'<div style="font-size:11px;color:var(--text2)">'+e.note+'</div>':'')
+        +'<div style="font-size:11px;color:var(--text2)">'+e.date+'</div></div>'
+        +'<div style="display:flex;align-items:center;gap:8px">'
+        +'<span class="expense-amount">'+e.amount.toLocaleString()+' so\'m</span>'
+        +'<button class="expense-delete" onclick="deleteExpense('+e.id+')">🗑️</button>'
+        +'</div></div>';
+    }).join('');
+  }
+  
+  var total=_expenses.reduce(function(s,e){return s+e.amount;},0);
+  var totalEl=document.getElementById('total-expense');
+  var profitEl=document.getElementById('net-profit');
+  
+  if(totalEl) totalEl.textContent=total.toLocaleString()+' so\'m';
+  if(profitEl){
+    var income=parseInt(_INCOME)||0;
+    var profit=income-total;
+    profitEl.textContent=profit.toLocaleString()+' so\'m';
+    profitEl.style.color=profit>=0?'var(--green)':'var(--red)';
+  }
+  
+  // Update finance page stats
+  var netEl=document.querySelector('#page-finance .sn[style*="blue"]');
+  if(netEl&&_expenses.length){
+    var income2=parseInt(_INCOME)||14400000;
+    var tot=_expenses.reduce(function(s,e){return s+e.amount;},0);
+    netEl.textContent=((income2-tot)/1000000).toFixed(1)+'M';
+  }
+}
+
+// Close modal on background click
+document.getElementById('expense-modal')?.addEventListener('click',function(e){
+  if(e.target===this) closeExpenseModal();
+});
+
+// Load expenses on start
+setTimeout(renderExpenses, 400);
+
 </script>
 </body>
 </html>
