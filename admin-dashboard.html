@@ -604,12 +604,17 @@ body{transition:background .3s,color .3s;}
             <select id="cred-type" onchange="updateCredForm()">
               <option value="student">O'quvchi</option>
               <option value="teacher">O'qituvchi</option>
+              <option value="admin">Admin</option>
               <option value="receptionist">Resepsionist</option>
             </select>
           </div>
           <div class="row2">
             <div class="fg"><label class="fl">Ism</label><input type="text" id="cred-first" placeholder="Ism" oninput="generateCred()"></div>
             <div class="fg"><label class="fl">Familiya</label><input type="text" id="cred-last" placeholder="Familiya" oninput="generateCred()"></div>
+          </div>
+          <div class="row2">
+            <div class="fg"><label class="fl">Login (o'zingiz ham yozishingiz mumkin)</label><input type="text" id="cred-custom-login" placeholder="Avtomatik yoki o'zingiz yozing" oninput="document.getElementById('gen-login').textContent=this.value||'ism.familiya'"></div>
+            <div class="fg"><label class="fl">Parol (o'zingiz ham yozishingiz mumkin)</label><input type="text" id="cred-custom-pass" placeholder="Avtomatik yoki o'zingiz yozing"></div>
           </div>
           <div class="fg" id="cred-group-block">
             <label class="fl">Guruh</label>
@@ -645,7 +650,7 @@ body{transition:background .3s,color .3s;}
           </div>
 
           <div style="display:flex;gap:8px">
-            <button class="btn btn-blue" style="flex:1" onclick="toast('✅ Login yaratildi va SMS yuborildi!')">✅ Yaratish</button>
+            <button class="btn btn-blue" style="flex:1" onclick="createUserAPI()">✅ Yaratish</button>
             <button class="btn btn-out btn-sm" onclick="toast('📱 SMS yuborildi!')">📱 SMS</button>
             <button class="btn btn-out btn-sm" onclick="toast('📄 Chop etildi!')">🖨️</button>
           </div>
@@ -1357,6 +1362,190 @@ function logout(){
   _loadNotifs();
 })();
 
+
+// ===== USER CREATION API =====
+async function createUserAPI(){
+  var token=localStorage.getItem('access_token');
+  var first=document.getElementById('cred-first')?.value?.trim();
+  var last=document.getElementById('cred-last')?.value?.trim();
+  var role=document.getElementById('cred-type')?.value;
+  var customLogin=document.getElementById('cred-custom-login')?.value?.trim();
+  var customPass=document.getElementById('cred-custom-pass')?.value?.trim();
+  if(!first||!last){toast('Ism va familiyani kiriting!');return;}
+  
+  var btn=event.target;
+  btn.disabled=true;btn.textContent='⏳...';
+  
+  try{
+    var body={first_name:first,last_name:last,role:role,
+      subject:document.getElementById('new-teacher-subject')?.value||null,
+      salary_pct:30.0};
+    if(customLogin) body.custom_login=customLogin;
+    if(customPass) body.custom_pass=customPass;
+    
+    var res=await fetch('https://bozorov-school.onrender.com/api/users/create',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify(body)
+    });
+    var data=await res.json();
+    if(!res.ok){toast('Xato: '+(data.detail||'Nomalum'));btn.disabled=false;btn.textContent='✅ Yaratish';return;}
+    
+    document.getElementById('gen-login').textContent=data.login;
+    document.getElementById('gen-pass').textContent=data.password_plain;
+    document.getElementById('cred-first').value='';
+    document.getElementById('cred-last').value='';
+    if(document.getElementById('cred-custom-login')) document.getElementById('cred-custom-login').value='';
+    if(document.getElementById('cred-custom-pass')) document.getElementById('cred-custom-pass').value='';
+    
+    toast('✅ '+first+' '+last+' — login yaratildi!');
+    setTimeout(loadUsersList, 500);
+  }catch(e){toast('Server xatosi!');}
+  btn.disabled=false;btn.textContent='✅ Yaratish';
+}
+
+// ===== USERS LIST =====
+async function loadUsersList(){
+  var token=localStorage.getItem('access_token');
+  if(!token)return;
+  try{
+    var res=await fetch('https://bozorov-school.onrender.com/api/users/list',{headers:{'Authorization':'Bearer '+token}});
+    if(!res.ok)return;
+    var users=await res.json();
+    var el=document.getElementById('cred-list');
+    if(!el)return;
+    var countEl=document.getElementById('cred-count');
+    if(countEl) countEl.textContent=users.length+' ta';
+    
+    var roleN={'admin':'Admin','teacher':"O'qituvchi",'student':"O'quvchi",'receptionist':'Resepshn'};
+    var roleC={'admin':'var(--purple)','teacher':'var(--blue-l)','student':'var(--green)','receptionist':'var(--teal)'};
+    
+    if(!users.length){el.innerHTML='<div style="text-align:center;color:var(--text2);padding:2rem">Foydalanuvchi yo\'q</div>';return;}
+    
+    el.innerHTML=users.map(function(u){
+      var c=roleC[u.role]||'var(--text2)';
+      var n=roleN[u.role]||u.role;
+      return '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px">'
+        +'<div style="display:flex;justify-content:space-between;margin-bottom:8px">'
+        +'<span style="font-size:14px;font-weight:500">'+u.full_name+'</span>'
+        +'<span style="font-size:11px;padding:2px 8px;border-radius:100px;background:'+c+'22;color:'+c+'">'+n+'</span></div>'
+        +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">'
+        +'<span style="font-size:12px;color:var(--text2);width:55px">Login:</span>'
+        +'<code style="flex:1;background:var(--bg2);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--teal);border:1px solid var(--border)">'+u.login+'</code>'
+        +'<button style="background:none;border:none;cursor:pointer;color:var(--text2)" data-cp="'+u.login+'">📋</button></div>'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">'
+        +'<span class="tag '+(u.is_active?'tag-green':'tag-red')+'">'+(u.is_active?'✅ Faol':'🚫 Bloklangan')+'</span>'
+        +'<div style="display:flex;gap:6px">'
+        +'<button class="btn btn-out btn-sm" data-toggle="'+u.id+'">'+(u.is_active?'🚫 Bloklash':'✅ Faollashtirish')+'</button>'
+        +'<button class="btn btn-out btn-sm" data-reset="'+u.id+'">🔄 Parol</button>'
+        +'</div></div></div>';
+    }).join('');
+    
+    el.querySelectorAll('[data-cp]').forEach(function(b){
+      b.onclick=function(){navigator.clipboard.writeText(this.dataset.cp);toast('📋 Nusxalandi!');};
+    });
+    el.querySelectorAll('[data-toggle]').forEach(function(b){
+      b.onclick=async function(){
+        var r=await fetch('https://bozorov-school.onrender.com/api/users/'+this.dataset.toggle+'/toggle-active',{method:'PUT',headers:{'Authorization':'Bearer '+token}});
+        if(r.ok){toast('Holat o\'zgardi!');loadUsersList();}
+      };
+    });
+    el.querySelectorAll('[data-reset]').forEach(function(b){
+      b.onclick=async function(){
+        var r=await fetch('https://bozorov-school.onrender.com/api/users/'+this.dataset.reset+'/reset-password',{method:'PUT',headers:{'Authorization':'Bearer '+token}});
+        if(r.ok){var d=await r.json();toast('Yangi parol: '+d.new_password);}
+      };
+    });
+  }catch(e){console.log(e);}
+}
+
+// ===== STATS =====
+async function loadAdminStats(){
+  var token=localStorage.getItem('access_token');
+  if(!token)return;
+  try{
+    var res=await fetch('https://bozorov-school.onrender.com/api/stats/overview',{headers:{'Authorization':'Bearer '+token}});
+    if(!res.ok)return;
+    var d=await res.json();
+    var map={'stat-students':d.total_students,'stat-teachers':d.total_teachers,'stat-unpaid':d.unpaid_count};
+    Object.keys(map).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=map[id];});
+    var inc=document.getElementById('stat-income');
+    if(inc&&d.monthly_income) inc.textContent=Math.round(d.monthly_income/1000)+'K';
+  }catch(e){}
+}
+
+// ===== PAYMENT HISTORY =====
+async function loadPaymentHistory(){
+  var token=localStorage.getItem('access_token');
+  if(!token)return;
+  try{
+    var res=await fetch('https://bozorov-school.onrender.com/api/payments/history',{headers:{'Authorization':'Bearer '+token}});
+    if(!res.ok)return;
+    var payments=await res.json();
+    var tbody=document.querySelector('#page-payments table tbody');
+    if(!tbody||!payments.length)return;
+    var methods={'cash':'💵 Naqd','click':'📱 Click','payme':'📱 Payme','uzcard':'💳 Uzcard','bank':'🏦 Bank'};
+    payments.slice(0,20).forEach(function(p){
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td style="color:var(--text2);font-size:12px">'+(p.paid_at||'').slice(0,10)+'</td>'
+        +'<td>'+(p.note||'—')+'</td><td>—</td>'
+        +'<td style="color:var(--green);font-weight:500">'+(p.paid_amount||0).toLocaleString()+'</td>'
+        +'<td>'+(p.remaining||0).toLocaleString()+'</td>'
+        +'<td><span class="tag tag-green">'+( methods[p.method]||p.method||'Naqd')+'</span></td>'
+        +'<td style="color:var(--text2);font-size:12px">'+(p.paid_at||'').slice(0,10)+'</td>'
+        +'<td><button class="btn btn-out btn-sm">📄</button></td>';
+      tbody.insertBefore(tr,tbody.firstChild);
+    });
+  }catch(e){}
+}
+
+// Auto load
+var _orig_showPage=showPage;
+showPage=function(id,el){
+  _orig_showPage(id,el);
+  if(id==='credentials')loadUsersList();
+  if(id==='payments')loadPaymentHistory();
+};
+setTimeout(function(){loadAdminStats();loadPaymentHistory();},600);
+
+
+// Real username from backend
+(function(){
+  var token=localStorage.getItem('access_token');
+  var name=localStorage.getItem('user_name')||'';
+  var role=localStorage.getItem('user_role')||'';
+  
+  // Show name
+  if(name){
+    document.querySelectorAll('.u-name').forEach(function(el){el.textContent=name;});
+    var sub=document.getElementById('page-sub');
+    if(sub&&(sub.textContent.includes('Xush')||sub.textContent.includes('kelibsiz')))
+      sub.textContent='Xush kelibsiz, '+name.split(' ')[0]+'!';
+  }
+  
+  // Show role  
+  var roleNames={admin:'Super Admin',teacher:"O'qituvchi",student:'Talaba',receptionist:'Resepshn'};
+  document.querySelectorAll('.u-role').forEach(function(el){
+    if(el.id!=='u-role') return;
+    el.textContent=roleNames[role]||role;
+  });
+  
+  // Verify token
+  if(token){
+    fetch('https://bozorov-school.onrender.com/api/auth/me',{headers:{'Authorization':'Bearer '+token}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.full_name){
+        localStorage.setItem('user_name',d.full_name);
+        document.querySelectorAll('.u-name').forEach(function(el){el.textContent=d.full_name;});
+        var sub=document.getElementById('page-sub');
+        if(sub&&(sub.textContent.includes('Xush')||sub.textContent.includes('kelibsiz')))
+          sub.textContent='Xush kelibsiz, '+d.full_name.split(' ')[0]+'!';
+      }
+    })
+    .catch(function(){});
+  }
+})();
 </script>
 </body>
 </html>

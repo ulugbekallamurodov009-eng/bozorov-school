@@ -12,16 +12,19 @@ router = APIRouter(prefix="/api/users", tags=["Users"])
 
 # ---- SCHEMAS ----
 class CreateUserRequest(BaseModel):
-    first_name: str
-    last_name:  str
-    phone:      Optional[str] = None
-    role:       UserRole
+    first_name:    str
+    last_name:     str
+    phone:         Optional[str] = None
+    role:          UserRole
+    # Custom login/password (ixtiyoriy)
+    custom_login:  Optional[str] = None
+    custom_pass:   Optional[str] = None
     # O'qituvchi uchun
-    subject:    Optional[str] = None
-    salary_pct: Optional[float] = 30.0
-    salary_type:Optional[str] = "pct"
+    subject:       Optional[str] = None
+    salary_pct:    Optional[float] = 30.0
+    salary_type:   Optional[str] = "pct"
     # O'quvchi uchun
-    group_id:   Optional[int] = None
+    group_id:      Optional[int] = None
 
 class UserResponse(BaseModel):
     id:         int
@@ -77,12 +80,19 @@ def create_user(
     # Receptionist faqat student yarata oladi
     if current_user.role == UserRole.receptionist and data.role != UserRole.student:
         raise HTTPException(status_code=403, detail="Resepshn faqat oquvchi yarata oladi")
-    # Admin barcha rollarni yarata oladi (admin ham)
+    # Admin barcha rollarni yarata oladi
 
-    # Login va parol generatsiya
-    base_login = generate_login(data.first_name, data.last_name, data.role)
-    login = make_login_unique(base_login, db)
-    plain_password = generate_password()
+    # Login va parol - custom yoki avtomatik
+    if data.custom_login and data.custom_login.strip():
+        login = data.custom_login.strip()
+        # Check uniqueness
+        if db.query(User).filter(User.login == login).first():
+            raise HTTPException(status_code=400, detail=f"Login '{login}' band! Boshqa login tanlang.")
+    else:
+        base_login = generate_login(data.first_name, data.last_name, data.role)
+        login = make_login_unique(base_login, db)
+    
+    plain_password = data.custom_pass.strip() if data.custom_pass and data.custom_pass.strip() else generate_password()
 
     # User yaratish
     user = User(

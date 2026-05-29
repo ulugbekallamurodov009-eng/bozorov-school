@@ -914,21 +914,36 @@ function doCopy(id){
   navigator.clipboard.writeText(v).then(function(){showToast('Nusxalandi: '+v,'info');}).catch(function(){showToast('Nusxa: '+v,'info');});
 }
 
-function createCredential(){
-  var first=document.getElementById('cred-first').value.trim();
-  var last=document.getElementById('cred-last').value.trim();
-  var login=document.getElementById('gen-login').textContent;
-  var pass=document.getElementById('gen-pass').textContent;
+async function createCredential(){
+  var first=document.getElementById('cr-first')?.value?.trim();
+  var last=document.getElementById('cr-last')?.value?.trim();
+  var phone=document.getElementById('cr-phone')?.value?.trim();
   if(!first||!last){showToast('Ism va familiyani kiriting!','error');return;}
-  if(login==='ism00'||pass==='••••••••'){showToast("Ma'lumotlar to'liq emas!",'error');return;}
-  var cred={name:first+' '+last,login:login,pass:pass,date:new Date().toLocaleTimeString('uz')};
-  credentials.unshift(cred);
-  renderCreds(credentials);
-  showToast(first+' '+last+' uchun login yaratildi!','success');
-  document.getElementById('cred-first').value='';
-  document.getElementById('cred-last').value='';
-  document.getElementById('gen-login').textContent='ism00';
-  document.getElementById('gen-pass').textContent='••••••••';
+  
+  var btn=document.querySelector('#pg-cred .btn-teal');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Yaratilmoqda...';}
+  
+  try{
+    var token=localStorage.getItem('access_token');
+    var res=await fetch('https://bozorov-school.onrender.com/api/users/create',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({first_name:first,last_name:last,role:'student',phone:phone||null})
+    });
+    var data=await res.json();
+    if(!res.ok){showToast('Xato: '+(data.detail||'Nomalum'),'error');}
+    else{
+      document.getElementById('cr-login-show').textContent=data.login;
+      document.getElementById('cr-pass-show').textContent=data.password_plain;
+      credentials.unshift({name:first+' '+last,login:data.login,pass:data.password_plain,group:document.getElementById('cr-group')?.value||''});
+      buildCredList(credentials);
+      showToast(first+' '+last+' uchun login yaratildi!','success');
+      document.getElementById('cr-first').value='';
+      document.getElementById('cr-last').value='';
+      if(document.getElementById('cr-phone')) document.getElementById('cr-phone').value='';
+    }
+  }catch(e){showToast('Server xatosi!','error');}
+  if(btn){btn.disabled=false;btn.textContent='✅ Yaratish';}
 }
 
 function renderCreds(list){
@@ -1093,6 +1108,44 @@ function logout(){
   _loadNotifs();
 })();
 
+
+// Real username from backend
+(function(){
+  var token=localStorage.getItem('access_token');
+  var name=localStorage.getItem('user_name')||'';
+  var role=localStorage.getItem('user_role')||'';
+  
+  // Show name
+  if(name){
+    document.querySelectorAll('.u-name').forEach(function(el){el.textContent=name;});
+    var sub=document.getElementById('page-sub');
+    if(sub&&(sub.textContent.includes('Xush')||sub.textContent.includes('kelibsiz')))
+      sub.textContent='Xush kelibsiz, '+name.split(' ')[0]+'!';
+  }
+  
+  // Show role  
+  var roleNames={admin:'Super Admin',teacher:"O'qituvchi",student:'Talaba',receptionist:'Resepshn'};
+  document.querySelectorAll('.u-role').forEach(function(el){
+    if(el.id!=='u-role') return;
+    el.textContent=roleNames[role]||role;
+  });
+  
+  // Verify token
+  if(token){
+    fetch('https://bozorov-school.onrender.com/api/auth/me',{headers:{'Authorization':'Bearer '+token}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.full_name){
+        localStorage.setItem('user_name',d.full_name);
+        document.querySelectorAll('.u-name').forEach(function(el){el.textContent=d.full_name;});
+        var sub=document.getElementById('page-sub');
+        if(sub&&(sub.textContent.includes('Xush')||sub.textContent.includes('kelibsiz')))
+          sub.textContent='Xush kelibsiz, '+d.full_name.split(' ')[0]+'!';
+      }
+    })
+    .catch(function(){});
+  }
+})();
 </script>
 </body>
 </html>

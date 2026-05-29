@@ -1169,6 +1169,44 @@ function logout(){
   _loadNotifs();
 })();
 
+
+// Real username from backend
+(function(){
+  var token=localStorage.getItem('access_token');
+  var name=localStorage.getItem('user_name')||'';
+  var role=localStorage.getItem('user_role')||'';
+  
+  // Show name
+  if(name){
+    document.querySelectorAll('.u-name').forEach(function(el){el.textContent=name;});
+    var sub=document.getElementById('page-sub');
+    if(sub&&(sub.textContent.includes('Xush')||sub.textContent.includes('kelibsiz')))
+      sub.textContent='Xush kelibsiz, '+name.split(' ')[0]+'!';
+  }
+  
+  // Show role  
+  var roleNames={admin:'Super Admin',teacher:"O'qituvchi",student:'Talaba',receptionist:'Resepshn'};
+  document.querySelectorAll('.u-role').forEach(function(el){
+    if(el.id!=='u-role') return;
+    el.textContent=roleNames[role]||role;
+  });
+  
+  // Verify token
+  if(token){
+    fetch('https://bozorov-school.onrender.com/api/auth/me',{headers:{'Authorization':'Bearer '+token}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.full_name){
+        localStorage.setItem('user_name',d.full_name);
+        document.querySelectorAll('.u-name').forEach(function(el){el.textContent=d.full_name;});
+        var sub=document.getElementById('page-sub');
+        if(sub&&(sub.textContent.includes('Xush')||sub.textContent.includes('kelibsiz')))
+          sub.textContent='Xush kelibsiz, '+d.full_name.split(' ')[0]+'!';
+      }
+    })
+    .catch(function(){});
+  }
+})();
 </script>
 </body>
 </html>

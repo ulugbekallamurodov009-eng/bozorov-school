@@ -16,7 +16,9 @@ def auto_seed():
     from app.models.user import User, UserRole
     db = SessionLocal()
     try:
-        if db.query(User).count() == 0:
+        count = db.query(User).count()
+        print(f"✅ Bazada {count} ta foydalanuvchi bor")
+        if count == 0:
             users = [
                 User(login="admin", password=hash_password("admin123"), first_name="Bozorov", last_name="Admin", role=UserRole.admin),
                 User(login="akbar.teacher", password=hash_password("akbar123"), first_name="Akbar", last_name="Axmadov", role=UserRole.teacher),
@@ -31,7 +33,9 @@ def auto_seed():
             db.commit()
             print("✅ Foydalanuvchilar yaratildi!")
     except Exception as e:
-        print(f"Seed xato: {e}")
+        import traceback
+        print(f"❌ Seed xato: {e}")
+        traceback.print_exc()
     finally:
         db.close()
 
@@ -74,3 +78,23 @@ def root():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+@app.post("/api/seed")
+def manual_seed():
+    """Manual seed - bazaga foydalanuvchilar qo'shish"""
+    auto_seed()
+    from app.core.database import SessionLocal
+    from app.models.user import User
+    db = SessionLocal()
+    count = db.query(User).count()
+    db.close()
+    return {"message": f"Seed bajarildi! Bazada {count} ta foydalanuvchi bor."}
+
+@app.get("/api/seed-status")
+def seed_status():
+    from app.core.database import SessionLocal
+    from app.models.user import User
+    db = SessionLocal()
+    count = db.query(User).count()
+    db.close()
+    return {"user_count": count, "seeded": count > 0}
