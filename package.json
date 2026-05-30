@@ -1,0 +1,26 @@
+{
+  "name": "bozorov_school",
+  "version": "1.0.0",
+  "description": "- **Python 3.12** + **FastAPI** - **SQLAlchemy** — ORM - **SQLite** (development) → **PostgreSQL** (production) - **JWT** — autentifikatsiya - **Bcrypt** — parol xeshlash",
+  "main": "translations.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ulugbekallamurodov009-eng/bozorov-school.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ulugbekallamurodov009-eng/bozorov-school/issues"
+  },
+  "homepage": "https://github.com/ulugbekallamurodov009-eng/bozorov-school#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.3.4",
+    "@capacitor/cli": "^8.3.4",
+    "@capacitor/core": "^8.3.4"
+  }
+}

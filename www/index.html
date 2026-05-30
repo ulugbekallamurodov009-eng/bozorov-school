@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bozorov School — Kirish</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #1a1d27;
+    --bg3: #22263a;
+    --blue: #2563EB;
+    --blue-light: #3b82f6;
+    --text: #e8eaf0;
+    --text2: #8b90a0;
+    --border: rgba(255,255,255,0.08);
+    --error: #ef4444;
+    --success: #10b981;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    overflow: hidden;
+  }
+
+  /* Animated background particles */
+  .particles { position: fixed; inset: 0; pointer-events: none; }
+  .particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: var(--blue);
+    border-radius: 50%;
+    opacity: 0;
+    animation: float linear infinite;
+  }
+  @keyframes float {
+    0% { transform: translateY(100vh) scale(0); opacity: 0; }
+    10% { opacity: 0.4; }
+    90% { opacity: 0.2; }
+    100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+  }
+
+  /* Dot grid */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: radial-gradient(circle, rgba(37,99,235,0.07) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+  }
+
+  .container {
+    width: 100%; max-width: 390px;
+    position: relative; z-index: 1;
+    animation: slideUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Logo */
+  .logo {
+    display: flex; align-items: center; gap: 12px;
+    justify-content: center; margin-bottom: 1.75rem;
+    animation: slideUp 0.5s 0.1s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .logo-icon {
+    width: 46px; height: 46px; background: var(--blue);
+    border-radius: 13px; display: flex; align-items: center;
+    justify-content: center; font-size: 19px; font-weight: 700;
+    color: white; letter-spacing: -1px;
+    box-shadow: 0 0 20px rgba(37,99,235,0.35);
+    animation: pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 20px rgba(37,99,235,0.35); }
+    50%      { box-shadow: 0 0 32px rgba(37,99,235,0.6); }
+  }
+  .logo-name { font-size: 19px; font-weight: 600; color: var(--text); }
+  .logo-sub  { font-size: 11px; color: var(--text2); letter-spacing: 1.2px; text-transform: uppercase; }
+
+  /* Card */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 1.75rem;
+    position: relative; overflow: hidden;
+    animation: slideUp 0.5s 0.15s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--blue), transparent);
+    animation: shimmer 2.5s linear infinite;
+    background-size: 200% 100%;
+  }
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* Lang buttons — kichik */
+  .lang-row {
+    display: flex; gap: 5px; margin-bottom: 1.5rem;
+    background: var(--bg3); border-radius: 8px; padding: 3px;
+  }
+  .lang-btn {
+    flex: 1; padding: 5px 4px; border: none; background: transparent;
+    border-radius: 6px; font-size: 11px; color: var(--text2);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .lang-btn.active { background: var(--blue); color: white; }
+
+  .card-title { font-size: 21px; font-weight: 600; margin-bottom: 3px; }
+  .card-sub   { font-size: 13px; color: var(--text2); margin-bottom: 1.5rem; }
+
+  /* Error */
+  .error-msg {
+    background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 8px; padding: 9px 12px; font-size: 13px; color: #fca5a5;
+    margin-bottom: 1rem; display: none; align-items: center; gap: 8px;
+    animation: shake 0.4s ease;
+  }
+  .error-msg.show { display: flex; }
+  @keyframes shake {
+    0%,100%{ transform: translateX(0); }
+    20%    { transform: translateX(-6px); }
+    40%    { transform: translateX(6px); }
+    60%    { transform: translateX(-4px); }
+    80%    { transform: translateX(4px); }
+  }
+
+  /* Inputs */
+  .form-group { margin-bottom: 1rem; }
+  .form-label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px; }
+  .input-wrap { position: relative; }
+  .input-icon {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%); font-size: 15px; color: var(--text2);
+    transition: color 0.2s;
+  }
+  input[type="text"], input[type="password"] {
+    width: 100%; padding: 11px 12px 11px 38px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 10px; font-size: 14px; color: var(--text);
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+  }
+  input:focus + .input-icon,
+  .input-wrap:focus-within .input-icon { color: var(--blue); }
+  input::placeholder { color: rgba(139,144,160,0.4); }
+  .eye-btn {
+    position: absolute; right: 11px; top: 50%;
+    transform: translateY(-50%); background: none;
+    border: none; color: var(--text2); cursor: pointer; font-size: 15px;
+    transition: color 0.2s;
+  }
+  .eye-btn:hover { color: var(--text); }
+
+  /* Input filled highlight */
+  input.filled { border-color: rgba(37,99,235,0.4); }
+
+  /* Submit button — qochadi! */
+  .submit-wrap {
+    position: relative; height: 46px; margin-top: 0.5rem;
+  }
+  .submit-btn {
+    position: absolute;
+    width: 100%; padding: 12px;
+    background: var(--blue); color: white;
+    border: none; border-radius: 10px;
+    font-size: 15px; font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s, left 0.07s cubic-bezier(0.22,1,0.36,1), top 0.07s cubic-bezier(0.22,1,0.36,1), width 0.07s;
+    left: 0; top: 0;
+    white-space: nowrap; overflow: hidden;
+  }
+  .submit-btn:hover  { background: var(--blue-light); }
+  .submit-btn:active { transform: scale(0.97); }
+  .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--success); color: white;
+    padding: 10px 20px; border-radius: 10px;
+    font-size: 14px; transition: transform 0.3s; z-index: 100;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+body.light{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;--text:#111827;--text2:#6b7280;--border:rgba(0,0,0,.10);}
+body{transition:background .3s,color .3s;}
+.lt-theme-btn{
+  position:fixed;top:1rem;right:1rem;z-index:100;
+  width:40px;height:40px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;cursor:pointer;font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 12px rgba(0,0,0,.15);
+  transition:all .2s;
+}
+.lt-theme-btn:hover{transform:scale(1.05);box-shadow:0 4px 16px rgba(0,0,0,.25);}
+@media(max-width:480px){
+  .container{padding:0 .75rem;}
+  .card{padding:1.5rem !important;border-radius:16px !important;}
+}
+</style>
+</head>
+<body>
+
+<!-- Floating particles -->
+<button class="lt-theme-btn" id="lt-btn" onclick="ltTheme()" title="Kunduzgi/Tungi rejim">🌙</button>
+<div class="particles" id="particles"></div>
+
+<div class="container">
+  <div class="logo">
+    <div class="logo-icon">BS</div>
+    <div>
+      <div class="logo-name">Bozorov School</div>
+      <div class="logo-sub">O'quv markazi</div>
+    </div>
+  </div>
+
+  <div class="card">
+
+    <h1 class="card-title" id="title">Tizimga kirish</h1>
+    <p class="card-sub" id="subtitle">Login va parolingizni kiriting</p>
+
+    <div class="error-msg" id="error-msg">
+      <span>⚠️</span><span id="error-text">Login yoki parol noto'g'ri!</span>
+    </div>
+
+    <form onsubmit="handleLogin(event)" id="form">
+      <div class="form-group">
+        <label class="form-label" id="label-login">Login</label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input type="text" id="login-input" placeholder="username" required autocomplete="username" oninput="checkFields()">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" id="label-pass">Parol</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="pass-input" placeholder="••••••••" required autocomplete="current-password" oninput="checkFields()">
+          <button type="button" class="eye-btn" onclick="togglePass()">👁</button>
+        </div>
+      </div>
+
+      <div class="submit-wrap" id="submit-wrap">
+        <button type="submit" class="submit-btn" id="submit-btn"
+          onmouseenter="tryEscape()"
+          ontouchstart="tryEscape()">
+          <span id="btn-text">Kirish</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast">✅ Muvaffaqiyatli kirdingiz!</div>
+
+<script>
+const T = {
+  uz: { title:"Tizimga kirish", subtitle:"Login va parolingizni kiriting", labelLogin:"Login", labelPass:"Parol", btnText:"Kirish", error:"Login yoki parol noto'g'ri!", toast:"✅ Muvaffaqiyatli kirdingiz!" },
+  ru: { title:"Вход в систему", subtitle:"Введите логин и пароль", labelLogin:"Логин", labelPass:"Пароль", btnText:"Войти", error:"Неверный логин или пароль!", toast:"✅ Вы успешно вошли!" },
+  en: { title:"Sign In", subtitle:"Enter your login and password", labelLogin:"Login", labelPass:"Password", btnText:"Sign In", error:"Invalid login or password!", toast:"✅ Successfully signed in!" }
+};
+let lang = 'uz';
+
+function setLang(l, btn) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const t = T[l];
+  document.getElementById('title').textContent = t.title;
+  document.getElementById('subtitle').textContent = t.subtitle;
+  document.getElementById('label-login').textContent = t.labelLogin;
+  document.getElementById('label-pass').textContent = t.labelPass;
+  document.getElementById('btn-text').textContent = t.btnText;
+  document.getElementById('error-text').textContent = t.error;
+}
+
+function togglePass() {
+  const inp = document.getElementById('pass-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function checkFields() {
+  const l = document.getElementById('login-input').value;
+  const p = document.getElementById('pass-input').value;
+  document.getElementById('login-input').classList.toggle('filled', l.length > 0);
+  document.getElementById('pass-input').classList.toggle('filled', p.length > 0);
+}
+
+function isIncomplete() {
+  const l = document.getElementById('login-input').value.trim();
+  const p = document.getElementById('pass-input').value.trim();
+  return !l || !p;
+}
+
+function tryEscape() {
+  if (!isIncomplete()) return;
+  const wrap = document.getElementById('submit-wrap');
+  const btn  = document.getElementById('submit-btn');
+  wrap.style.height = '120px';
+  const maxX = wrap.offsetWidth - 120;
+  const maxY = 80;
+  const curL = parseFloat(btn.style.left) || 0;
+  const curT = parseFloat(btn.style.top)  || 0;
+  // Always move far away from cursor
+  let newL, newT, tries = 0;
+  do {
+    newL = Math.random() * maxX;
+    newT = Math.random() * maxY;
+    tries++;
+  } while (tries < 20 && Math.abs(newL - curL) < 100 && Math.abs(newT - curT) < 30);
+  btn.style.left = newL + 'px';
+  btn.style.top  = newT + 'px';
+  btn.style.width = Math.max(100, wrap.offsetWidth - newL - 10) + 'px';
+  // Also shrink randomly sometimes
+  if (Math.random() > 0.6) btn.style.width = '120px';
+}
+
+// Reset button position when both fields filled
+document.getElementById('login-input').addEventListener('input', resetBtn);
+document.getElementById('pass-input').addEventListener('input', resetBtn);
+function resetBtn() {
+  if (!isIncomplete()) {
+    const btn  = document.getElementById('submit-btn');
+    const wrap = document.getElementById('submit-wrap');
+    btn.style.left = '0';
+    btn.style.top  = '0';
+    btn.style.width = '100%';
+    wrap.style.height = '46px';
+  }
+}
+
+// ===== BACKEND KONFIGURATSIYA =====
+const API_BASE = 'https://bozorov-school.onrender.com'; // Backend URL sini shu yerda o'zgartiring
+
+// Role bo'yicha dashboard sahifalariga yo'naltirish
+const ROLE_PAGES = {
+  admin:        'admin-dashboard.html',
+  receptionist: 'receptionist-dashboard.html',
+  teacher:      'teacher-dashboard.html',
+  student:      'student-dashboard.html',
+};
+
+async function handleLogin(e) {
+  e.preventDefault();
+  if (isIncomplete()) return;
+
+  const btn = document.getElementById('submit-btn');
+  const err = document.getElementById('error-msg');
+  err.classList.remove('show');
+  btn.disabled = true;
+  document.getElementById('btn-text').textContent = '...';
+
+  const loginVal = document.getElementById('login-input').value.trim();
+  const passVal  = document.getElementById('pass-input').value;
+
+  try {
+    // FastAPI OAuth2PasswordRequestForm — form-urlencoded yuborish kerak
+    const formData = new URLSearchParams();
+    formData.append('username', loginVal);
+    formData.append('password', passVal);
+
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formData.toString()
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      // 401 yoki 403 — server xatosi
+      const msg = data.detail || T[lang].error;
+      document.getElementById('error-text').textContent = msg;
+      err.classList.add('show');
+      btn.disabled = false;
+      document.getElementById('btn-text').textContent = T[lang].btnText;
+      return;
+    }
+
+    // Token va user ma'lumotlarini localStorage ga saqlash
+    localStorage.setItem('access_token', data.access_token);
+    localStorage.setItem('user_role',    data.role);
+    localStorage.setItem('user_name',    data.full_name);
+    localStorage.setItem('user_id',      data.user_id);
+
+    // Muvaffaqiyat toast
+    const toast = document.getElementById('toast');
+    toast.textContent = `✅ ${data.full_name} — xush kelibsiz!`;
+    toast.classList.add('show');
+
+    // Role bo'yicha to'g'ri dashboardga yo'naltirish
+    const page = ROLE_PAGES[data.role] || 'login (6).html';
+    setTimeout(() => {
+      window.location.href = page;
+    }, 900);
+
+  } catch (networkErr) {
+    // Server ishlamayapti yoki tarmoq xatosi
+    document.getElementById('error-text').textContent =
+      '⚠️ Server bilan ulanib bo\'lmadi. Backend ishlaayotganini tekshiring.';
+    err.classList.add('show');
+    btn.disabled = false;
+    document.getElementById('btn-text').textContent = T[lang].btnText;
+  }
+}
+
+// Generate floating particles
+const container = document.getElementById('particles');
+for (let i = 0; i < 18; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.cssText = `
+    left: ${Math.random()*100}%;
+    width: ${Math.random()*3+1}px;
+    height: ${Math.random()*3+1}px;
+    animation-duration: ${Math.random()*10+8}s;
+    animation-delay: ${Math.random()*8}s;
+    opacity: ${Math.random()*0.3};
+  `;
+  container.appendChild(p);
+}
+
+// Theme
+function ltTheme(){
+  document.body.classList.toggle('light');
+  var l=document.body.classList.contains('light');
+  localStorage.setItem('theme',l?'light':'dark');
+  var b=document.getElementById('lt-btn');
+  if(b) b.textContent=l?'☀️':'🌙';
+}
+(function(){
+  var t=localStorage.getItem('theme')||'dark';
+  if(t==='light'){document.body.classList.add('light');var b=document.getElementById('lt-btn');if(b)b.textContent='☀️';}
+})();
+</script>
+</body>
+</html>

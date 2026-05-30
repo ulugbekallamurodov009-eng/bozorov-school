@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bozorov School — Resepshn</title>
+<style>
+:root{
+  --bg:#0a0d14;--bg2:#131720;--bg3:#1c2130;--bg4:#242a3a;
+  --teal:#14b8a6;--teal-d:rgba(20,184,166,.13);
+  --blue:#2563EB;--blue-l:#3b82f6;--blue-d:rgba(37,99,235,.12);
+  --green:#10b981;--green-d:rgba(16,185,129,.13);
+  --amber:#f59e0b;--amber-d:rgba(245,158,11,.13);
+  --red:#ef4444;--red-d:rgba(239,68,68,.13);
+  --purple:#8b5cf6;--purple-d:rgba(139,92,246,.12);
+  --text:#e8eaf0;--text2:#8b90a0;--text3:#4a5068;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;}
+
+/* SIDEBAR */
+.sidebar{width:230px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:1.25rem 0;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s;overflow-y:auto;overflow-x:hidden;}
+.s-logo{display:flex;align-items:center;gap:10px;padding:0 1.25rem 1.25rem;border-bottom:1px solid var(--border);margin-bottom:.75rem;}
+.s-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--teal),var(--blue));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 18px rgba(20,184,166,.4);}
+.s-name{font-size:15px;font-weight:600;}
+.s-sub{font-size:10px;color:var(--text2);}
+.nl{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:.75rem 1.25rem .3rem;}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 1.25rem;cursor:pointer;font-size:13.5px;color:var(--text2);transition:all .15s;border-left:2px solid transparent;}
+.ni:hover{background:var(--bg3);color:var(--text);}
+.ni.active{background:var(--teal-d);color:var(--teal);border-left-color:var(--teal);}
+.ni .ic{font-size:16px;width:20px;text-align:center;}
+.nb{margin-left:auto;font-size:10px;padding:1px 7px;border-radius:100px;}
+.nb-r{background:var(--red);color:#fff;}
+.nb-g{background:var(--green);color:#fff;}
+.nb-a{background:var(--amber);color:#000;}
+.lock-row{display:flex;align-items:center;gap:8px;padding:8px 1.25rem;font-size:12px;color:var(--text3);cursor:not-allowed;opacity:.6;}
+.lock-row .ic{font-size:14px;}
+.s-foot{margin-top:auto;padding:1rem 1.25rem;border-top:1px solid var(--border);}
+.u-info{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.u-av{width:38px;height:38px;background:var(--teal-d);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid rgba(20,184,166,.3);}
+.u-name{font-size:13px;font-weight:500;}
+.u-role{font-size:11px;color:var(--teal);}
+.logout-btn{width:100%;padding:8px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:9px;color:#fca5a5;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .2s;font-family:inherit;}
+.logout-btn:hover{background:rgba(239,68,68,.2);}
+
+/* MAIN */
+.main{margin-left:230px;flex:1;padding:1.5rem;min-height:100vh;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.tb-l h2{font-size:20px;font-weight:600;}
+.tb-l p{font-size:13px;color:var(--text2);margin-top:2px;}
+.tb-r{display:flex;align-items:center;gap:10px;}
+.time-badge{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:13px;color:var(--teal);font-variant-numeric:tabular-nums;}
+.icon-btn{width:36px;height:36px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;position:relative;}
+.dot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;border:1.5px solid var(--bg);}
+
+/* STATS */
+.stats4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem;}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.1rem;display:flex;align-items:center;gap:12px;transition:border-color .2s;animation:fi .4s ease both;}
+.sc:hover{border-color:var(--border2);}
+.si{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.sn{font-size:22px;font-weight:600;line-height:1;}
+.sl{font-size:12px;color:var(--text2);margin-top:3px;}
+.sd{font-size:11px;margin-top:2px;}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:1.5rem;}
+.g1{margin-bottom:1.5rem;}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.1rem;}
+.card-title{font-size:14px;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.badge{font-size:11px;padding:2px 8px;border-radius:100px;}
+.badge-teal{background:var(--teal-d);color:var(--teal);}
+.badge-red{background:var(--red-d);color:var(--red);}
+.badge-green{background:var(--green-d);color:var(--green);}
+.badge-amber{background:var(--amber-d);color:var(--amber);}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;}
+th{font-size:11px;color:var(--text2);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.5px;text-transform:uppercase;}
+td{font-size:13px;padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.015);}
+.tag{display:inline-block;padding:2px 8px;border-radius:100px;font-size:11px;}
+.tag-green{background:var(--green-d);color:var(--green);}
+.tag-red{background:var(--red-d);color:var(--red);}
+.tag-amber{background:var(--amber-d);color:var(--amber);}
+.tag-blue{background:var(--blue-d);color:var(--blue-l);}
+.tag-teal{background:var(--teal-d);color:var(--teal);}
+
+/* FORM */
+.fg{margin-bottom:1rem;}
+.fl{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;}
+input[type=text],input[type=number],input[type=date],select{width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;font-size:13px;color:var(--text);outline:none;transition:border-color .2s;font-family:inherit;}
+input:focus,select:focus{border-color:var(--teal);}
+select option{background:var(--bg2);}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* BUTTONS */
+.btn{padding:9px 18px;border:none;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;font-family:inherit;}
+.btn-teal{background:var(--teal);color:#000;}.btn-teal:hover{background:#0d9488;}
+.btn-green{background:var(--green);color:#fff;}.btn-green:hover{background:#059669;}
+.btn-red{background:var(--red);color:#fff;}.btn-red:hover{background:#dc2626;}
+.btn-out{background:transparent;border:1px solid var(--border);color:var(--text2);}.btn-out:hover{border-color:var(--teal);color:var(--teal);}
+.btn-sm{padding:5px 12px;font-size:12px;border-radius:7px;}
+.btn-full{width:100%;justify-content:center;}
+
+/* PAY METHODS */
+.pay-methods{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;}
+.pm{padding:7px 12px;border:2px solid var(--border);border-radius:9px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .15s;user-select:none;}
+.pm:hover{border-color:var(--teal);}
+.pm.sel{border-color:var(--teal);color:var(--teal);background:var(--teal-d);}
+
+/* PAY RESULT BOX */
+.pay-result{background:var(--bg3);border-radius:12px;padding:14px;margin:10px 0;border:1px solid var(--border);}
+
+/* PROGRESS */
+.pb{height:5px;background:var(--bg3);border-radius:100px;overflow:hidden;}
+.pf{height:100%;border-radius:100px;transition:width 1s ease;}
+
+/* ATTENDANCE */
+.att-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.att-item:last-child{border-bottom:none;}
+.att-av{width:32px;height:32px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;border:1px solid var(--border);}
+.att-name{font-size:13px;font-weight:500;flex:1;}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:500;align-items:center;justify-content:center;padding:1rem;}
+.modal-bg.show{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:1.5rem;width:100%;max-width:440px;}
+.modal h3{font-size:17px;font-weight:600;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;}
+.close-btn{background:none;border:none;color:var(--text2);font-size:22px;cursor:pointer;line-height:1;}
+
+/* PAGE */
+.page{display:none;}.page.active{display:block;}
+
+/* MOBILE */
+.menu-btn{display:none;position:fixed;top:1rem;left:1rem;z-index:200;width:36px;height:36px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-size:18px;cursor:pointer;align-items:center;justify-content:center;color:var(--text);}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:1rem;padding-top:3.5rem}.menu-btn{display:flex}.stats4{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);color:#fff;padding:10px 20px;border-radius:10px;font-size:14px;transition:transform .3s;z-index:999;white-space:nowrap;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.success{background:var(--green);}
+.toast.error{background:var(--red);}
+.toast.info{background:var(--teal);}
+
+/* CRED BOX */
+.cred-box{background:var(--bg3);border-radius:12px;padding:14px;margin:12px 0;border:1px solid var(--border);}
+.cred-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.cred-row:last-child{margin-bottom:0;}
+.cred-label{font-size:12px;color:var(--text2);width:55px;flex-shrink:0;}
+.cred-val{flex:1;background:var(--bg2);padding:6px 10px;border-radius:7px;font-size:13px;font-family:monospace;border:1px solid var(--border);}
+.copy-btn{background:none;border:none;color:var(--text2);cursor:pointer;font-size:15px;transition:color .15s;padding:2px;}
+.copy-btn:hover{color:var(--teal);}
+
+/* ===== LIGHT MODE ===== */
+body.light{
+  --bg:#f0f2f7;--bg2:#ffffff;--bg3:#e8eaf0;
+  --text:#111827;--text2:#6b7280;
+  --border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.15);
+}
+body{transition:background .3s,color .3s;}
+
+/* ===== THEME BTN ===== */
+.theme-btn{
+  width:36px;height:36px;background:var(--bg2);
+  border:1px solid var(--border);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:18px;transition:all .2s;flex-shrink:0;
+}
+.theme-btn:hover{border-color:var(--border2);transform:scale(1.05);}
+
+/* ===== NOTIFICATIONS ===== */
+.notif-wrap{position:relative;display:inline-flex;}
+.notif-badge{
+  position:absolute;top:-4px;right:-4px;
+  min-width:18px;height:18px;
+  background:var(--red);color:#fff;
+  border-radius:9px;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;border:2px solid var(--bg2);
+}
+.notif-panel{
+  display:none;position:fixed;
+  top:58px;right:12px;
+  width:310px;max-height:420px;overflow-y:auto;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:16px;z-index:999;
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
+  animation:fadeDown .2s ease;
+}
+.notif-panel.show{display:block;}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.notif-header{
+  padding:14px 16px 10px;
+  font-size:14px;font-weight:600;
+  border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.notif-clear{font-size:12px;color:var(--text2);cursor:pointer;font-weight:400;}
+.notif-clear:hover{color:var(--red);}
+.notif-item{
+  padding:12px 16px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background .15s;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.notif-item:last-child{border-bottom:none;}
+.notif-item:hover{background:var(--bg3);}
+.notif-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.notif-title{font-size:13px;font-weight:500;color:var(--text);}
+.notif-sub{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.4;}
+.notif-empty{padding:24px;text-align:center;color:var(--text2);font-size:13px;}
+
+/* ===== MOBILE ===== */
+@media(max-width:768px){
+  .g2,.g3{grid-template-columns:1fr!important;}
+  .stats4{grid-template-columns:1fr 1fr!important;}
+  .stats3,.s3,.s4{grid-template-columns:1fr 1fr!important;}
+  .card{overflow-x:auto;}
+  table{min-width:480px;}
+  .row2,.r2{grid-template-columns:1fr!important;}
+  .topbar,.topbar-wrap{flex-wrap:wrap;gap:8px;}
+  .tb-l h2,.topbar-left h2{font-size:17px!important;}
+}
+@media(max-width:480px){
+  .main,.main-content{padding:.875rem!important;}
+  .stats4{grid-template-columns:1fr 1fr!important;}
+  .sc,.stat-card{padding:.75rem!important;}
+}
+
+</style>
+</head>
+<body>
+<button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="s-logo">
+    <div class="s-icon">🎫</div>
+    <div><div class="s-name">Bozorov School</div><div class="s-sub">Resepshn paneli</div></div>
+  </div>
+
+  <span class="nl">Asosiy</span>
+  <div class="ni active" onclick="showPage('home',this)"><span class="ic">🏠</span>Bosh sahifa</div>
+  <div class="ni" onclick="showPage('payments',this)"><span class="ic">💳</span>To'lov qabul<span class="nb nb-r" id="unpaid-badge">5</span></div>
+  <div class="ni" onclick="showPage('attendance',this)"><span class="ic">✔️</span>Davomat</div>
+  <div class="ni" onclick="showPage('students',this)"><span class="ic">👥</span>O'quvchilar</div>
+  <div class="ni" onclick="showPage('results',this)"><span class="ic">📊</span>Natijalar</div>
+  <div class="ni" onclick="showPage('search',this)"><span class="ic">🔍</span>Qidirish</div>
+  <div class="ni" onclick="showPage('credentials',this)"><span class="ic">🔑</span>Login yaratish</div>
+
+  <span class="nl">Taqiqlangan</span>
+  <div class="lock-row"><span class="ic">🔒</span>Dars jadvali</div>
+  <div class="lock-row"><span class="ic">🔒</span>Oylik hisob</div>
+  <div class="lock-row"><span class="ic">🔒</span>Xodimlar</div>
+  <div class="lock-row"><span class="ic">🔒</span>Sozlamalar</div>
+
+  <div class="s-foot">
+    <div class="u-info">
+      <div class="u-av">🎫</div>
+      <div><div class="u-name">Malika Holiqova</div><div class="u-role">Resepshn</div></div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">🚪 Chiqish</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-l"><h2 id="page-title">Bosh sahifa</h2><p id="page-sub">Bugungi holat</p></div>
+    <div class="tb-r">
+      <div class="time-badge" id="clock">⏰ 10:30</div>
+      <div class="icon-btn">🔔<div class="dot" style="background:var(--red)"></div></div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="page active" id="page-home">
+    <div class="stats4">
+      <div class="sc" style="animation-delay:.05s"><div class="si" style="background:var(--teal-d)">👥</div><div><div class="sn">48</div><div class="sl">Jami o'quvchilar</div><div class="sd" style="color:var(--green)">▲ +3 bu oy</div></div></div>
+      <div class="sc" style="animation-delay:.1s"><div class="si" style="background:var(--green-d)">✅</div><div><div class="sn" style="color:var(--green)">43</div><div class="sl">To'lagan (May)</div><div class="sd" style="color:var(--green)">89.6%</div></div></div>
+      <div class="sc" style="animation-delay:.15s"><div class="si" style="background:var(--red-d)">❌</div><div><div class="sn" style="color:var(--red)">5</div><div class="sl">To'lamagan</div><div class="sd" style="color:var(--red)">1.55M qarzdor</div></div></div>
+      <div class="sc" style="animation-delay:.2s"><div class="si" style="background:var(--amber-d)">📅</div><div><div class="sn">37</div><div class="sl">Bugun keldi</div><div class="sd" style="color:var(--amber)">77% davomat</div></div></div>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="card-title">💳 Bugungi to'lovlar <span class="badge badge-green" id="home-pay-count">+4 ta</span></div>
+        <div class="card">
+          <table>
+            <thead><tr><th>O'quvchi</th><th>Summa</th><th>Usul</th><th>Vaqt</th></tr></thead>
+            <tbody id="home-pay-body">
+              <tr><td>Sherzod Zoirov</td><td style="color:var(--green);font-weight:500">300,000</td><td><span class="tag tag-teal">Click</span></td><td style="font-size:12px;color:var(--text2)">09:15</td></tr>
+              <tr><td>Pokiza Eshboriyeva</td><td style="color:var(--green);font-weight:500">300,000</td><td><span class="tag tag-blue">Uzcard</span></td><td style="font-size:12px;color:var(--text2)">09:42</td></tr>
+              <tr><td>Gulnigor Sattorova</td><td style="color:var(--green);font-weight:500">280,000</td><td><span class="tag tag-teal">Payme</span></td><td style="font-size:12px;color:var(--text2)">10:08</td></tr>
+              <tr><td>Azamat Axrorov</td><td style="color:var(--green);font-weight:500">300,000</td><td><span class="tag tag-amber">Naqd</span></td><td style="font-size:12px;color:var(--text2)">10:22</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px">
+            <span style="color:var(--text2)">Bugungi jami:</span>
+            <span style="font-weight:600;color:var(--green)" id="home-daily-total">1,180,000 so'm</span>
+          </div>
+          <button class="btn btn-teal btn-full" style="margin-top:10px" onclick="openPayModal('')">➕ Yangi to'lov</button>
+        </div>
+      </div>
+      <div>
+        <div class="card-title">⚠️ To'lamagan o'quvchilar <span class="badge badge-red">5 ta</span></div>
+        <div class="card">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:18px">👤</div>
+              <div style="flex:1"><div style="font-size:13px;font-weight:500">Muhammadali Toychiyev</div><div style="font-size:11px;color:var(--text2)">Mat B • 300,000 so'm</div></div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-teal btn-sm" onclick="openPayModal('Muhammadali Toychiyev',300000)">💳</button>
+                <button class="btn btn-out btn-sm" onclick="showToast('SMS yuborildi!','info')">📱</button>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:18px">👤</div>
+              <div style="flex:1"><div style="font-size:13px;font-weight:500">Elbek Qoqonov</div><div style="font-size:11px;color:var(--text2)">Kimyo • 250,000 so'm</div></div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-teal btn-sm" onclick="openPayModal('Elbek Qoqonov',250000)">💳</button>
+                <button class="btn btn-out btn-sm" onclick="showToast('SMS yuborildi!','info')">📱</button>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:18px">👤</div>
+              <div style="flex:1"><div style="font-size:13px;font-weight:500">Davlat Roquyev</div><div style="font-size:11px;color:var(--text2)">Mat A • 300,000 so'm</div></div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-teal btn-sm" onclick="openPayModal('Davlat Roquyev',300000)">💳</button>
+                <button class="btn btn-out btn-sm" onclick="showToast('SMS yuborildi!','info')">📱</button>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:18px">👤</div>
+              <div style="flex:1"><div style="font-size:13px;font-weight:500">Umida Mustafoyeva</div><div style="font-size:11px;color:var(--text2)">Ingliz A • 130,000 qolgan</div></div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-teal btn-sm" onclick="openPayModal('Umida Mustafoyeva',130000)">💳</button>
+                <button class="btn btn-out btn-sm" onclick="showToast('SMS yuborildi!','info')">📱</button>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:18px">👤</div>
+              <div style="flex:1"><div style="font-size:13px;font-weight:500">Intizor Rashidova</div><div style="font-size:11px;color:var(--text2)">Mat A • 300,000 so'm</div></div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-teal btn-sm" onclick="openPayModal('Intizor Rashidova',300000)">💳</button>
+                <button class="btn btn-out btn-sm" onclick="showToast('SMS yuborildi!','info')">📱</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card-title">📈 Oylik to'lov jarayoni</div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px">
+          <span style="color:var(--text2)">43 ta to'lagan / 5 ta qoldi</span>
+          <span style="font-weight:600;color:var(--teal)">89.6%</span>
+        </div>
+        <div class="pb" style="height:8px">
+          <div class="pf" style="width:89.6%;background:linear-gradient(90deg,var(--teal),var(--green))"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAYMENTS -->
+  <div class="page" id="page-payments">
+    <div class="g2">
+      <div>
+        <div class="card-title">💳 To'lov qabul qilish</div>
+        <div class="card">
+          <div class="fg"><label class="fl">O'quvchi ismi</label><input type="text" id="pay-student" placeholder="Ism-familiya..."></div>
+          <div class="row2">
+            <div class="fg" style="margin:0"><label class="fl">Guruh</label>
+              <select id="pay-group">
+                <option>Matematika A</option><option>Matematika B</option>
+                <option>Kimyo guruh</option><option>Ingliz tili A</option>
+              </select>
+            </div>
+            <div class="fg" style="margin:0"><label class="fl">Oy</label>
+              <select id="pay-month">
+                <option>Yanvar</option><option>Fevral</option><option>Mart</option>
+                <option>Aprel</option><option selected>May</option><option>Iyun</option>
+                <option>Iyul</option><option>Avgust</option><option>Sentabr</option>
+                <option>Oktabr</option><option>Noyabr</option><option>Dekabr</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-bottom:1rem;margin-top:1rem">
+            <label class="fl">To'lov usuli</label>
+            <div class="pay-methods" id="pay-methods-main">
+              <div class="pm sel" onclick="selPay(this)">💳 Uzcard</div>
+              <div class="pm" onclick="selPay(this)">💳 Humo</div>
+              <div class="pm" onclick="selPay(this)">📱 Click</div>
+              <div class="pm" onclick="selPay(this)">📱 Payme</div>
+              <div class="pm" onclick="selPay(this)">💵 Naqd</div>
+            </div>
+          </div>
+          <div class="fg"><label class="fl">Summa (so'm)</label><input type="number" id="pay-amount" value="300000" oninput="updatePayShow()"></div>
+          <div class="pay-result">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:13px;color:var(--text2)">Qabul qilinmoqda:</span>
+              <span style="font-size:22px;font-weight:700;color:var(--teal)" id="pay-show">300,000 so'm</span>
+            </div>
+          </div>
+          <button class="btn btn-teal btn-full" onclick="doAcceptPayment()">✅ To'lovni qabul qilish</button>
+        </div>
+      </div>
+      <div>
+        <div class="card-title">📋 Bugungi to'lovlar <span class="badge badge-teal" id="pay-count-badge">4 ta</span></div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+            <span style="font-size:13px;color:var(--text2)">Jami:</span>
+            <span style="font-weight:600;color:var(--green)" id="daily-total">1,180,000 so'm</span>
+          </div>
+          <table>
+            <thead><tr><th>Vaqt</th><th>O'quvchi</th><th>Summa</th><th>Usul</th><th>Holat</th></tr></thead>
+            <tbody id="pay-history-body">
+              <tr><td style="font-size:12px;color:var(--text2)">09:15</td><td>Sherzod Z.</td><td style="color:var(--green);font-weight:500">300,000</td><td><span class="tag tag-teal">Click</span></td><td><span class="tag tag-green">✅</span></td></tr>
+              <tr><td style="font-size:12px;color:var(--text2)">09:42</td><td>Pokiza E.</td><td style="color:var(--green);font-weight:500">300,000</td><td><span class="tag tag-blue">Uzcard</span></td><td><span class="tag tag-green">✅</span></td></tr>
+              <tr><td style="font-size:12px;color:var(--text2)">10:08</td><td>Gulnigor S.</td><td style="color:var(--green);font-weight:500">280,000</td><td><span class="tag tag-teal">Payme</span></td><td><span class="tag tag-green">✅</span></td></tr>
+              <tr><td style="font-size:12px;color:var(--text2)">10:22</td><td>Azamat A.</td><td style="color:var(--green);font-weight:500">300,000</td><td><span class="tag tag-amber">Naqd</span></td><td><span class="tag tag-green">✅</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATTENDANCE -->
+  <div class="page" id="page-attendance">
+    <div class="g2">
+      <div>
+        <div class="card-title">✔️ Davomat belgilash</div>
+        <div class="card">
+          <div class="row2" style="margin-bottom:1rem">
+            <div class="fg" style="margin:0"><label class="fl">Sana</label><input type="date" id="att-date" value="2026-05-27"></div>
+            <div class="fg" style="margin:0"><label class="fl">Guruh</label>
+              <select id="att-group" onchange="loadAttendance()">
+                <option>Matematika A</option><option>Matematika B</option>
+                <option>Kimyo guruh</option><option>Ingliz tili A</option>
+              </select>
+            </div>
+          </div>
+          <div id="att-list"></div>
+          <button class="btn btn-teal btn-full" style="margin-top:12px" onclick="saveAttendance()">💾 Saqlash</button>
+        </div>
+      </div>
+      <div>
+        <div class="card-title">📈 Davomat statistikasi — May 2026</div>
+        <div class="card" style="margin-bottom:14px">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>Sherzod Zoirov</span><span style="color:var(--green)">96%</span></div><div class="pb"><div class="pf" style="width:96%;background:var(--green)"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>Pokiza Eshboriyeva</span><span style="color:var(--green)">100%</span></div><div class="pb"><div class="pf" style="width:100%;background:var(--green)"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>Gulnigor Sattorova</span><span style="color:var(--green)">92%</span></div><div class="pb"><div class="pf" style="width:92%;background:var(--teal)"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>Muhammadali Toychiyev</span><span style="color:var(--red)">72%</span></div><div class="pb"><div class="pf" style="width:72%;background:var(--red)"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>Elbek Qoqonov</span><span style="color:var(--amber)">80%</span></div><div class="pb"><div class="pf" style="width:80%;background:var(--amber)"></div></div></div>
+          </div>
+        </div>
+        <div class="card-title">📋 Kelmagan o'quvchilar — Bugun</div>
+        <div class="card">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--red-d);border-radius:8px">
+              <span>👤</span><div style="flex:1"><div style="font-size:13px">Muhammadali Toychiyev</div><div style="font-size:11px;color:var(--text2)">Mat B</div></div>
+              <button class="btn btn-out btn-sm" onclick="showToast('SMS yuborildi!','info')">📱 SMS</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--red-d);border-radius:8px">
+              <span>👤</span><div style="flex:1"><div style="font-size:13px">Davlat Roquyev</div><div style="font-size:11px;color:var(--text2)">Mat A</div></div>
+              <button class="btn btn-out btn-sm" onclick="showToast('SMS yuborildi!','info')">📱 SMS</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--amber-d);border-radius:8px">
+              <span>⏰</span><div style="flex:1"><div style="font-size:13px">Intizor Rashidova</div><div style="font-size:11px;color:var(--amber)">Mat A — 15 daqiqa kechikdi</div></div>
+              <span class="tag tag-amber">Kechikdi</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDENTS -->
+  <div class="page" id="page-students">
+    <div class="card-title">👥 O'quvchilar ro'yxati <span class="badge badge-teal">48 ta</span></div>
+    <div class="card g1">
+      <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+        <div style="position:relative;flex:1">
+          <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text2)">🔍</span>
+          <input type="text" placeholder="Ism, familiya, telefon..." oninput="filterStudents(this.value)" style="padding-left:34px">
+        </div>
+        <select style="width:150px" onchange="filterStudents('')">
+          <option>Barcha guruhlar</option>
+          <option>Matematika A</option><option>Matematika B</option>
+          <option>Kimyo guruh</option><option>Ingliz tili A</option>
+        </select>
+        <select style="width:150px">
+          <option>Barcha holat</option><option>Tolagan</option><option>Tolamagan</option>
+        </select>
+      </div>
+      <table>
+        <thead><tr><th>#</th><th>Ism Familiya</th><th>Guruh</th><th>Telefon</th><th>To'lov</th><th>Davomat</th><th>Amal</th></tr></thead>
+        <tbody id="st-body">
+          <tr><td style="color:var(--text2)">1</td><td>Sherzod Zoirov</td><td>Mat A</td><td style="font-size:12px;color:var(--text2)">+998 91 234 56 78</td><td><span class="tag tag-green">Tolagan</span></td><td style="color:var(--green)">96%</td><td><button class="btn btn-out btn-sm" onclick="showToast('Profil ochildi!','info')">Ko'rish</button></td></tr>
+          <tr><td style="color:var(--text2)">2</td><td>Pokiza Eshboriyeva</td><td>Mat B</td><td style="font-size:12px;color:var(--text2)">+998 93 345 67 89</td><td><span class="tag tag-green">Tolagan</span></td><td style="color:var(--green)">100%</td><td><button class="btn btn-out btn-sm" onclick="showToast('Profil ochildi!','info')">Ko'rish</button></td></tr>
+          <tr><td style="color:var(--text2)">3</td><td>Gulnigor Sattorova</td><td>Mat A</td><td style="font-size:12px;color:var(--text2)">+998 94 456 78 90</td><td><span class="tag tag-green">Tolagan</span></td><td style="color:var(--green)">92%</td><td><button class="btn btn-out btn-sm" onclick="showToast('Profil ochildi!','info')">Ko'rish</button></td></tr>
+          <tr><td style="color:var(--text2)">4</td><td>Muhammadali Toychiyev</td><td>Mat B</td><td style="font-size:12px;color:var(--text2)">+998 90 567 89 01</td><td><span class="tag tag-red">Tolamagan</span></td><td style="color:var(--red)">72%</td><td><button class="btn btn-teal btn-sm" onclick="openPayModal('Muhammadali Toychiyev',300000)">To'lov</button></td></tr>
+          <tr><td style="color:var(--text2)">5</td><td>Elbek Qoqonov</td><td>Kimyo</td><td style="font-size:12px;color:var(--text2)">+998 97 678 90 12</td><td><span class="tag tag-red">Tolamagan</span></td><td style="color:var(--amber)">80%</td><td><button class="btn btn-teal btn-sm" onclick="openPayModal('Elbek Qoqonov',250000)">To'lov</button></td></tr>
+          <tr><td style="color:var(--text2)">6</td><td>Umida Mustafoyeva</td><td>Ingliz A</td><td style="font-size:12px;color:var(--text2)">+998 91 789 01 23</td><td><span class="tag tag-amber">Qisman</span></td><td style="color:var(--green)">90%</td><td><button class="btn btn-teal btn-sm" onclick="openPayModal('Umida Mustafoyeva',130000)">130K</button></td></tr>
+          <tr><td style="color:var(--text2)">7</td><td>Azamat Axrorov</td><td>Mat A</td><td style="font-size:12px;color:var(--text2)">+998 90 890 12 34</td><td><span class="tag tag-green">Tolagan</span></td><td style="color:var(--green)">94%</td><td><button class="btn btn-out btn-sm" onclick="showToast('Profil ochildi!','info')">Ko'rish</button></td></tr>
+          <tr><td style="color:var(--text2)">8</td><td>Intizor Rashidova</td><td>Mat A</td><td style="font-size:12px;color:var(--text2)">+998 93 901 23 45</td><td><span class="tag tag-red">Tolamagan</span></td><td style="color:var(--amber)">88%</td><td><button class="btn btn-teal btn-sm" onclick="openPayModal('Intizor Rashidova',300000)">To'lov</button></td></tr>
+          <tr><td style="color:var(--text2)">9</td><td>Davlat Roquyev</td><td>Mat A</td><td style="font-size:12px;color:var(--text2)">+998 94 012 34 56</td><td><span class="tag tag-red">Tolamagan</span></td><td style="color:var(--red)">68%</td><td><button class="btn btn-teal btn-sm" onclick="openPayModal('Davlat Roquyev',300000)">To'lov</button></td></tr>
+          <tr><td style="color:var(--text2)">10</td><td>Marjona Faxriddinova</td><td>Kimyo</td><td style="font-size:12px;color:var(--text2)">+998 97 123 45 67</td><td><span class="tag tag-green">Tolagan</span></td><td style="color:var(--green)">88%</td><td><button class="btn btn-out btn-sm" onclick="showToast('Profil ochildi!','info')">Ko'rish</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="page" id="page-results">
+    <div class="g2">
+      <div>
+        <div class="card-title">📊 O'quvchi natijalari</div>
+        <div class="card">
+          <div class="fg"><label class="fl">Guruh</label>
+            <select onchange="loadResults()">
+              <option>Matematika A</option><option>Matematika B</option>
+              <option>Kimyo guruh</option><option>Ingliz tili A</option>
+            </select>
+          </div>
+          <div class="fg"><label class="fl">Davr</label>
+            <select><option>May 2026</option><option>Aprel 2026</option><option>Barcha vaqt</option></select>
+          </div>
+          <div id="results-list"></div>
+        </div>
+      </div>
+      <div>
+        <div class="card-title">🏆 Eng yaxshi o'quvchilar</div>
+        <div class="card" style="margin-bottom:14px">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--amber-d);border:1px solid rgba(245,158,11,.2);border-radius:10px">
+              <span style="font-size:20px">🥇</span>
+              <div style="flex:1"><div style="font-size:13px;font-weight:500">Pokiza Eshboriyeva</div><div style="font-size:11px;color:var(--text2)">Mat B</div></div>
+              <span style="font-size:16px;font-weight:700;color:var(--green)">94%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:10px">
+              <span style="font-size:20px">🥈</span>
+              <div style="flex:1"><div style="font-size:13px;font-weight:500">Sherzod Zoirov</div><div style="font-size:11px;color:var(--text2)">Mat A</div></div>
+              <span style="font-size:16px;font-weight:700;color:var(--green)">92%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:10px">
+              <span style="font-size:20px">🥉</span>
+              <div style="flex:1"><div style="font-size:13px;font-weight:500">Gulnigor Sattorova</div><div style="font-size:11px;color:var(--text2)">Mat A</div></div>
+              <span style="font-size:16px;font-weight:700;color:var(--green)">88%</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-title">⚠️ Diqqat kerak</div>
+        <div class="card">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--red-d);border-radius:9px">
+              <span>⬇️</span><div style="flex:1"><div style="font-size:13px">Muhammadali Toychiyev</div><div style="font-size:11px;color:var(--text2)">Ball: 62% • Davomat: 72%</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--amber-d);border-radius:9px">
+              <span>📉</span><div style="flex:1"><div style="font-size:13px">Elbek Qoqonov</div><div style="font-size:11px;color:var(--text2)">Ball: 71% — yaxshilanish kerak</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="page" id="page-search">
+    <div class="card-title">🔍 Tezkor qidiruv</div>
+    <div class="card g1">
+      <div style="position:relative;margin-bottom:1.25rem">
+        <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:17px;color:var(--text2)">🔍</span>
+        <input type="text" placeholder="Ism, login, telefon raqam..." id="global-search" oninput="globalSearch(this.value)" style="font-size:15px;padding:12px 12px 12px 38px">
+      </div>
+      <div id="search-results">
+        <div style="text-align:center;color:var(--text2);padding:2rem;font-size:13px">Qidirish uchun yozing... 👆</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREDENTIALS -->
+  <div class="page" id="page-credentials">
+    <div class="g2">
+      <div>
+        <div class="card-title">🔑 O'quvchi login yaratish</div>
+        <div class="card">
+          <div class="row2">
+            <div class="fg"><label class="fl">Ism</label><input type="text" id="cred-first" placeholder="Ism" oninput="onCredInput()"></div>
+            <div class="fg"><label class="fl">Familiya</label><input type="text" id="cred-last" placeholder="Familiya" oninput="onCredInput()"></div>
+          </div>
+          <div class="fg"><label class="fl">Guruh</label>
+            <select id="cred-group">
+              <option>Matematika A</option><option>Matematika B</option>
+              <option>Kimyo guruh</option><option>Ingliz tili A</option><option>Fizika guruh</option>
+            </select>
+          </div>
+          <div class="fg"><label class="fl">Telefon</label><input type="text" id="cred-phone" placeholder="+998 90 000 00 00"></div>
+
+          <div class="cred-box">
+            <div style="font-size:12px;color:var(--text2);margin-bottom:10px;font-weight:500">🔐 Avtomatik yaratilgan</div>
+            <div class="cred-row">
+              <span class="cred-label">Login:</span>
+              <code class="cred-val" id="gen-login" style="color:var(--teal)">ism00</code>
+              <button class="copy-btn" onclick="doCopy('gen-login')">📋</button>
+            </div>
+            <div class="cred-row">
+              <span class="cred-label">Parol:</span>
+              <code class="cred-val" id="gen-pass" style="color:var(--amber)">••••••••</code>
+              <button class="copy-btn" onclick="doRegenPass()">🔄</button>
+              <button class="copy-btn" onclick="doCopy('gen-pass')">📋</button>
+            </div>
+          </div>
+
+          <div class="row2">
+            <button class="btn btn-teal btn-full" onclick="createCredential()">✅ Yaratish</button>
+            <button class="btn btn-out btn-full" onclick="printCred()">🖨️ Chop etish</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card-title">📋 Yaratilgan loginlar <span class="badge badge-teal" id="cred-count">0 ta</span></div>
+        <div class="card" style="max-height:520px;overflow-y:auto">
+          <div style="margin-bottom:10px">
+            <input type="text" placeholder="🔍 Qidirish..." oninput="filterCreds(this.value)">
+          </div>
+          <div id="cred-list">
+            <div style="text-align:center;color:var(--text2);font-size:13px;padding:2rem 0">Hali login yaratilmagan.<br>Chapdan yangi login yarating!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- MODAL: To'lov -->
+<div class="modal-bg" id="modal-pay">
+  <div class="modal">
+    <h3>💳 To'lov qabul <button class="close-btn" onclick="closePayModal()">×</button></h3>
+    <div class="fg"><label class="fl">O'quvchi</label><input type="text" id="modal-student-name" placeholder="O'quvchi ismi"></div>
+    <div class="fg"><label class="fl">Summa (so'm)</label><input type="number" id="modal-amount" value="300000" oninput="updateModalShow()"></div>
+    <div class="pay-methods" id="modal-methods">
+      <div class="pm sel" onclick="selModalPay(this)">💳 Uzcard</div>
+      <div class="pm" onclick="selModalPay(this)">💳 Humo</div>
+      <div class="pm" onclick="selModalPay(this)">📱 Click</div>
+      <div class="pm" onclick="selModalPay(this)">📱 Payme</div>
+      <div class="pm" onclick="selModalPay(this)">💵 Naqd</div>
+    </div>
+    <div class="pay-result">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;color:var(--text2)">Qabul qilinmoqda:</span>
+        <span style="font-size:22px;font-weight:700;color:var(--teal)" id="modal-show">300,000 so'm</span>
+      </div>
+    </div>
+    <button class="btn btn-teal btn-full" onclick="acceptModalPayment()">✅ To'lovni qabul qilish</button>
+  </div>
+</div>
+
+<!-- MODAL: Logout -->
+<div class="modal-bg" id="modal-logout">
+  <div class="modal">
+    <h3>🚪 Chiqish <button class="close-btn" onclick="closeLogoutModal()">×</button></h3>
+    <p style="color:var(--text2);font-size:14px;margin-bottom:1.5rem">Tizimdan chiqmoqchimisiz?</p>
+    <div class="row2">
+      <button class="btn btn-out btn-full" onclick="closeLogoutModal()">Bekor qilish</button>
+      <button class="btn btn-red btn-full" onclick="confirmLogout()">Chiqish</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast-el"></div>
+
+<script>
+// ===== CLOCK =====
+function updateClock(){
+  var now=new Date();
+  var h=String(now.getHours()).padStart(2,'0');
+  var m=String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('clock').textContent='⏰ '+h+':'+m;
+}
+updateClock();
+setInterval(updateClock,30000);
+
+// ===== NAV =====
+var pageTitles={home:'Bosh sahifa',payments:"To'lov qabul",attendance:'Davomat',students:"O'quvchilar",results:'Natijalar',search:'Qidirish',credentials:'Login yaratish'};
+var pageSubs={home:'Bugungi holat',payments:"To'lovlarni qabul qiling",attendance:'Davomatni belgilang',students:"Barcha o'quvchilar",results:'Test natijalari (faqat ko\'rish)',search:'Tezkor qidiruv',credentials:"Faqat o'quvchi uchun"};
+
+function showPage(id,el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('active');});
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  document.getElementById('page-title').textContent=pageTitles[id]||'';
+  document.getElementById('page-sub').textContent=pageSubs[id]||'';
+  if(id==='attendance') loadAttendance();
+  if(id==='results') loadResults();
+  if(window.innerWidth<=768) toggleSidebar();
+}
+
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
+
+// ===== TOAST =====
+function showToast(msg,type){
+  var t=document.getElementById('toast-el');
+  t.textContent=msg;
+  t.className='toast '+type+' show';
+  setTimeout(function(){t.classList.remove('show');},2800);
+}
+
+// ===== LOGOUT =====
+function doLogout(){document.getElementById('modal-logout').classList.add('show');}
+function closeLogoutModal(){document.getElementById('modal-logout').classList.remove('show');}
+function confirmLogout(){
+  document.body.style.opacity='0';
+  document.body.style.transition='opacity 0.4s';
+  setTimeout(function(){window.location.href='login.html';},400);
+}
+
+// ===== ATTENDANCE =====
+var attStudents=['Sherzod Zoirov','Intizor Rashidova','Gulnigor Sattorova','Marjona Faxriddinova','Azamat Axrorov','Ulugbek Axrorov','Pokiza Eshboriyeva','Umida Mustafoyeva','Elbek Qoqonov','Gulnora Sobirova','Muhammadali Toychiyev','Davlat Roquyev'];
+
+function loadAttendance(){
+  var list=document.getElementById('att-list');
+  var html='';
+  for(var i=0;i<attStudents.length;i++){
+    var s=attStudents[i];
+    var keldi=(i!==10&&i!==11)?'selected':'';
+    var kelmadi=(i===10||i===11)?'selected':'';
+    html+='<div class="att-item">';
+    html+='<div class="att-av">'+s[0]+'</div>';
+    html+='<div class="att-name">'+s+'</div>';
+    html+='<select style="width:140px;padding:5px 8px;font-size:12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text)" id="att-'+i+'">';
+    html+='<option value="keldi" '+keldi+'>Keldi</option>';
+    html+='<option value="kelmadi" '+kelmadi+'>Kelmadi</option>';
+    html+='<option value="kech">Kechikdi</option>';
+    html+='<option value="sababli">Sababli</option>';
+    html+='</select></div>';
+  }
+  list.innerHTML=html;
+}
+loadAttendance();
+
+function saveAttendance(){
+  var counts={keldi:0,kelmadi:0,kech:0,sababli:0};
+  for(var i=0;i<attStudents.length;i++){
+    var el=document.getElementById('att-'+i);
+    if(el) counts[el.value]=(counts[el.value]||0)+1;
+  }
+  showToast('Davomat saqlandi! Keldi: '+counts.keldi+', Kelmadi: '+counts.kelmadi,'success');
+}
+
+// ===== RESULTS =====
+var resultsData=[
+  {name:'Sherzod Zoirov',score:92,color:'var(--green)'},
+  {name:'Pokiza Eshboriyeva',score:94,color:'var(--green)'},
+  {name:'Gulnigor Sattorova',score:88,color:'var(--green)'},
+  {name:'Marjona Faxriddinova',score:76,color:'var(--teal)'},
+  {name:'Azamat Axrorov',score:85,color:'var(--green)'},
+  {name:'Muhammadali Toychiyev',score:62,color:'var(--red)'}
+];
+
+function loadResults(){
+  var el=document.getElementById('results-list');
+  var html='';
+  for(var i=0;i<resultsData.length;i++){
+    var r=resultsData[i];
+    html+='<div style="margin-bottom:8px">';
+    html+='<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">';
+    html+='<span>'+r.name+'</span>';
+    html+='<span style="color:'+r.color+';font-weight:500">'+r.score+'%</span></div>';
+    html+='<div class="pb"><div class="pf" style="width:'+r.score+'%;background:'+r.color+'"></div></div></div>';
+  }
+  el.innerHTML=html;
+}
+loadResults();
+
+// ===== PAYMENTS =====
+var dailyTotal=1180000;
+var payCount=4;
+
+function updatePayShow(){
+  var v=Number(document.getElementById('pay-amount').value);
+  document.getElementById('pay-show').textContent=v.toLocaleString()+' soum';
+}
+
+function selPay(el){
+  document.querySelectorAll('#pay-methods-main .pm').forEach(function(p){p.classList.remove('sel');});
+  el.classList.add('sel');
+}
+
+function selModalPay(el){
+  el.closest('.pay-methods').querySelectorAll('.pm').forEach(function(p){p.classList.remove('sel');});
+  el.classList.add('sel');
+}
+
+function doAcceptPayment(){
+  var amount=Number(document.getElementById('pay-amount').value);
+  var student=document.getElementById('pay-student').value.trim();
+  if(!amount||!student){showToast('Ism va summani kiriting!','error');return;}
+  dailyTotal+=amount;
+  payCount++;
+  var now=new Date();
+  var time=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  var method=document.querySelector('#pay-methods-main .pm.sel');
+  var methodText=method?method.textContent.trim().split(' ').slice(-1)[0]:'Naqd';
+  var fname=student.split(' ');
+  var shortName=(fname[0]||'')+(fname[1]?' '+fname[1][0]+'.':'');
+  var body=document.getElementById('pay-history-body');
+  var row=document.createElement('tr');
+  row.innerHTML='<td style="font-size:12px;color:var(--text2)">'+time+'</td><td>'+shortName+'</td><td style="color:var(--green);font-weight:500">'+amount.toLocaleString()+'</td><td><span class="tag tag-teal">'+methodText+'</span></td><td><span class="tag tag-green">OK</span></td>';
+  body.insertBefore(row,body.firstChild);
+  document.getElementById('daily-total').textContent=dailyTotal.toLocaleString()+' soum';
+  document.getElementById('pay-count-badge').textContent=payCount+' ta';
+  document.getElementById('home-daily-total').textContent=dailyTotal.toLocaleString()+' soum';
+  document.getElementById('pay-student').value='';
+  showToast(amount.toLocaleString()+' soum qabul qilindi!','success');
+}
+
+// ===== MODAL PAY =====
+function openPayModal(name,amount){
+  document.getElementById('modal-student-name').value=name||'';
+  var amt=amount||300000;
+  document.getElementById('modal-amount').value=amt;
+  document.getElementById('modal-show').textContent=amt.toLocaleString()+' soum';
+  document.getElementById('modal-pay').classList.add('show');
+}
+
+function closePayModal(){document.getElementById('modal-pay').classList.remove('show');}
+
+function updateModalShow(){
+  var v=Number(document.getElementById('modal-amount').value);
+  document.getElementById('modal-show').textContent=v.toLocaleString()+' soum';
+}
+
+function acceptModalPayment(){
+  var name=document.getElementById('modal-student-name').value;
+  var amount=Number(document.getElementById('modal-amount').value);
+  if(!amount){showToast('Summani kiriting!','error');return;}
+  dailyTotal+=amount;
+  payCount++;
+  document.getElementById('daily-total').textContent=dailyTotal.toLocaleString()+' soum';
+  document.getElementById('home-daily-total').textContent=dailyTotal.toLocaleString()+' soum';
+  closePayModal();
+  showToast(name+' — '+amount.toLocaleString()+' soum qabul qilindi!','success');
+}
+
+// ===== FILTER STUDENTS =====
+function filterStudents(v){
+  document.querySelectorAll('#st-body tr').forEach(function(r){
+    r.style.display=r.textContent.toLowerCase().indexOf(v.toLowerCase())>=0?'':'none';
+  });
+}
+
+// ===== GLOBAL SEARCH =====
+var allData=[
+  {type:'Oquvchi',name:'Sherzod Zoirov',info:"Mat A · Tolagan · 96%"},
+  {type:'Oquvchi',name:'Pokiza Eshboriyeva',info:"Mat B · Tolagan · 100%"},
+  {type:'Oquvchi',name:'Muhammadali Toychiyev',info:"Mat B · Tolamagan · 72%"},
+  {type:'Oquvchi',name:'Elbek Qoqonov',info:"Kimyo · Tolamagan · 80%"},
+  {type:'Oquvchi',name:'Umida Mustafoyeva',info:"Ingliz A · Qisman · 90%"},
+  {type:'Guruh',name:'Matematika A',info:"12 oquvchi · Akbar Axmadov"},
+  {type:'Guruh',name:'Kimyo guruh',info:"14 oquvchi · Sardor Yusupov"}
+];
+
+function globalSearch(v){
+  var el=document.getElementById('search-results');
+  if(!v.trim()){el.innerHTML='<div style="text-align:center;color:var(--text2);padding:2rem;font-size:13px">Qidirish uchun yozing... 👆</div>';return;}
+  var res=allData.filter(function(d){return d.name.toLowerCase().indexOf(v.toLowerCase())>=0||d.info.toLowerCase().indexOf(v.toLowerCase())>=0;});
+  if(!res.length){el.innerHTML='<div style="text-align:center;color:var(--text2);padding:2rem">Topilmadi</div>';return;}
+  var html='';
+  for(var i=0;i<res.length;i++){
+    var r=res[i];
+    var icon=r.type==='Oquvchi'?'👤':'🗂️';
+    html+='<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg3);border-radius:10px;margin-bottom:8px;border:1px solid var(--border)">';
+    html+='<span style="font-size:20px">'+icon+'</span>';
+    html+='<div style="flex:1"><div style="font-size:13px;font-weight:500">'+r.name+'</div>';
+    html+='<div style="font-size:11px;color:var(--text2)">'+r.type+' - '+r.info+'</div></div>';
+    if(r.type==='Oquvchi') html+='<button class="btn btn-out btn-sm" onclick="showToast(\'Profil ochildi!\',\'info\')">Ko\'rish</button>';
+    html+='</div>';
+  }
+  el.innerHTML=html;
+}
+
+// ===== CREDENTIALS =====
+var credentials=[];
+
+function onCredInput(){
+  var f=document.getElementById('cred-first').value.toLowerCase().trim().replace(/\s/g,'');
+  if(f.length<1){document.getElementById('gen-login').textContent='ism00';return;}
+  var num=Math.floor(10+Math.random()*89);
+  document.getElementById('gen-login').textContent=f.slice(0,6)+num;
+  if(document.getElementById('gen-pass').textContent==='••••••••') doRegenPass();
+}
+
+function doRegenPass(){
+  var chars='ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#!';
+  var p='';
+  for(var i=0;i<8;i++) p+=chars[Math.floor(Math.random()*chars.length)];
+  document.getElementById('gen-pass').textContent=p;
+}
+
+function doCopy(id){
+  var v=document.getElementById(id).textContent;
+  navigator.clipboard.writeText(v).then(function(){showToast('Nusxalandi: '+v,'info');}).catch(function(){showToast('Nusxa: '+v,'info');});
+}
+
+async function createCredential(){
+  var first=document.getElementById('cr-first')?.value?.trim();
+  var last=document.getElementById('cr-last')?.value?.trim();
+  var phone=document.getElementById('cr-phone')?.value?.trim();
+  if(!first||!last){showToast('Ism va familiyani kiriting!','error');return;}
+  
+  var btn=document.querySelector('#pg-cred .btn-teal');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Yaratilmoqda...';}
+  
+  try{
+    var token=localStorage.getItem('access_token');
+    var res=await fetch('https://bozorov-school.onrender.com/api/users/create',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({first_name:first,last_name:last,role:'student',phone:phone||null})
+    });
+    var data=await res.json();
+    if(!res.ok){showToast('Xato: '+(data.detail||'Nomalum'),'error');}
+    else{
+      document.getElementById('cr-login-show').textContent=data.login;
+      document.getElementById('cr-pass-show').textContent=data.password_plain;
+      credentials.unshift({name:first+' '+last,login:data.login,pass:data.password_plain,group:document.getElementById('cr-group')?.value||''});
+      buildCredList(credentials);
+      showToast(first+' '+last+' uchun login yaratildi!','success');
+      document.getElementById('cr-first').value='';
+      document.getElementById('cr-last').value='';
+      if(document.getElementById('cr-phone')) document.getElementById('cr-phone').value='';
+    }
+  }catch(e){showToast('Server xatosi!','error');}
+  if(btn){btn.disabled=false;btn.textContent='✅ Yaratish';}
+}
+
+function renderCreds(list){
+  var el=document.getElementById('cred-list');
+  document.getElementById('cred-count').textContent=credentials.length+' ta';
+  if(!list.length){el.innerHTML='<div style="text-align:center;color:var(--text2);font-size:13px;padding:2rem 0">Hali login yaratilmagan.</div>';return;}
+  var html='';
+  for(var i=0;i<list.length;i++){
+    var c=list[i];
+    html+='<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px">';
+    html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+    html+='<div style="font-size:14px;font-weight:500">'+c.name+'</div>';
+    html+='<span style="font-size:11px;color:var(--text2)">'+c.date+'</span></div>';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">';
+    html+='<span style="font-size:11px;color:var(--text2);width:50px">Login:</span>';
+    html+='<code style="flex:1;background:var(--bg2);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--teal);border:1px solid var(--border)">'+c.login+'</code>';
+    html+='<button class="copy-btn" data-val="'+c.login+'">📋</button></div>';
+    html+='<div style="display:flex;align-items:center;gap:8px">';
+    html+='<span style="font-size:11px;color:var(--text2);width:50px">Parol:</span>';
+    html+='<code style="flex:1;background:var(--bg2);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--amber);border:1px solid var(--border)">'+c.pass+'</code>';
+    html+='<button class="copy-btn" data-val="'+c.pass+'">📋</button></div>';
+    html+='</div>';
+  }
+  el.innerHTML=html;
+  el.querySelectorAll('.copy-btn[data-val]').forEach(function(btn){
+    btn.onclick=function(){
+      var v=this.getAttribute('data-val');
+      navigator.clipboard.writeText(v).then(function(){showToast('Nusxalandi!','info');}).catch(function(){showToast('Nusxa: '+v,'info');});
+    };
+  });
+}
+
+function filterCreds(v){
+  var filtered=credentials.filter(function(c){return c.name.toLowerCase().indexOf(v.toLowerCase())>=0||c.login.toLowerCase().indexOf(v.toLowerCase())>=0;});
+  renderCreds(filtered);
+}
+
+function printCred(){
+  var first=document.getElementById('cred-first').value;
+  var last=document.getElementById('cred-last').value;
+  var login=document.getElementById('gen-login').textContent;
+  var pass=document.getElementById('gen-pass').textContent;
+  if(login==='ism00'){showToast('Avval login yarating!','error');return;}
+  var parts=[
+    '<html><body style="font-family:sans-serif;padding:30px;text-align:center">',
+    '<h2 style="margin-bottom:4px">Bozorov School</h2>',
+    '<p style="color:#666;margin-bottom:20px">Kirish malumotlari</p>',
+    '<p style="font-size:18px"><b>Oquvchi:</b> '+first+' '+last+'</p>',
+    '<p style="font-size:18px"><b>Login:</b> <b style="color:#14b8a6">'+login+'</b></p>',
+    '<p style="font-size:18px"><b>Parol:</b> <b style="color:#f59e0b">'+pass+'</b></p>',
+    '<p style="color:#999;font-size:12px;margin-top:20px">Ushbu malumotlarni hech kimga bermang!</p>',
+    '</body></html>'
+  ];
+  var win=window.open('','_blank','width=420,height=320');
+  win.document.write(parts.join(''));
+  win.document.close();
+  setTimeout(function(){win.print();},300);
+}
+
+// ===== THEME =====
+function toggleTheme(){
+  document.body.classList.toggle('light');
+  var l=document.body.classList.contains('light');
+  localStorage.setItem('theme',l?'light':'dark');
+  document.querySelectorAll('.theme-btn').forEach(function(b){b.textContent=l?'☀️':'🌙';});
+}
+(function(){
+  var t=localStorage.getItem('theme')||'dark';
+  if(t==='light') document.body.classList.add('light');
+  document.querySelectorAll('.theme-btn').forEach(function(b){b.textContent=t==='light'?'☀️':'🌙';});
+})();
+
+// ===== NOTIFICATIONS =====
+var _allNotifs = [];
+function _loadNotifs(){
+  var r = localStorage.getItem('user_role')||'receptionist';
+  var d = new Date().getDate();
+  var m = new Date().getMonth()+1;
+  _allNotifs = [];
+  
+  if(r==='admin'){
+    if(d>=25) _allNotifs.push({icon:'💰',title:"O'qituvchi oyliqlari!",sub:'Oylik to\'lash muddati keldi, '+d+'-'+m});
+    if(d>=20) _allNotifs.push({icon:'📅',title:"To'lov muddati yaqinlashdi",sub:"O'quvchilar to'lov kuniga "+(30-d)+' kun qoldi'});
+    _allNotifs.push({icon:'📝',title:"Oylik imtihon",sub:'Bu oy oxirida oylik imtihon bor'});
+    _allNotifs.push({icon:'👥',title:"Yangi o'quvchilar",sub:"Yangi o'quvchilarni qo'shing"});
+  } else if(r==='teacher'){
+    _allNotifs.push({icon:'📝',title:"Oylik imtihon",sub:"O'quvchilarga xabar bering"});
+    _allNotifs.push({icon:'📊',title:"Oylik hisobot",sub:'Oy oxiriga '+(30-d)+' kun qoldi'});
+    if(d>=20) _allNotifs.push({icon:'✅',title:"Davomat kiriting",sub:'Bu hafta davomati kiritilmagan'});
+  } else if(r==='student'){
+    if(d>=20) _allNotifs.push({icon:'💳',title:"To'lov muddati!",sub:"Oylik to'lovni amalga oshiring"});
+    _allNotifs.push({icon:'📝',title:"Oylik imtihon",sub:'Imtihonga yaxshi tayyorlaning'});
+    _allNotifs.push({icon:'📚',title:"Yangi dars materiallari",sub:'Kitoblar bo\'limini tekshiring'});
+  } else if(r==='receptionist'){
+    _allNotifs.push({icon:'💸',title:"To'lamagan o'quvchilar",sub:"5 ta o'quvchi to'lov qilmagan"});
+    if(d>=25) _allNotifs.push({icon:'⏰',title:"Oy tugayapti",sub:'Qolgan to\'lovlarni yig\'ing'});
+  }
+  
+  var badge=document.getElementById('_nb');
+  if(badge){
+    badge.textContent=_allNotifs.length;
+    badge.style.display=_allNotifs.length>0?'flex':'none';
+  }
+}
+
+function toggleNotifs(e){
+  if(e) e.stopPropagation();
+  var p=document.getElementById('_np');
+  if(!p){
+    p=document.createElement('div');
+    p.id='_np';p.className='notif-panel';
+    document.body.appendChild(p);
+  }
+  p.classList.toggle('show');
+  if(p.classList.contains('show')) _renderNotifs(p);
+}
+
+function _renderNotifs(p){
+  var h='<div class="notif-header">🔔 Bildirishnomalar <span class="notif-clear" onclick="_clearNotifs()">Tozalash</span></div>';
+  if(!_allNotifs.length){
+    h+='<div class="notif-empty">✅ Bildirishnomalar yo\'q</div>';
+  } else {
+    _allNotifs.forEach(function(n){
+      h+='<div class="notif-item"><div class="notif-icon">'+n.icon+'</div><div><div class="notif-title">'+n.title+'</div><div class="notif-sub">'+n.sub+'</div></div></div>';
+    });
+  }
+  p.innerHTML=h;
+}
+
+function _clearNotifs(){
+  _allNotifs=[];
+  var badge=document.getElementById('_nb');
+  if(badge) badge.style.display='none';
+  var p=document.getElementById('_np');
+  if(p) _renderNotifs(p);
+}
+
+document.addEventListener('click',function(e){
+  var p=document.getElementById('_np');
+  if(p&&p.classList.contains('show')&&!p.contains(e.target)&&!e.target.closest('.notif-wrap')){
+    p.classList.remove('show');
+  }
+});
+
+// ===== LOGOUT =====
+function logout(){
+  if(confirm('Tizimdan chiqmoqchimisiz?')){
+    localStorage.clear();
+    document.body.style.opacity='0';
+    document.body.style.transition='opacity 0.3s';
+    setTimeout(function(){window.location.href='login.html';},300);
+  }
+}
+
+// ===== USERNAME =====
+(function(){
+  var nm=localStorage.getItem('user_name')||'';
+  if(nm){
+    var el=document.querySelector('.u-name');
+    if(el) el.textContent=nm;
+  }
+  _loadNotifs();
+})();
+
+
+// Real username from backend
+(function(){
+  var token=localStorage.getItem('access_token');
+  var name=localStorage.getItem('user_name')||'';
+  var role=localStorage.getItem('user_role')||'';
+  
+  // Show name
+  if(name){
+    document.querySelectorAll('.u-name').forEach(function(el){el.textContent=name;});
+    var sub=document.getElementById('page-sub');
+    if(sub&&(sub.textContent.includes('Xush')||sub.textContent.includes('kelibsiz')))
+      sub.textContent='Xush kelibsiz, '+name.split(' ')[0]+'!';
+  }
+  
+  // Show role  
+  var roleNames={admin:'Super Admin',teacher:"O'qituvchi",student:'Talaba',receptionist:'Resepshn'};
+  document.querySelectorAll('.u-role').forEach(function(el){
+    if(el.id!=='u-role') return;
+    el.textContent=roleNames[role]||role;
+  });
+  
+  // Verify token
+  if(token){
+    fetch('https://bozorov-school.onrender.com/api/auth/me',{headers:{'Authorization':'Bearer '+token}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.full_name){
+        localStorage.setItem('user_name',d.full_name);
+        document.querySelectorAll('.u-name').forEach(function(el){el.textContent=d.full_name;});
+        var sub=document.getElementById('page-sub');
+        if(sub&&(sub.textContent.includes('Xush')||sub.textContent.includes('kelibsiz')))
+          sub.textContent='Xush kelibsiz, '+d.full_name.split(' ')[0]+'!';
+      }
+    })
+    .catch(function(){});
+  }
+})();
+
+async function _savePaymentToBackend(name, amount, method){
+  var token=localStorage.getItem('access_token');
+  if(!token)return;
+  try{
+    fetch('https://bozorov-school.onrender.com/api/payments/quick-pay',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({student_name:name,amount:amount,method:method,month:new Date().toISOString().slice(0,7),note:name})
+    }).then(function(r){if(r.ok)console.log('Payment saved: '+name+' '+amount);});
+  }catch(e){}
+}
+
+</script>
+</body>
+</html>

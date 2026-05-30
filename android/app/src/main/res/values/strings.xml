@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Bozorov School</string>
+    <string name="title_activity_main">Bozorov School</string>
+    <string name="package_name">uz.bozorov.school</string>
+    <string name="custom_url_scheme">uz.bozorov.school</string>
+</resources>

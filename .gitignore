@@ -4,3 +4,12 @@ __pycache__/
 .env
 *.db
 .DS_Store
+
+# Node
+node_modules/
+
+# Android build outputs (keep source, ignore build artifacts)
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
