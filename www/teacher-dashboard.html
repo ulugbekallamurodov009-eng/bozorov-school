@@ -236,13 +236,19 @@ body{transition:background .3s,color .3s;}
 }
 
 /* ===== NO HORIZONTAL SCROLL ===== */
-html,body{overflow-x:hidden;max-width:100vw;}
+html,body{overflow-x:hidden!important;width:100%!important;max-width:100vw!important;}
+*{box-sizing:border-box;max-width:100%;}
+table{display:block;overflow-x:auto;width:100%;font-size:12px;-webkit-overflow-scrolling:touch;}
+td,th{padding:4px 6px;white-space:nowrap;}
+.card,.sc,.stat-card{max-width:100%!important;}
 @media(max-width:768px){
+  .topbar,.tb-r,.u-info,.s-logo{flex-wrap:wrap;}
+  .pay-methods,.payment-methods{flex-wrap:wrap;}
   .row3,.r3{grid-template-columns:1fr!important;}
   img,video,iframe,canvas{max-width:100%!important;}
 }
 @media(max-width:480px){
-  .stats3,.stats4{grid-template-columns:1fr!important;}
+  .stats3,.stats4,.stats{grid-template-columns:1fr 1fr!important;}
   .row2,.row3,.r2,.r3{grid-template-columns:1fr!important;}
   .g2,.g3{grid-template-columns:1fr!important;}
 }
